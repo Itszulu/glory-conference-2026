@@ -1,21 +1,38 @@
 /* Homepage structural corrections */
 
-/* The homepage is a flex-ordered story. Footer must always remain last. */
+/* Current homepage is flex-ordered. Explicitly order every direct child so the footer cannot float into the story. */
+body>div>main:has(> .hero){display:flex!important;flex-direction:column!important}
+body>div>main:has(> .hero) > .hero{order:1!important}
+body>div>main:has(> .hero) > .home-loop{order:2!important}
+body>div>main:has(> .hero) > .feature{order:3!important}
+body>div>main:has(> .hero) > .home-ministers{order:4!important}
+body>div>main:has(> .hero) > .home-prayer{order:5!important}
+body>div>main:has(> .hero) > .home-about{order:6!important}
+body>div>main:has(> .hero) > .home-gallery{order:7!important}
+body>div>main:has(> .hero) > .gallery-finale{order:8!important}
+body>div>main:has(> .hero) > .home-give{display:none!important}
+body>div>main:has(> .hero) > .site-footer{order:1000!important;display:grid!important;position:relative!important;inset:auto!important;width:100%!important;flex:none!important}
+
+/* Compact footer: it should read as a footer, not another full-screen section. */
 body>div>main:has(> .hero) > .site-footer{
-  order:99!important;
-  display:grid!important;
+  min-height:0!important;
+  padding:32px max(6vw,28px) 18px!important;
+  grid-template-columns:minmax(160px,.85fr) 1.45fr .85fr!important;
+  grid-template-areas:'theme nav meta' 'theme social meta' 'copy copy copy'!important;
+  gap:12px 38px!important;
+  align-items:center!important;
 }
+body>div>main:has(> .hero) > .site-footer .footer-theme{width:min(240px,19vw)!important;max-height:105px!important;margin:0!important}
+body>div>main:has(> .hero) > .site-footer .footer-nav{gap:10px 20px!important}
+body>div>main:has(> .hero) > .site-footer .footer-meta{gap:7px!important}
+body>div>main:has(> .hero) > .site-footer small{padding-top:12px!important}
 
-/* Remove the unused alternate homepage footer suppression rule. */
-.gc-home > .site-footer:not(:last-child){display:none!important}
-
-/* The current homepage uses a generated year archive rail on .hero:after.
-   Give it proper desktop breathing room instead of one cramped pill. */
+/* Current homepage year archive rail. */
 .hero:after{
   content:'2026     2025     2024     2023'!important;
   top:116px!important;
-  min-width:520px!important;
-  padding:17px 34px!important;
+  min-width:560px!important;
+  padding:17px 38px!important;
   border-radius:14px!important;
   border:1px solid rgba(140,233,255,.34)!important;
   background:rgba(3,35,74,.78)!important;
@@ -24,40 +41,17 @@ body>div>main:has(> .hero) > .site-footer{
   font-weight:900!important;
   letter-spacing:.18em!important;
   line-height:1!important;
-  word-spacing:1.9em!important;
+  word-spacing:2.5em!important;
   text-align:center!important;
   box-shadow:0 12px 35px rgba(0,15,35,.18)!important;
 }
-
-/* More space between archive, declaration and theme content. */
-.hero-content{
-  padding-top:235px!important;
-}
-.hero-content:before{
-  margin-bottom:34px!important;
-}
-.hero-content .eyebrow{
-  margin-top:18px!important;
-}
-
-/* Future/alternate structured year buttons. */
-.gc-years{display:flex!important;justify-content:center!important;align-items:center!important;gap:18px!important;margin:0 auto 44px!important;flex-wrap:wrap!important}
-.gc-year{display:flex!important;align-items:center!important;justify-content:center!important;min-width:104px!important;min-height:54px!important;padding:0 24px!important;border:1px solid rgba(140,233,255,.35)!important;border-radius:12px!important;background:rgba(5,51,88,.72)!important;color:#a9c9d7!important;font-size:13px!important;font-weight:900!important;letter-spacing:.08em!important;line-height:1!important;white-space:nowrap!important}
-.gc-year.active{background:#06264d!important;border:2px solid #fff!important;color:#fff!important}
-.gc-year.muted{opacity:.52!important}
+.hero-content{padding-top:235px!important}
+.hero-content:before{margin-bottom:34px!important}
+.hero-content .eyebrow{margin-top:18px!important}
 
 @media(max-width:760px){
-  .hero:after{
-    min-width:0!important;
-    width:calc(100% - 44px)!important;
-    top:104px!important;
-    padding:14px 16px!important;
-    font-size:10px!important;
-    letter-spacing:.08em!important;
-    word-spacing:.7em!important;
-    white-space:nowrap!important;
-  }
+  .hero:after{min-width:0!important;width:calc(100% - 44px)!important;top:104px!important;padding:14px 16px!important;font-size:10px!important;letter-spacing:.08em!important;word-spacing:.9em!important;white-space:nowrap!important}
   .hero-content{padding-top:205px!important}
-  .gc-years{gap:8px!important;margin-bottom:30px!important}
-  .gc-year{min-width:78px!important;min-height:46px!important;padding:0 14px!important;font-size:11px!important}
+  body>div>main:has(> .hero) > .site-footer{grid-template-columns:1fr!important;grid-template-areas:'theme' 'nav' 'meta' 'social' 'copy'!important;gap:18px!important;padding:30px 22px 18px!important}
+  body>div>main:has(> .hero) > .site-footer .footer-theme{width:min(230px,62vw)!important}
 }
