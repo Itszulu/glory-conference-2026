@@ -1,0 +1,24 @@
+/* Homepage structural corrections */
+.gc-home > .site-footer:not(:last-child),
+main > .site-footer:not(:last-child){display:none!important}
+
+.gc-years{display:flex!important;justify-content:center!important;align-items:center!important;gap:16px!important;margin:0 auto 38px!important;flex-wrap:wrap!important}
+.gc-year{display:flex!important;align-items:center!important;justify-content:center!important;min-width:104px!important;min-height:54px!important;padding:0 24px!important;border:1px solid rgba(140,233,255,.35)!important;border-radius:12px!important;background:rgba(5,51,88,.72)!important;color:#a9c9d7!important;font-size:13px!important;font-weight:900!important;letter-spacing:.08em!important;line-height:1!important;white-space:nowrap!important}
+.gc-year.active{background:#06264d!important;border:2px solid #fff!important;color:#fff!important}
+.gc-year.muted{opacity:.52!important}
+
+/* Fallback for the compact archive pill used by an earlier homepage build */
+.gc-year-rail,.year-rail,.year-selector{display:flex!important;justify-content:center!important;align-items:center!important;gap:14px!important;width:max-content!important;max-width:90%!important;margin:24px auto 46px!important;padding:10px!important;border-radius:18px!important}
+.gc-year-rail a,.gc-year-rail span,.year-rail a,.year-rail span,.year-selector a,.year-selector span{display:flex!important;align-items:center!important;justify-content:center!important;min-width:92px!important;min-height:48px!important;padding:0 20px!important;margin:0!important;border:1px solid rgba(140,233,255,.3)!important;border-radius:10px!important;white-space:nowrap!important}
+
+.gc-opening{padding-top:52px!important}
+.gc-home-nav{margin-bottom:86px!important}
+.gc-declaration{padding-top:8px!important}
+
+@media(max-width:760px){
+ .gc-years{gap:8px!important;margin-bottom:28px!important}
+ .gc-year{min-width:78px!important;min-height:46px!important;padding:0 14px!important;font-size:11px!important}
+ .gc-year:nth-child(n+5){display:none!important}
+ .gc-year-rail,.year-rail,.year-selector{gap:7px!important;max-width:100%!important;overflow-x:auto!important;justify-content:flex-start!important}
+ .gc-year-rail a,.gc-year-rail span,.year-rail a,.year-rail span,.year-selector a,.year-selector span{min-width:74px!important;padding:0 12px!important}
+}
