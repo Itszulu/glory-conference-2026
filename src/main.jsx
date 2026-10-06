@@ -5,6 +5,7 @@ import './styles.css'
 import './home-flow.css'
 import './layout-fix.css'
 import './giving-accounts.js'
+import './home-media.js'
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
