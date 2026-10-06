@@ -1,6 +1,4 @@
 /* Homepage structural corrections */
-
-/* Current homepage is flex-ordered. Explicitly order every direct child so the footer cannot float into the story. */
 body>div>main:has(> .hero){display:flex!important;flex-direction:column!important}
 body>div>main:has(> .hero) > .hero{order:1!important}
 body>div>main:has(> .hero) > .home-loop{order:2!important}
@@ -13,45 +11,65 @@ body>div>main:has(> .hero) > .gallery-finale{order:8!important}
 body>div>main:has(> .hero) > .home-give{display:none!important}
 body>div>main:has(> .hero) > .site-footer{order:1000!important;display:grid!important;position:relative!important;inset:auto!important;width:100%!important;flex:none!important}
 
-/* Compact footer: it should read as a footer, not another full-screen section. */
-body>div>main:has(> .hero) > .site-footer{
-  min-height:0!important;
-  padding:32px max(6vw,28px) 18px!important;
-  grid-template-columns:minmax(160px,.85fr) 1.45fr .85fr!important;
-  grid-template-areas:'theme nav meta' 'theme social meta' 'copy copy copy'!important;
-  gap:12px 38px!important;
-  align-items:center!important;
-}
+/* Compact footer */
+body>div>main:has(> .hero) > .site-footer{min-height:0!important;padding:32px max(6vw,28px) 18px!important;grid-template-columns:minmax(160px,.85fr) 1.45fr .85fr!important;grid-template-areas:'theme nav meta' 'theme social meta' 'copy copy copy'!important;gap:12px 38px!important;align-items:center!important}
 body>div>main:has(> .hero) > .site-footer .footer-theme{width:min(240px,19vw)!important;max-height:105px!important;margin:0!important}
 body>div>main:has(> .hero) > .site-footer .footer-nav{gap:10px 20px!important}
 body>div>main:has(> .hero) > .site-footer .footer-meta{gap:7px!important}
 body>div>main:has(> .hero) > .site-footer small{padding-top:12px!important}
 
-/* Current homepage year archive rail. */
-.hero:after{
-  content:'2026     2025     2024     2023'!important;
-  top:116px!important;
-  min-width:560px!important;
-  padding:17px 38px!important;
-  border-radius:14px!important;
-  border:1px solid rgba(140,233,255,.34)!important;
-  background:rgba(3,35,74,.78)!important;
-  color:#bcefff!important;
-  font-size:12px!important;
-  font-weight:900!important;
-  letter-spacing:.18em!important;
-  line-height:1!important;
-  word-spacing:2.5em!important;
+/* Year archive spacing */
+.hero:after{content:'2026     2025     2024     2023'!important;top:116px!important;min-width:560px!important;padding:17px 38px!important;border-radius:14px!important;border:1px solid rgba(140,233,255,.34)!important;background:rgba(3,35,74,.78)!important;color:#bcefff!important;font-size:12px!important;font-weight:900!important;letter-spacing:.18em!important;line-height:1!important;word-spacing:2.5em!important;text-align:center!important;box-shadow:0 12px 35px rgba(0,15,35,.18)!important}
+.hero-content{padding-top:235px!important}.hero-content:before{margin-bottom:34px!important}.hero-content .eyebrow{margin-top:18px!important}
+
+/* Conference experience — one immersive composition, not a detached empty box. */
+body>div>main:has(> .hero) > .feature{
+  position:relative!important;
+  min-height:980px!important;
+  padding:110px max(7vw,28px) 105px!important;
+  overflow:hidden!important;
   text-align:center!important;
-  box-shadow:0 12px 35px rgba(0,15,35,.18)!important;
+  background:
+    linear-gradient(180deg,rgba(2,25,55,.50) 0%,rgba(2,29,61,.72) 44%,rgba(2,20,45,.96) 100%),
+    radial-gradient(circle at 24% 28%,#0b7399 0,#06456f 28%,#032a55 52%,#021a36 82%)!important;
 }
-.hero-content{padding-top:235px!important}
-.hero-content:before{margin-bottom:34px!important}
-.hero-content .eyebrow{margin-top:18px!important}
+body>div>main:has(> .hero) > .feature:before{
+  content:''!important;position:absolute!important;inset:0!important;pointer-events:none!important;opacity:.46!important;
+  background:repeating-linear-gradient(104deg,transparent 0,transparent 31px,rgba(151,231,255,.16) 32px,transparent 34px,transparent 68px)!important;
+  transform:skewX(-7deg) scale(1.12)!important;
+}
+body>div>main:has(> .hero) > .feature > *{position:relative!important;z-index:2!important}
+body>div>main:has(> .hero) > .feature .eyebrow{
+  margin:0 0 8px!important;color:#d9f6ff!important;font-size:clamp(18px,1.8vw,27px)!important;letter-spacing:.08em!important;font-weight:600!important;
+}
+body>div>main:has(> .hero) > .feature .feature-theme{display:none!important}
+body>div>main:has(> .hero) > .feature > p:not(.eyebrow){
+  max-width:none!important;margin:0 auto!important;font-size:0!important;line-height:1!important;color:#fff!important;
+}
+body>div>main:has(> .hero) > .feature > p:not(.eyebrow):after{
+  content:'THE OUTPOURING'!important;display:block!important;font-size:clamp(58px,7.4vw,108px)!important;line-height:.86!important;letter-spacing:-.055em!important;font-weight:900!important;color:#fff!important;text-shadow:0 8px 30px rgba(0,0,0,.22)!important;
+}
+body>div>main:has(> .hero) > .feature .home-links{margin:34px auto 0!important;display:flex!important;justify-content:center!important}
+body>div>main:has(> .hero) > .feature .home-links a{display:none!important}
+body>div>main:has(> .hero) > .feature .home-links a:first-child{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:220px!important;min-height:58px!important;padding:0 30px!important;border:2px solid #fff!important;border-radius:40px!important;color:transparent!important;font-size:0!important;background:rgba(2,27,58,.28)!important;backdrop-filter:blur(8px)!important;
+}
+body>div>main:has(> .hero) > .feature .home-links a:first-child:after{content:'REGISTER NOW →'!important;color:#fff!important;font-size:12px!important;font-weight:900!important;letter-spacing:.12em!important}
+body>div>main:has(> .hero) > .feature:after{
+  content:'GLORY CONFERENCE HIGHLIGHT FILM · OFFICIAL VIDEO COMING SOON'!important;
+  position:relative!important;z-index:2!important;display:grid!important;place-items:center!important;
+  width:min(900px,88vw)!important;aspect-ratio:16/9!important;margin:58px auto 0!important;
+  border:1px solid rgba(255,255,255,.30)!important;border-radius:18px!important;
+  background:linear-gradient(145deg,rgba(2,19,43,.74),rgba(3,52,86,.70))!important;
+  box-shadow:0 35px 80px rgba(0,12,31,.35)!important;color:#bcefff!important;
+  font-size:10px!important;font-weight:900!important;letter-spacing:.17em!important;
+}
 
 @media(max-width:760px){
   .hero:after{min-width:0!important;width:calc(100% - 44px)!important;top:104px!important;padding:14px 16px!important;font-size:10px!important;letter-spacing:.08em!important;word-spacing:.9em!important;white-space:nowrap!important}
   .hero-content{padding-top:205px!important}
+  body>div>main:has(> .hero) > .feature{min-height:760px!important;padding:85px 20px!important}
+  body>div>main:has(> .hero) > .feature:after{width:100%!important;margin-top:45px!important}
   body>div>main:has(> .hero) > .site-footer{grid-template-columns:1fr!important;grid-template-areas:'theme' 'nav' 'meta' 'social' 'copy'!important;gap:18px!important;padding:30px 22px 18px!important}
   body>div>main:has(> .hero) > .site-footer .footer-theme{width:min(230px,62vw)!important}
 }
