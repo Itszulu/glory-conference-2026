@@ -4,6 +4,7 @@ import App from './App.jsx'
 import './styles.css'
 import './home-flow.css'
 import './layout-fix.css'
+import './giving-accounts.js'
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
