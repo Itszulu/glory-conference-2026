@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 const THEME_ART='/assets/branding/the-outpouring.png'
 const LOGO='/assets/branding/glory-conference-logo.png'
 const ministers=[
- ['HOST','PROPHET JOSHUA OHANYE','/assets/ministers/joshua-ohanye.jpg'],
- ['MUSIC MINISTER','CHINYERE UDOMA','/assets/ministers/chinyere-udoma.png'],
+ ['HOST','PROPHET JOSHUA OHANYE','/assets/ministers/joshua-ohanye.jpeg'],
+ ['MUSIC MINISTER','CHINYERE UDOMA','/assets/ministers/chinyere-udoma.PNG'],
  ['MUSIC MINISTER','REV. CHRIS OKOLO','/assets/ministers/chris-okolo.png']
 ]
 const nav=[['ABOUT','/about'],['MINISTERS','/ministers'],['PRAYER GUIDE','/prayer-guide'],['SCHEDULE','/schedule'],['TESTIMONIES','/testimonies'],['GIVE','/giving']]
