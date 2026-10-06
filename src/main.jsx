@@ -7,6 +7,7 @@ import './home-flow.css'
 import './layout-fix.css'
 import './giving-accounts.js'
 import './home-media.js'
+import './special-links.js'
 
 const specialPaths=['/pastors-ministers','/volunteer']
 const currentPath=location.pathname.replace(/\/$/,'')||'/'
