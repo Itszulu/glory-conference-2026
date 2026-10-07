@@ -256,3 +256,15 @@ body>div>main > .site-footer.footer-clean small{
   .nav-links.open~.nav-cta{visibility:hidden!important}
   .menu-button[aria-expanded="true"]{visibility:hidden!important}
 }
+
+/* Global viewport guard: the site scrolls vertically only on every device. */
+html,body,#root{width:100%;max-width:100%;overflow-x:hidden!important}
+body>div>main{width:100%;max-width:100vw;overflow-x:clip}
+*,*::before,*::after{box-sizing:border-box}
+@supports (overflow:clip){
+  html,body,#root{overflow-x:clip!important}
+}
+@media(max-width:768px){
+  .nav-links{max-width:100vw!important}
+  .menu-backdrop{max-width:100vw!important}
+}
