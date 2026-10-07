@@ -9,6 +9,4 @@ body>div>main:has(> .hero){display:flex;flex-direction:column}.hero{order:1}.cou
 @media(max-width:360px){.hero-content:before{font-size:32px}.loop-copy h2{font-size:42px}.home-prayer h2{font-size:40px}.home-about h2{font-size:42px}}
 
 
-/* Feature rain: discrete short streaks */
-.feature .feature-rain{inset:-120px -60px!important;opacity:.18!important;background-image:linear-gradient(108deg,transparent 0 44%,rgba(200,246,255,.85) 45% 54%,transparent 55% 100%)!important;background-size:54px 82px!important;background-repeat:repeat!important;animation:featureRainFall .95s linear infinite!important;transform:none!important}
-@keyframes featureRainFall{from{background-position:0 0}to{background-position:0 82px}}
+to{background-position:0 82px}}
