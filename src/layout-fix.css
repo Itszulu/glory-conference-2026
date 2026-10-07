@@ -33,11 +33,7 @@ body>div>main:has(> .hero) > .feature{
     linear-gradient(180deg,rgba(2,25,55,.50) 0%,rgba(2,29,61,.72) 44%,rgba(2,20,45,.96) 100%),
     radial-gradient(circle at 24% 28%,#0b7399 0,#06456f 28%,#032a55 52%,#021a36 82%)!important;
 }
-body>div>main:has(> .hero) > .feature:before{
-  content:''!important;position:absolute!important;inset:0!important;pointer-events:none!important;opacity:.46!important;
-  background:repeating-linear-gradient(104deg,transparent 0,transparent 31px,rgba(151,231,255,.16) 32px,transparent 34px,transparent 68px)!important;
-  transform:skewX(-7deg) scale(1.12)!important;
-}
+body>div>main:has(> .hero) > .feature:before{content:none!important}
 body>div>main:has(> .hero) > .feature > *{position:relative!important;z-index:2!important}
 body>div>main:has(> .hero) > .feature .eyebrow{
   margin:0 0 8px!important;color:#d9f6ff!important;font-size:clamp(18px,1.8vw,27px)!important;letter-spacing:.08em!important;font-weight:600!important;
@@ -73,3 +69,6 @@ body>div>main:has(> .hero) > .feature:after{
   body>div>main:has(> .hero) > .site-footer{grid-template-columns:1fr!important;grid-template-areas:'theme' 'nav' 'meta' 'social' 'copy'!important;gap:18px!important;padding:30px 22px 18px!important}
   body>div>main:has(> .hero) > .site-footer .footer-theme{width:min(230px,62vw)!important}
 }
+
+/* Let the actual shared .rain element provide this section's rain. */
+body>div>main:has(> .hero) > .feature > .feature-rain{position:absolute!important;z-index:1!important;inset:-120px -50px!important;opacity:.13!important;background-image:repeating-linear-gradient(108deg,transparent 0,transparent 34px,#c8f6ff 35px,transparent 36px,transparent 66px)!important;background-size:96px 96px!important;animation:rain 1.25s linear infinite!important;pointer-events:none!important}
