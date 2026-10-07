@@ -196,3 +196,23 @@ body>div>main > .site-footer.footer-clean small{
     letter-spacing:.035em!important
   }
 }
+
+/* Footer responsive contract: one row on desktop, compact centered rows only on phones. */
+@media (min-width:769px){
+  body>div>main > .site-footer.footer-clean .footer-nav{
+    width:100%!important;max-width:1180px!important;
+    display:flex!important;flex-wrap:nowrap!important;
+    justify-content:center!important;align-items:center!important;
+    gap:clamp(16px,2vw,32px)!important;white-space:nowrap!important
+  }
+}
+@media (max-width:768px){
+  body>div>main > .site-footer.footer-clean .footer-nav{
+    width:min(100%,520px)!important;display:flex!important;flex-wrap:wrap!important;
+    justify-content:center!important;align-items:center!important;
+    gap:11px 18px!important;white-space:normal!important
+  }
+  body>div>main > .site-footer.footer-clean .footer-nav a{
+    flex:0 0 auto!important;font-size:9px!important
+  }
+}
