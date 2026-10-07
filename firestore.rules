@@ -1,13 +1,26 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function signedIn() { return request.auth != null; }
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /admins/{uid} {
+      allow read: if isAdmin() && request.auth.uid == uid;
+      allow write: if false;
+    }
 
     match /registrations/{id} {
       allow create: if request.resource.data.registrationId == id
                     && request.resource.data.fullName is string
                     && request.resource.data.phone is string;
-      allow read, update, delete: if signedIn();
+      allow read, update, delete: if isAdmin();
     }
 
     match /merchOrders/{id} {
@@ -15,12 +28,12 @@ service cloud.firestore {
                     && request.resource.data.customerName is string
                     && request.resource.data.phone is string
                     && request.resource.data.total is number;
-      allow read, update, delete: if signedIn();
+      allow read, update, delete: if isAdmin();
     }
 
     match /products/{id} {
       allow read: if true;
-      allow create, update, delete: if signedIn();
+      allow create, update, delete: if isAdmin();
     }
   }
 }
