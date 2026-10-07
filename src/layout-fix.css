@@ -145,3 +145,36 @@ body>div>main:has(> .hero) > .feature > .feature-rain{position:absolute!importan
   body>div>main > .site-footer .footer-social{justify-content:center!important}
   body>div>main > .site-footer small{width:100%!important;text-align:center!important}
 }
+
+/* Clean closing footer: navigation first, no duplicate theme artwork */
+body>div>main > .site-footer.footer-clean{
+  min-height:0!important;
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important;
+  text-align:center!important;gap:20px!important;
+  padding:48px max(6vw,28px) 24px!important;
+  background:#021a36!important
+}
+body>div>main > .site-footer.footer-clean .footer-nav{
+  width:min(900px,100%)!important;display:flex!important;flex-wrap:wrap!important;
+  justify-content:center!important;align-items:center!important;gap:12px 24px!important;
+  margin:0 auto!important
+}
+body>div>main > .site-footer.footer-clean .footer-meta{
+  width:100%!important;display:flex!important;flex-wrap:wrap!important;
+  justify-content:center!important;align-items:center!important;gap:8px 22px!important;
+  margin:2px auto 0!important;text-align:center!important
+}
+body>div>main > .site-footer.footer-clean .footer-social{
+  width:100%!important;display:flex!important;justify-content:center!important;
+  align-items:center!important;gap:10px!important;margin:0 auto!important
+}
+body>div>main > .site-footer.footer-clean small{
+  width:min(900px,100%)!important;text-align:center!important;margin:0 auto!important;
+  padding-top:16px!important;border-top:1px solid rgba(140,233,255,.12)!important
+}
+@media(max-width:600px){
+  body>div>main > .site-footer.footer-clean{padding:36px 20px 20px!important;gap:18px!important}
+  body>div>main > .site-footer.footer-clean .footer-nav{gap:11px 17px!important}
+  body>div>main > .site-footer.footer-clean .footer-meta{flex-direction:column!important;gap:6px!important}
+}
