@@ -178,3 +178,6 @@ body>div>main > .site-footer.footer-clean small{
   body>div>main > .site-footer.footer-clean .footer-nav{gap:11px 17px!important}
   body>div>main > .site-footer.footer-clean .footer-meta{flex-direction:column!important;gap:6px!important}
 }
+
+/* Remove the second large theme-art treatment before the footer. */
+.gallery-finale .gallery-finale-mark{margin:0!important;font-size:10px!important;font-weight:900!important;letter-spacing:.24em!important;color:#8ce9ff!important;text-align:center!important}
