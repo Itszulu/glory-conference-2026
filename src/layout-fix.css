@@ -181,3 +181,18 @@ body>div>main > .site-footer.footer-clean small{
 
 /* Remove the second large theme-art treatment before the footer. */
 .gallery-finale .gallery-finale-mark{margin:0!important;font-size:10px!important;font-weight:900!important;letter-spacing:.24em!important;color:#8ce9ff!important;text-align:center!important}
+
+/* Desktop footer navigation stays on one deliberate line. */
+@media (min-width:901px){
+  body>div>main > .site-footer.footer-clean .footer-nav{
+    width:100%!important;max-width:1120px!important;
+    display:flex!important;flex-wrap:nowrap!important;
+    justify-content:center!important;align-items:center!important;
+    gap:clamp(14px,1.65vw,28px)!important;
+    white-space:nowrap!important
+  }
+  body>div>main > .site-footer.footer-clean .footer-nav a{
+    flex:0 0 auto!important;font-size:clamp(8px,.72vw,11px)!important;
+    letter-spacing:.035em!important
+  }
+}
