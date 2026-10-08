@@ -1,1 +1,24 @@
 .register-page{padding:0!important}.registration-form{width:100%;text-align:left}.registration-form .reg-intro{max-width:700px;margin-bottom:34px;color:#48616f;line-height:1.7}.registration-form .required{color:#1682a5}.registration-form select{appearance:auto}
+
+/* Match the official volunteer form visual system without changing registration logic. */
+.register-page.page-light{background:radial-gradient(circle at 78% 35%,#0b769b 0%,#052c55 36%,#021a36 78%)!important;color:#fff!important;padding:clamp(50px,7vw,105px) clamp(18px,6vw,90px)!important;text-align:left!important}
+.register-page .registration-form{width:min(100%,980px);margin:0 auto;background:transparent!important;color:#fff!important}
+.register-page .registration-form>.eyebrow,.register-page .registration-form .eyebrow{color:#9be9ff!important}
+.register-page .registration-form h2{font-size:clamp(2.8rem,7vw,6.8rem)!important;line-height:.9!important;letter-spacing:-.065em!important;color:#fff!important;max-width:850px;margin:16px 0 28px!important;overflow-wrap:normal}
+.register-page .registration-form .reg-intro{color:#c1d8e9!important;line-height:1.8!important;max-width:650px}
+.register-page .registration-form .required{color:#9be9ff!important}
+.register-page .reg-grid{background:transparent!important;border:0!important;box-shadow:none!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:22px!important;text-align:left!important}
+.register-page .reg-grid label{display:block!important;min-width:0;color:#9be9ff!important;font-size:11px!important;font-weight:800!important;letter-spacing:.11em!important}
+.register-page .reg-grid label.full{grid-column:1/-1!important}
+.register-page .reg-grid input,.register-page .reg-grid select,.register-page .reg-grid textarea{display:block!important;width:100%!important;max-width:100%!important;min-height:52px!important;margin-top:10px!important;padding:14px 16px!important;background:rgba(255,255,255,.075)!important;border:1px solid rgba(195,226,255,.28)!important;border-radius:12px!important;color:#fff!important;font-size:15px!important;letter-spacing:normal!important;box-shadow:none!important;outline:none}
+.register-page .reg-grid input:focus,.register-page .reg-grid select:focus,.register-page .reg-grid textarea:focus{border-color:#9be9ff!important;box-shadow:0 0 0 3px #9be9ff25!important}
+.register-page .reg-grid select option{color:#08284b;background:#fff}
+.register-page .reg-grid input::placeholder{color:#b3c5d7}
+.register-page .reg-grid .merch-options{display:flex!important;flex-wrap:wrap!important;gap:10px!important;margin-top:12px}
+.register-page .reg-grid .merch-options button{background:#ffffff12!important;border:1px solid #ffffff55!important;color:#fff!important;border-radius:9px!important;padding:12px 18px!important}
+.register-page .reg-grid .merch-options button.selected{background:#e9faff!important;color:#052a52!important;border-color:#e9faff!important}
+.register-page .reg-grid button[type=submit]{background:#e9faff!important;color:#052a52!important;border:0!important;border-radius:30px!important;min-height:55px!important;font-weight:900!important;letter-spacing:.1em!important;cursor:pointer}
+.register-page .registration-success{background:#0b2a4b!important;border:1px solid #7299c055!important;color:#fff!important;border-radius:20px!important;padding:clamp(24px,5vw,55px)!important}
+.register-page .registration-success p{color:#d0e2f2!important}
+.register-page .registration-success strong{overflow-wrap:anywhere;color:#9be9ff}
+@media(max-width:700px){.register-page.page-light{padding:54px 22px!important}.register-page .reg-grid{grid-template-columns:1fr!important;gap:20px!important}.register-page .reg-grid label,.register-page .reg-grid label.full{grid-column:1!important}.register-page .registration-form h2{font-size:clamp(2.55rem,12vw,4.8rem)!important}.register-page .reg-grid input,.register-page .reg-grid select{font-size:16px!important}}
