@@ -696,3 +696,71 @@ body #root main > footer.unified-footer small{
  .hero-content:before{font-size:clamp(39px,5.7vw,70px)!important}
  .hero-theme{width:min(650px,79vw)!important;max-height:33svh!important}
 }
+
+/* Large portrait tablets: make the whole homepage hero grow with usable space.
+   iPad Mini (768px) intentionally retains its established layout. */
+@media (min-width:850px) and (max-width:1199px) and (orientation:portrait){
+ body>div>main:has(> .hero) > .hero{
+  min-height:100svh!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:1100px!important;
+  padding:clamp(145px,13svh,200px) clamp(28px,4vw,54px) 65px!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content:before{
+  font-size:clamp(49px,5.7vw,72px)!important;
+  line-height:1.06!important;
+  letter-spacing:-.012em!important;
+  word-spacing:.1em!important;
+  max-width:980px!important;
+  margin:0 auto 20px!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-theme{
+  width:min(82vw,800px)!important;
+  max-width:100%!important;
+  max-height:38svh!important;
+  height:auto!important;
+  margin:14px auto 20px!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content .eyebrow{
+  font-size:clamp(13px,1.3vw,17px)!important;
+  letter-spacing:.14em!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content .scripture{
+  font-size:clamp(17px,1.7vw,21px)!important;
+  max-width:760px!important;
+  line-height:1.65!important;
+  margin:15px auto 12px!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content .scripture b{
+  font-size:clamp(13px,1.2vw,16px)!important;
+  letter-spacing:.12em!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content .date{
+  font-size:clamp(15px,1.45vw,19px)!important;
+  letter-spacing:.1em!important;
+  margin:12px auto!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content .actions{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:wrap!important;
+  gap:16px!important;
+  margin-top:24px!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content .actions .button{
+  font-size:clamp(13px,1.2vw,16px)!important;
+  min-height:52px!important;
+  padding:14px 24px!important;
+ }
+ body>div>main:has(> .hero) > .hero:after{
+  font-size:clamp(13px,1.2vw,16px)!important;
+  padding:16px 25px!important;
+  width:min(650px,calc(100% - 100px))!important;
+ }
+}
