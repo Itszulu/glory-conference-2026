@@ -376,3 +376,64 @@ html,body,#root{width:100%;max-width:100%;min-width:0}
     padding-bottom:clamp(65px,8svh,95px)!important;
   }
 }
+
+/* Single branded footer across every route. Overrides legacy home-only and
+   short-display rules, with the same visual structure on every page. */
+body #root main > footer.site-footer.unified-footer{
+  position:relative!important;inset:auto!important;
+  display:grid!important;box-sizing:border-box!important;
+  width:100%!important;max-width:100%!important;min-height:0!important;
+  grid-template-columns:minmax(130px,.75fr) minmax(0,2fr) minmax(170px,1fr)!important;
+  grid-template-areas:"theme nav meta" "copy copy copy"!important;
+  gap:22px 28px!important;
+  align-items:center!important;justify-items:stretch!important;
+  padding:46px clamp(24px,5vw,76px) 24px!important;
+  background:#01152d!important;color:#fff!important;
+  text-align:left!important;
+}
+body #root main > footer.unified-footer .footer-theme{
+  grid-area:theme!important;display:block!important;
+  width:min(210px,100%)!important;height:auto!important;max-height:110px!important;
+  object-fit:contain!important;object-position:center!important;
+  margin:0 auto!important;justify-self:center!important;
+}
+body #root main > footer.unified-footer .footer-nav{
+  grid-area:nav!important;display:flex!important;flex-wrap:wrap!important;
+  width:100%!important;max-width:100%!important;gap:12px 20px!important;
+  justify-content:center!important;align-items:center!important;
+  margin:0 auto!important;white-space:normal!important;text-align:center!important;
+}
+body #root main > footer.unified-footer .footer-nav a{
+  font-size:9px!important;letter-spacing:.07em!important;white-space:nowrap!important;
+}
+body #root main > footer.unified-footer .footer-meta{
+  grid-area:meta!important;display:flex!important;flex-direction:column!important;
+  align-items:flex-end!important;gap:8px!important;text-align:right!important;
+  width:100%!important;margin:0!important;
+}
+body #root main > footer.unified-footer small{
+  grid-area:copy!important;display:block!important;width:100%!important;
+  margin:0!important;padding-top:18px!important;
+  border-top:1px solid #ffffff20!important;text-align:center!important;
+}
+@media(max-width:900px){
+  body #root main > footer.site-footer.unified-footer{
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-areas:"theme" "nav" "meta" "copy"!important;
+    gap:22px!important;padding:48px 22px 28px!important;
+    justify-items:center!important;text-align:center!important;
+  }
+  body #root main > footer.unified-footer .footer-theme{
+    width:min(230px,65vw)!important;max-width:100%!important;
+    margin:0 auto!important;justify-self:center!important;
+  }
+  body #root main > footer.unified-footer .footer-nav{
+    max-width:560px!important;justify-content:center!important;
+    flex-wrap:wrap!important;gap:14px 18px!important;
+  }
+  body #root main > footer.unified-footer .footer-meta{
+    align-items:center!important;justify-content:center!important;
+    text-align:center!important;margin:0 auto!important;
+  }
+  body #root main > footer.unified-footer small{text-align:center!important}
+}
