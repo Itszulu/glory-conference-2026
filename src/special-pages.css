@@ -77,3 +77,10 @@
  .sp-page .sp-info{grid-template-columns:1fr}
  .sp-page .sp-info article{min-height:0}
 }
+
+/* Contrast correction: section eyebrow labels on the light welcome background. */
+.sp-page .sp-intro .sp-eyebrow{
+ color:#075278;
+ font-weight:800;
+ letter-spacing:.18em;
+}
