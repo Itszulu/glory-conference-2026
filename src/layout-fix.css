@@ -647,3 +647,52 @@ body #root main > footer.unified-footer small{
  .hero-theme{max-height:23vh!important}
  .hero-content:before{font-size:clamp(36px,5vw,55px)!important}
 }
+
+/* Fluid legibility pass: scale readable text upward on tablets and large tablets.
+   Does not change page routing, content, branding or desktop navigation. */
+@media (min-width:601px) and (max-width:1399px){
+ body{font-size:clamp(16px,1.55vw,19px)}
+ .hero-content:before{
+  font-size:clamp(38px,5.5vw,72px)!important;
+  line-height:1.08!important;
+  letter-spacing:-.018em!important;
+  word-spacing:.08em!important;
+  text-wrap:balance;
+ }
+ .hero-content .scripture{
+  font-size:clamp(15px,1.5vw,19px)!important;
+  line-height:1.65!important;
+  max-width:650px!important;
+ }
+ .hero-content .date{
+  font-size:clamp(13px,1.25vw,17px)!important;
+  line-height:1.5!important;
+  letter-spacing:.09em!important;
+ }
+ .hero-content .eyebrow{font-size:clamp(11px,1vw,14px)!important}
+ .hero-content .actions .button,
+ .hero-content .actions a{
+  font-size:clamp(12px,1.05vw,15px)!important;
+  min-height:44px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  line-height:1.3!important;
+  padding:12px 20px!important;
+  box-sizing:border-box!important;
+ }
+ .hero:after{
+  font-size:clamp(11px,1vw,14px)!important;
+  letter-spacing:.09em!important;
+  word-spacing:.6em!important;
+ }
+ .page-hero .eyebrow,.page-light .eyebrow,.page-dark .eyebrow,
+ .section-dark .eyebrow{font-size:clamp(11px,1vw,14px)}
+ .page-copy p,.page-light p,.page-dark p,.section-dark p{
+  line-height:1.7;
+ }
+}
+@media (min-width:601px) and (max-width:1199px){
+ .hero-content:before{font-size:clamp(39px,5.7vw,70px)!important}
+ .hero-theme{width:min(650px,79vw)!important;max-height:33svh!important}
+}
