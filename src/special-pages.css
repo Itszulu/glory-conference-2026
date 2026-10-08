@@ -12,3 +12,27 @@
  .sp-page>.page-hero.sp-native-hero h1{font-size:clamp(39px,11vw,62px)}
  .sp-page>.page-hero.sp-native-hero .sp-hero-copy{font-size:14px}
 }
+
+/* Tablet layout: keep the welcome copy legible and avoid cramped columns. */
+@media (min-width:601px) and (max-width:1199px){
+ .sp-page .sp-intro{
+  grid-template-columns:minmax(0,1fr);
+  gap:28px;
+  padding:76px clamp(30px,6vw,72px) 86px;
+ }
+ .sp-page .sp-intro h2{
+  font-size:clamp(42px,6.4vw,72px);
+  line-height:1.02;
+  letter-spacing:-.055em;
+  max-width:780px;
+  margin:16px 0 0;
+ }
+ .sp-page .sp-intro h2 br{display:none}
+ .sp-page .sp-intro>div:last-child{
+  max-width:720px;
+  font-size:clamp(16px,1.7vw,19px);
+  line-height:1.75;
+ }
+ .sp-page .sp-intro>div:last-child p{margin:0 0 18px}
+ .sp-page>.page-hero.sp-native-hero .sp-hero-copy{font-size:clamp(13px,1.5vw,16px);letter-spacing:.06em}
+}
