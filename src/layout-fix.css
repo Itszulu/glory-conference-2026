@@ -268,3 +268,30 @@ body>div>main{width:100%;max-width:100vw;overflow-x:clip}
   .nav-links{max-width:100vw!important}
   .menu-backdrop{max-width:100vw!important}
 }
+
+/* Cross-page mobile layout: contain oversized editorial headlines within phone widths. */
+html,body,#root{width:100%;max-width:100%;min-width:0}
+@media(max-width:800px){
+  #root>main,#root>main>section{max-width:100%;min-width:0;box-sizing:border-box}
+  .merch-hero,.testimony-hero,.page-hero,.sp-hero{width:100%;max-width:100%;min-width:0;overflow:hidden}
+  .merch-hero{padding-left:clamp(18px,5vw,28px)!important;padding-right:clamp(18px,5vw,28px)!important}
+  .merch-hero h1{
+    font-size:clamp(35px,10.2vw,72px)!important;
+    line-height:.92!important;letter-spacing:-.065em!important;
+    max-width:100%!important;overflow-wrap:anywhere!important;
+  }
+  .merch-hero h1 span{display:block;max-width:100%}
+  .merch-hero>p:last-of-type{font-size:clamp(13px,3.5vw,16px);max-width:100%}
+  .sp-hero h1,.sp-native-hero h1{font-size:clamp(38px,10vw,82px)!important;line-height:.94!important;overflow-wrap:anywhere!important;max-width:100%}
+  .sp-intro h2,.sp-interest h2{font-size:clamp(34px,9vw,66px)!important;line-height:.98!important;overflow-wrap:anywhere}
+  .testimony-hero h1{font-size:clamp(35px,9.5vw,70px)!important;line-height:.98!important;overflow-wrap:anywhere}
+  .page-hero h1{font-size:clamp(36px,10vw,76px)!important;line-height:.95!important;overflow-wrap:anywhere}
+  .about-host-copy h1,.about-vision h2,.about-expect h2,.merch-store-head h2,.merch-note h2,.share-testimony h2{max-width:100%;overflow-wrap:anywhere}
+  .sp-intro,.sp-interest,.sp-info,.merch-store-head,.merch-note,.testimony-library-head,.testimony-empty,.share-testimony{min-width:0}
+  .sp-intro>*,.sp-interest>*,.sp-form>*,.merch-store-head>*,.merch-note>*{min-width:0;max-width:100%}
+}
+@media(max-width:380px){
+  .merch-hero h1{font-size:clamp(32px,9.7vw,40px)!important}
+  .sp-hero h1,.sp-native-hero h1{font-size:clamp(34px,9vw,44px)!important}
+  .merch-hero{padding-top:125px!important}
+}
