@@ -475,3 +475,19 @@ body #root main > footer.unified-footer small{
 @media(max-width:1199px){
   .nav{max-width:calc(100% - 28px)!important}
 }
+
+/* Final two-mode navigation: mobile or complete desktop, never a tablet hybrid.
+   At compact widths hide the standalone Register button and show it in menu. */
+@media(max-width:1199px){
+  .nav .nav-cta{display:none!important}
+  .nav .menu-button{display:flex!important;margin-left:auto!important;order:3!important}
+  .nav .nav-links:not(.open){display:none!important;visibility:hidden!important;pointer-events:none!important}
+  .nav .nav-links.open{display:flex!important;visibility:visible!important}
+}
+@media(min-width:1200px){
+  .nav .menu-button{display:none!important}
+  .nav .nav-links{display:flex!important;visibility:visible!important;position:static!important;transform:none!important;pointer-events:auto!important}
+  .nav .nav-cta{display:inline-flex!important;white-space:nowrap!important}
+  .nav .mobile-menu-head,.nav .mobile-register,.nav .mobile-menu-note{display:none!important}
+  .nav .menu-backdrop{display:none!important}
+}
