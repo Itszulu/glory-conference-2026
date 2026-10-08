@@ -20,9 +20,9 @@ const defaultProducts=[
 const merchFolders={tshirt:'tshirts',hoodie:'hoodies',sweatshirt:'sweatshirts',cap:'caps'}
 const defaultMerchMedia={
   tshirt:{white:'/assets/merch/tshirts/white.mp4','navy-blue':'/assets/merch/tshirts/navy.mp4'},
-  hoodie:{white:'/assets/merch/hoodies/white.png','navy-blue':'/assets/merch/hoodies/navy.png'},
-  sweatshirt:{white:'/assets/merch/sweatshirts/white.png'},
-  cap:{white:'/assets/merch/caps/white.png'}
+  hoodie:{white:'/assets/merch/hoodies/white.webp','navy-blue':'/assets/merch/hoodies/navy.webp'},
+  sweatshirt:{white:'/assets/merch/sweatshirts/white.webp'},
+  cap:{white:'/assets/merch/caps/white.webp'}
 }
 const merchColourKey=colour=>colour.toLowerCase().replace(/\s+/g,'-')
 const merchMediaPath=(p,colour)=>{const key=merchColourKey(colour);return p.mediaByColour?.[key]||defaultMerchMedia[p.id]?.[key]||''}
