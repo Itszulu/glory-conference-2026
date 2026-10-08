@@ -764,3 +764,48 @@ body #root main > footer.unified-footer small{
   width:min(650px,calc(100% - 100px))!important;
  }
 }
+
+/* Large portrait tablet legibility: visibly bigger than the iPad Mini. */
+@media (min-width:850px) and (max-width:1199px) and (orientation:portrait){
+ body>div>main:has(> .hero) > .hero .hero-content{
+  padding:clamp(140px,11svh,185px) 32px 55px!important;
+  max-width:1120px!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content:before{
+  width:100%!important;
+  max-width:1000px!important;
+  font-size:clamp(67px,7.8vw,92px)!important;
+  line-height:1.02!important;
+  letter-spacing:-.018em!important;
+  margin-bottom:16px!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-theme{
+  width:min(94vw,950px)!important;
+  max-width:100%!important;
+  max-height:43svh!important;
+  margin:8px auto 16px!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content .eyebrow{
+  font-size:clamp(15px,1.6vw,19px)!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content .scripture{
+  font-size:clamp(20px,2.05vw,25px)!important;
+  max-width:850px!important;
+  line-height:1.55!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content .scripture b{
+  font-size:clamp(15px,1.5vw,19px)!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content .date{
+  font-size:clamp(18px,1.8vw,22px)!important;
+ }
+ body>div>main:has(> .hero) > .hero .hero-content .actions .button{
+  font-size:clamp(15px,1.5vw,19px)!important;
+  min-height:58px!important;
+  padding:15px 28px!important;
+ }
+ body>div>main:has(> .hero) > .hero:after{
+  font-size:clamp(15px,1.5vw,18px)!important;
+  padding:18px 25px!important;
+ }
+}
