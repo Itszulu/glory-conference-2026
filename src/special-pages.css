@@ -84,3 +84,11 @@
  font-weight:800;
  letter-spacing:.18em;
 }
+
+/* Keep words visually separate in welcome headings at all viewport sizes. */
+.sp-page .sp-intro h2{
+ letter-spacing:-.025em;
+ word-spacing:.12em;
+ line-height:1.08;
+ text-wrap:balance;
+}
