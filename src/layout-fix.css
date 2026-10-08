@@ -325,3 +325,23 @@ html,body,#root{width:100%;max-width:100%;min-width:0}
   .cart-backdrop.open{display:block!important}
   body.menu-open,body.cart-open{overflow:hidden!important}
 }
+
+/* Fluid tablet / smart-display layouts: no stale desktop-sized columns. */
+@media(min-width:769px) and (max-width:1100px){
+  .about-intro,.about-vision,.about-expect-head,.testimony-library-head,
+  .testimony-empty,.share-testimony,.giving-heading,.giving-close,
+  .merch-store-head,.merch-note,.sp-intro,.sp-interest{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:clamp(20px,3vw,44px)!important;
+  }
+  .about-intro>*,.about-vision>*,.testimony-library-head>*,
+  .giving-heading>*,.merch-store-head>*,.sp-intro>*,.sp-interest>*{min-width:0}
+  .merch-hero h1,.giving-hero h1{font-size:clamp(55px,8vw,95px)!important}
+  .sp-hero h1,.page-hero h1{font-size:clamp(58px,8vw,110px)!important}
+  .giving-heading h2,.giving-close h2,.merch-store-head h2{font-size:clamp(45px,6vw,80px)!important}
+  .bank-row{grid-template-columns:minmax(130px,.65fr) minmax(0,1fr)}
+  .bank-row strong{overflow-wrap:anywhere}
+}
+@media(max-width:900px){
+  .nav-links:not(.open){display:none!important;visibility:hidden!important}
+}
