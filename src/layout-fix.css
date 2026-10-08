@@ -491,3 +491,27 @@ body #root main > footer.unified-footer small{
   .nav .mobile-menu-head,.nav .mobile-register,.nav .mobile-menu-note{display:none!important}
   .nav .menu-backdrop{display:none!important}
 }
+
+/* Accessible, unmistakably visible hamburger control on all mobile widths.
+   The icon uses explicit stroke colors, not inherited color from the header. */
+@media(max-width:1199px){
+  header.nav .menu-button{
+    display:flex!important;visibility:visible!important;opacity:1!important;
+    position:relative!important;z-index:103!important;
+    flex:0 0 44px!important;width:44px!important;height:44px!important;
+    min-width:44px!important;min-height:44px!important;
+    margin-left:auto!important;padding:9px!important;
+    flex-direction:column!important;justify-content:center!important;
+    align-items:center!important;gap:6px!important;
+    color:#fff!important;background:rgba(255,255,255,.08)!important;
+    border:1px solid rgba(255,255,255,.28)!important;border-radius:12px!important;
+    cursor:pointer!important;box-sizing:border-box!important;
+  }
+  header.nav .menu-button span{
+    display:block!important;visibility:visible!important;opacity:1!important;
+    flex:0 0 2px!important;width:22px!important;height:2px!important;
+    margin:0!important;border:0!important;border-radius:3px!important;
+    background:#fff!important;box-shadow:0 0 1px rgba(255,255,255,.4)!important;
+  }
+  header.nav .menu-button[aria-expanded="true"]{visibility:hidden!important}
+}
