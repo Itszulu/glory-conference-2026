@@ -13,7 +13,7 @@
  .sp-page>.nav .brand{width:145px;height:40px}
  .sp-page>.nav .nav-cta{display:none!important}
  .sp-page>.nav .menu-button{display:block!important;width:40px;height:40px;cursor:pointer}
- .sp-page>.nav .menu-button span{display:block;background:#fff;height:2px;margin:7px 0}
+ .sp-page>.nav .menu-button span{display:block!important;flex:0 0 2px!important;width:22px!important;min-width:22px!important;height:2px!important;background:#fff!important;margin:0!important;border-radius:2px!important}
  .sp-page>.nav .nav-links{display:none;position:absolute;top:72px;left:0;right:0;margin:0;padding:24px;background:#f7fbff;color:#05244a;border-radius:18px;flex-direction:column;align-items:stretch;gap:18px;box-shadow:0 18px 45px #00142d66}
  .sp-page>.nav .nav-links.open{display:flex}
  .sp-page>.nav .nav-links a{font-size:13px}
