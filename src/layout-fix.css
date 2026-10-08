@@ -628,3 +628,22 @@ body #root main > footer.unified-footer small{
 @media(prefers-reduced-motion:reduce){
   header.nav nav.nav-links{transition:none!important}
 }
+
+
+/* Tablet hero: preserve the compact phone composition instead of desktop gaps. */
+@media(min-width:761px) and (max-width:1199px){
+ body>div>main:has(> .hero) > .hero{min-height:100svh!important;display:flex!important;align-items:center!important;justify-content:center!important}
+ .hero:after{top:clamp(100px,12vh,132px)!important;min-width:0!important;width:min(620px,calc(100% - 72px))!important;padding:14px 20px!important;font-size:11px!important;word-spacing:1.1em!important}
+ .hero-content{width:100%!important;max-width:800px!important;padding:clamp(170px,20vh,225px) 32px 60px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important}
+ .hero-content:before{font-size:clamp(39px,5.7vw,68px)!important;line-height:.92!important;max-width:740px!important;margin:0 auto 16px!important}
+ .hero-content .eyebrow{margin:6px 0 10px!important}
+ .hero-theme{width:min(540px,73vw)!important;max-height:27vh!important;margin:4px auto 10px!important}
+ .hero-content .scripture{margin:10px auto 8px!important;max-width:570px!important;line-height:1.6!important}
+ .hero-content .date{margin:8px 0!important}
+ .hero-content .actions{margin-top:17px!important;gap:12px!important}
+}
+@media(min-width:761px) and (max-width:1199px) and (max-height:750px){
+ .hero-content{padding-top:160px!important;padding-bottom:30px!important}
+ .hero-theme{max-height:23vh!important}
+ .hero-content:before{font-size:clamp(36px,5vw,55px)!important}
+}
