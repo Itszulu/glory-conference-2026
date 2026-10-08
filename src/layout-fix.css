@@ -345,3 +345,34 @@ html,body,#root{width:100%;max-width:100%;min-width:0}
 @media(max-width:900px){
   .nav-links:not(.open){display:none!important;visibility:hidden!important}
 }
+
+/* Shared inner-page hero rhythm. The homepage retains its separate cinematic hero. */
+:where(.page-hero,.sp-hero,.giving-hero,.merch-hero,.testimony-hero){
+  box-sizing:border-box;
+  min-width:0;
+}
+@media(max-width:768px){
+  :where(.page-hero,.sp-hero,.giving-hero,.merch-hero,.testimony-hero){
+    min-height:0!important;
+    height:auto!important;
+    padding-top:clamp(116px,15svh,148px)!important;
+    padding-bottom:clamp(52px,8svh,78px)!important;
+    justify-content:flex-start!important;
+  }
+  :where(.page-hero,.sp-hero,.giving-hero,.merch-hero,.testimony-hero) h1{
+    margin-top:14px!important;
+    margin-bottom:20px!important;
+    max-width:100%!important;
+  }
+  :where(.page-hero,.sp-hero,.giving-hero,.merch-hero,.testimony-hero) > p,
+  :where(.page-hero,.sp-hero,.giving-hero,.merch-hero,.testimony-hero) > span{
+    max-width:100%!important;
+  }
+}
+@media(min-width:769px) and (max-width:1100px){
+  :where(.page-hero,.sp-hero,.giving-hero,.merch-hero,.testimony-hero){
+    min-height:clamp(420px,56svh,650px)!important;
+    padding-top:clamp(130px,14svh,180px)!important;
+    padding-bottom:clamp(65px,8svh,95px)!important;
+  }
+}
