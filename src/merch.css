@@ -31,3 +31,9 @@ body.cart-open .menu-backdrop{display:none!important}
   body.cart-open .merch-cart{z-index:1000!important}
   body.cart-open .cart-backdrop{z-index:999!important}
 }
+
+/* Desktop: use the full product-card width for portrait merchandise media. */
+@media (min-width:901px){
+  .merch-card .merch-media{width:100%;aspect-ratio:4/5;max-height:none}
+  .merch-card .merch-product-media{width:100%;height:100%;object-fit:cover;display:block}
+}
