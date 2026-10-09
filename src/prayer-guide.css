@@ -37,3 +37,8 @@
  .prayer-day-tile strong{font-size:1.05rem}
  .prayer-day-tile small,.prayer-day-tile span{font-size:.52rem}
 }
+
+/* Match the cyan atmospheric hero glow used across conference pages. */
+.prayer-page .prayer-hero{
+  background:radial-gradient(ellipse at 76% 38%,#0b7699 0%,#06476f 28%,#102c56 52%,#07172c 85%);
+}
