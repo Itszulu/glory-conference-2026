@@ -25,8 +25,8 @@ body>div>main:has(> .hero) > .site-footer small{padding-top:12px!important}
 /* Conference experience — one immersive composition, not a detached empty box. */
 body>div>main:has(> .hero) > .feature{
   position:relative!important;
-  min-height:980px!important;
-  padding:110px max(7vw,28px) 105px!important;
+  min-height:0!important;
+  padding:90px max(7vw,28px) 95px!important;
   overflow:hidden!important;
   text-align:center!important;
   background:
@@ -56,7 +56,7 @@ body>div>main:has(> .hero) > .feature:after{content:none!important;display:none!
 @media(max-width:760px){
   .hero:after{min-width:0!important;width:calc(100% - 44px)!important;top:104px!important;padding:14px 16px!important;font-size:10px!important;letter-spacing:.08em!important;word-spacing:.9em!important;white-space:nowrap!important}
   .hero-content{padding-top:205px!important}
-  body>div>main:has(> .hero) > .feature{min-height:760px!important;padding:85px 20px!important}
+  body>div>main:has(> .hero) > .feature{min-height:0!important;padding:54px 20px 68px!important}
   body>div>main:has(> .hero) > .feature:after{width:100%!important;margin-top:45px!important}
   body>div>main:has(> .hero) > .site-footer{grid-template-columns:1fr!important;grid-template-areas:'theme' 'nav' 'meta' 'social' 'copy'!important;gap:18px!important;padding:30px 22px 18px!important}
   body>div>main:has(> .hero) > .site-footer .footer-theme{width:min(230px,62vw)!important}
