@@ -26,7 +26,7 @@ const defaultMerchMedia={
   cap:{white:'/assets/merch/caps/white.webp'}
 }
 const merchColourKey=colour=>colour.toLowerCase().replace(/\s+/g,'-')
-const merchMediaPath=(p,colour)=>{const key=merchColourKey(colour);return p.mediaByColour?.[key]||defaultMerchMedia[p.id]?.[key]||''}
+const merchMediaPath=(p,colour)=>{const key=merchColourKey(colour);if(p.id==='hoodie'&&key==='white')return '/assets/merch/hoodies/white-sharp.mp4';return p.mediaByColour?.[key]||defaultMerchMedia[p.id]?.[key]||''}
 const mergeMerchProduct=(p,saved)=>{const merged={...p,...saved};if(p.id==='hoodie'&&!merged.colours.includes('White'))merged.colours=['White',...merged.colours];return merged}
 const makeId=prefix=>prefix+Array.from(crypto.getRandomValues(new Uint8Array(5)),n=>(n%36).toString(36).toUpperCase()).join('')
 function ThemeArtwork({className=''}){const[failed,setFailed]=useState(false);if(failed)return <h1 className={'theme-fallback '+className}><span>THE</span> OUTPOURING</h1>;return <img loading="lazy" decoding="async" className={'theme-art '+className} src={THEME_ART} alt="The Outpouring" onError={()=>setFailed(true)}/>}
