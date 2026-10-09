@@ -51,15 +51,7 @@ body>div>main:has(> .hero) > .feature .home-links a:first-child{
   display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:220px!important;min-height:58px!important;padding:0 30px!important;border:2px solid #fff!important;border-radius:40px!important;color:transparent!important;font-size:0!important;background:rgba(2,27,58,.28)!important;backdrop-filter:blur(8px)!important;
 }
 body>div>main:has(> .hero) > .feature .home-links a:first-child:after{content:'REGISTER NOW →'!important;color:#fff!important;font-size:12px!important;font-weight:900!important;letter-spacing:.12em!important}
-body>div>main:has(> .hero) > .feature:after{
-  content:'GLORY CONFERENCE HIGHLIGHT FILM · OFFICIAL VIDEO COMING SOON'!important;
-  position:relative!important;z-index:2!important;display:grid!important;place-items:center!important;
-  width:min(900px,88vw)!important;aspect-ratio:16/9!important;margin:58px auto 0!important;
-  border:1px solid rgba(255,255,255,.30)!important;border-radius:18px!important;
-  background:linear-gradient(145deg,rgba(2,19,43,.74),rgba(3,52,86,.70))!important;
-  box-shadow:0 35px 80px rgba(0,12,31,.35)!important;color:#bcefff!important;
-  font-size:10px!important;font-weight:900!important;letter-spacing:.17em!important;
-}
+body>div>main:has(> .hero) > .feature:after{content:none!important;display:none!important}
 
 @media(max-width:760px){
   .hero:after{min-width:0!important;width:calc(100% - 44px)!important;top:104px!important;padding:14px 16px!important;font-size:10px!important;letter-spacing:.08em!important;word-spacing:.9em!important;white-space:nowrap!important}
