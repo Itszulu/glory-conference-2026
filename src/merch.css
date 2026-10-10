@@ -37,3 +37,13 @@ body.cart-open .menu-backdrop{display:none!important}
   .merch-card .merch-media{width:100%;aspect-ratio:4/5;max-height:none}
   .merch-card .merch-product-media{width:100%;height:100%;object-fit:cover;display:block}
 }
+
+
+/* Equal-height merchandise cards and aligned purchase controls on desktop. */
+@media(min-width:651px){
+  .merch-grid{align-items:stretch}
+  .merch-card{display:flex;flex-direction:column;min-width:0;height:100%}
+  .merch-card .merch-info{display:flex;flex:1;flex-direction:column}
+  .merch-card .merch-info h3{min-height:2.25em;line-height:1.12}
+  .merch-card .merch-buy-row{margin-top:auto;padding-top:28px}
+}
