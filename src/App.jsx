@@ -22,7 +22,7 @@ const merchFolders={tshirt:'tshirts',hoodie:'hoodies',sweatshirt:'sweatshirts',c
 const defaultMerchMedia={
   tshirt:{white:'/assets/merch/tshirts/white.mp4','navy-blue':'/assets/merch/tshirts/navy.mp4'},
   hoodie:{white:'/assets/merch/hoodies/white-sharp.mp4','navy-blue':'/assets/merch/hoodies/navy.webp'},
-  sweatshirt:{white:'/assets/merch/sweatshirts/white.webp'},
+  sweatshirt:{white:'/assets/merch/sweatshirts/white.webp','navy-blue':'/assets/merch/sweatshirts/navy.mp4'},
   cap:{white:'/assets/merch/caps/white.png','navy-blue':'/assets/merch/caps/navy.png',black:'/assets/merch/caps/black.png'}
 }
 const merchColourKey=colour=>colour.toLowerCase().replace(/\s+/g,'-')
