@@ -42,3 +42,6 @@
 .prayer-page .prayer-hero{
   background:radial-gradient(ellipse at 76% 38%,#0b7699 0%,#06476f 28%,#102c56 52%,#07172c 85%);
 }
+
+/* Keep prayer-guide hero accent identical to the cyan used on the merch hero. */
+.prayer-page .prayer-hero h1 span{color:#8ce9ff!important;background:none!important;background-image:none!important;-webkit-text-fill-color:#8ce9ff!important}
