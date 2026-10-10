@@ -5,3 +5,37 @@
 footer{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:30px max(6vw,24px);font-size:9px;letter-spacing:.15em;background:#02152d;color:#8da6b9}.footer-logo{display:block;width:170px;height:50px;object-fit:contain;object-position:left center}@media(max-width:800px){.nav{height:62px;padding:0 17px}.brand{width:145px;height:40px}.nav-cta{display:none}.menu-button{display:block}.nav-links{display:none;position:absolute;top:70px;left:0;right:0;padding:28px;background:#f7fbff;color:#05244a;border-radius:24px;flex-direction:column;gap:22px}.nav-links.open{display:flex}.hero-content{padding-top:115px}.hero-theme{width:94vw;max-height:34vh}.actions{flex-direction:column;align-items:center}.home-give{display:block}.home-give .button{margin-top:35px}.home-ministers-heading{display:block}.home-ministers-heading>a{display:inline-block;margin-top:20px}.split,.page-copy,.schedule-page,.minister-grid,.prayer-grid{grid-template-columns:1fr}.split,.schedule-page{gap:45px}.page-hero{min-height:55vh;padding-top:150px}.page-light,.page-dark,.section-dark{padding-top:90px;padding-bottom:90px}.minister-card{min-height:520px}.session strong{font-size:20px}.about-intro{grid-template-columns:1fr;padding:125px 22px 0}.about-host-copy{padding-bottom:25px}.about-host-copy h1{font-size:clamp(58px,18vw,92px)}.about-host-photo{height:58vh}.about-vertical{display:none}.about-vision{grid-template-columns:1fr;gap:55px;padding:95px 24px}.about-expect{padding:95px 24px}.about-expect-head{grid-template-columns:1fr;margin-bottom:55px}.about-expect-head .eyebrow{grid-column:auto}.expect-card,.expect-card>div{grid-template-columns:1fr}.expect-card>div{grid-column:auto;gap:8px}.expect-card{grid-template-columns:45px 1fr;align-items:start}.about-2026{display:block;padding:90px 24px}.about-theme{width:100%;margin-left:0}.about-2026 .button{margin-top:35px}.testimony-hero{min-height:75svh;padding:145px 24px 75px}.testimony-library{padding:90px 24px}.testimony-library-head,.testimony-empty,.share-testimony{grid-template-columns:1fr}.testimony-library-head{gap:30px}.testimony-empty{gap:35px}.testimony-photo-placeholder{height:430px}.testimony-format{padding:90px 24px}.testimony-format-grid{grid-template-columns:1fr}.share-testimony{padding:90px 24px;gap:45px}footer{flex-direction:column;align-items:flex-start}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rain{animation:none}.portrait img{transition:none}}
 
 .countdown{padding:72px max(7vw,28px);text-align:center;background:#031d3d;border-top:1px solid #ffffff18;border-bottom:1px solid #ffffff18}.countdown .eyebrow{color:#9be9ff;margin:0 0 32px}.countdown-grid{width:min(900px,100%);margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.countdown-grid>div{padding:28px 12px;border:1px solid #ffffff20;border-radius:22px;background:#ffffff08}.countdown-grid strong{display:block;font-size:clamp(42px,6vw,82px);line-height:1;font-weight:800;letter-spacing:-.05em}.countdown-grid span{display:block;margin-top:12px;font-size:9px;font-weight:800;letter-spacing:.2em;color:#9fb8c6}.countdown-date{margin:28px 0 0;font-size:10px;font-weight:800;letter-spacing:.18em;color:#9fb8c6}@media(max-width:600px){.countdown{padding:55px 18px}.countdown-grid{gap:7px}.countdown-grid>div{padding:22px 5px;border-radius:16px}.countdown-grid strong{font-size:clamp(32px,11vw,52px)}.countdown-grid span{font-size:7px;letter-spacing:.12em}.countdown-date{font-size:8px;line-height:1.7}}
+
+
+/* Homepage MINISTERING: retain established artwork, colours and typography;
+   refine proportions and spacing at each viewport. */
+.home-ministers{padding:clamp(76px,8vw,118px) max(6vw,24px) clamp(82px,8vw,120px)}
+.home-ministers-heading{gap:24px;margin-bottom:clamp(28px,3.5vw,48px)}
+.home-ministers-heading h2{font-size:clamp(48px,6.8vw,96px);overflow-wrap:break-word}
+.home-ministers .minister-grid{gap:clamp(12px,1.5vw,22px)}
+.home-ministers .minister-card{min-height:0;aspect-ratio:0.72}
+.home-ministers .minister-info{padding:clamp(20px,2.4vw,32px)}
+.home-ministers .minister-info h3{font-size:clamp(20px,2vw,27px);line-height:1.15;overflow-wrap:break-word}
+.home-ministers-heading>a{white-space:nowrap;text-underline-offset:5px}
+@media(min-width:801px) and (max-width:1100px){
+  .home-ministers .minister-card{aspect-ratio:.68}
+  .home-ministers .minister-info{padding:20px}
+}
+@media(max-width:800px){
+  .home-ministers{padding:78px 22px 86px}
+  .home-ministers-heading{margin-bottom:30px}
+  .home-ministers-heading h2{font-size:clamp(48px,11vw,76px)}
+  .home-ministers-heading>a{margin-top:18px}
+  .home-ministers .minister-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .home-ministers .minister-card{aspect-ratio:.72}
+  .home-ministers .minister-info{padding:18px}
+  .home-ministers .minister-info h3{font-size:clamp(17px,2.8vw,23px)}
+}
+@media(max-width:540px){
+  .home-ministers{padding:65px 18px 72px}
+  .home-ministers-heading{margin-bottom:26px}
+  .home-ministers .minister-grid{grid-template-columns:1fr;gap:18px}
+  .home-ministers .minister-card{width:100%;max-width:460px;margin-inline:auto;aspect-ratio:4/5}
+  .home-ministers .minister-info{padding:24px}
+  .home-ministers .minister-info h3{font-size:24px}
+}
