@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import PrayerGuidePage from './PrayerGuidePage.jsx'
-import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, onSnapshot, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { auth, db, storage } from './firebase'
 import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
@@ -68,7 +68,7 @@ function Merch(){
   const[cartOpen,setCartOpen]=useState(false),[checkoutOpen,setCheckoutOpen]=useState(false),[submitting,setSubmitting]=useState(false);
   const[customer,setCustomer]=useState({name:'',phone:'',email:'',city:''});
   const[paymentReady,setPaymentReady]=useState(false),[paymentCopied,setPaymentCopied]=useState(false),[checkoutError,setCheckoutError]=useState(''),[savedOrder,setSavedOrder]=useState(null);
-  useEffect(()=>{getDocs(collection(db,'products')).then(q=>{if(q.empty)return;const saved=q.docs.map(d=>({id:d.id,...d.data()}));const merged=defaultProducts.map(p=>mergeMerchProduct(p,saved.find(x=>x.id===p.id)));setProducts(merged);setChoices(Object.fromEntries(merged.map(p=>[p.id,{size:p.sizes[0],colour:p.colours[0],qty:1}])))}).catch(()=>{})},[]);
+  useEffect(()=>onSnapshot(collection(db,'products'),q=>{const saved=q.docs.map(d=>({id:d.id,...d.data()}));const merged=defaultProducts.map(p=>mergeMerchProduct(p,saved.find(x=>x.id===p.id)));setProducts(merged);setChoices(previous=>Object.fromEntries(merged.map(p=>{const old=previous[p.id];return [p.id,{size:p.sizes.includes(old?.size)?old.size:p.sizes[0],colour:p.colours.includes(old?.colour)?old.colour:p.colours[0],qty:old?.qty||1}]})))},()=>{}),[]);
   useEffect(()=>{localStorage.setItem('gc26-merch-cart',JSON.stringify(cart))},[cart]);
   useEffect(()=>{document.body.classList.toggle('cart-open',cartOpen);if(cartOpen)dispatchEvent(new Event('gc-close-nav'));return()=>document.body.classList.remove('cart-open')},[cartOpen]);
   const money=n=>'₦'+Number(n).toLocaleString('en-NG');
@@ -130,7 +130,7 @@ function Admin(){
     }catch(e){setStatus('Upload failed. Check Storage setup and admin permissions. '+(e?.code||''))}
     finally{setUploading('');setUploadProgress(0)}
   };
-  const save=async p=>{setStatus('Saving '+p.name+'...');try{await setDoc(doc(db,'products',p.id),{name:p.name,price:Number(p.price),colours:p.colours,sizes:p.sizes,media:p.media||'',mediaByColour:p.mediaByColour||{},available:p.available!==false,updatedAt:serverTimestamp()},{merge:true});setStatus(p.name+' saved. The storefront will use the new details.')}catch{setStatus('Could not save. Check admin authentication and Firestore rules.')}};
+  const save=async p=>{if(!Number.isFinite(Number(p.price))||Number(p.price)<0){setStatus('Enter a valid non-negative price.');return}setStatus('Saving '+p.name+'...');try{await setDoc(doc(db,'products',p.id),{name:p.name,price:Number(p.price),colours:p.colours,sizes:p.sizes,media:p.media||'',mediaByColour:p.mediaByColour||{},available:p.available!==false,updatedAt:serverTimestamp()},{merge:true});setStatus(p.name+' saved. The storefront will use the new details.')}catch{setStatus('Could not save. Check admin authentication and Firestore rules.')}};
   if(user===undefined)return <Shell eyebrow="GLORY CONFERENCE 2026" title="ADMIN"><section className="page-light"><div className="admin-page">Loading...</div></section></Shell>;
   if(!user)return <Shell eyebrow="GLORY CONFERENCE 2026" title="ADMIN"><section className="page-light"><div className="admin-page"><form className="admin-login admin-form" onSubmit={signIn}><h2>ADMIN<br/>SIGN IN</h2><label className="full">EMAIL<input type="email" required value={login.email} onChange={e=>setLogin({...login,email:e.target.value})}/></label><label className="full">PASSWORD<input type="password" required value={login.password} onChange={e=>setLogin({...login,password:e.target.value})}/></label><button className="form-action">SIGN IN →</button>{status&&<p className="form-message">{status}</p>}</form></div></section></Shell>;
   if(!authorized)return <Shell eyebrow="GLORY CONFERENCE 2026" title="ADMIN"><section className="page-light"><div className="admin-page"><h2>{loadingData?'VERIFYING ACCESS':'ACCESS RESTRICTED'}</h2><p>{status||'Only approved administrators can access this dashboard.'}</p><button className="button primary" onClick={()=>signOut(auth)}>SIGN OUT</button></div></section></Shell>;
