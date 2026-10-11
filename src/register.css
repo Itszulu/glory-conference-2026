@@ -22,3 +22,11 @@
 .register-page .registration-success p{color:#d0e2f2!important}
 .register-page .registration-success strong{overflow-wrap:anywhere;color:#9be9ff}
 @media(max-width:700px){.register-page.page-light{padding:54px 22px!important}.register-page .reg-grid{grid-template-columns:1fr!important;gap:20px!important}.register-page .reg-grid label,.register-page .reg-grid label.full{grid-column:1!important}.register-page .registration-form h2{font-size:clamp(2.55rem,12vw,4.8rem)!important}.register-page .reg-grid input,.register-page .reg-grid select{font-size:16px!important}}
+
+/* Registration form feedback and confirmation controls */
+.register-page .registration-error{grid-column:1/-1;margin:0;padding:14px 18px;border:1px solid #ffb9b9;background:#5e1928;color:#fff;border-radius:10px;font-size:14px;line-height:1.5}
+.register-page .reg-grid .form-action{grid-column:1/-1;min-height:56px;cursor:pointer}
+.register-page .reg-grid .form-action:disabled{opacity:.65;cursor:wait}
+.register-page .registration-success-actions{display:flex;flex-wrap:wrap;gap:12px;margin:20px 0}
+.register-page .registration-success-actions button{border:1px solid #9be9ff;background:#e9faff;color:#052a52;padding:12px 18px;border-radius:9px;font-weight:800;cursor:pointer}
+@media print{.register-page .registration-success-actions{display:none}}
