@@ -47,3 +47,8 @@ body.cart-open .menu-backdrop{display:none!important}
   .merch-card .merch-info h3{min-height:2.25em;line-height:1.12}
   .merch-card .merch-buy-row{margin-top:auto;padding-top:28px}
 }
+
+.checkout-error{padding:14px;border:1px solid #c55;border-radius:10px;margin:12px 0;color:#b33}
+.checkout-order-saved{padding:18px 0;line-height:1.7}
+.checkout-order-saved .form-action{display:block;text-align:center;text-decoration:none;margin:18px 0;padding:14px}
+.checkout-close-order{padding:12px;border:1px solid currentColor;border-radius:9px;background:transparent;cursor:pointer}
