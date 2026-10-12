@@ -7,3 +7,21 @@
 .admin-media-url-editor input{width:100%;min-width:0;padding:12px;border:1px solid #bdcbd2;border-radius:6px}
 .admin-media-url-editor button{padding:12px 16px;background:#062448;color:white;border:0;border-radius:6px;font-weight:800;cursor:pointer}
 .admin-media-url-editor button:last-child{background:#e5edf2;color:#062448}
+
+/* Admin-only presentation refinements; public page styles remain unchanged. */
+.admin-page{max-width:1280px;padding:42px clamp(18px,4vw,56px) 80px}
+.admin-page .admin-login{width:min(100%,460px);max-width:460px;margin:0 auto;padding:clamp(26px,4vw,44px);border:1px solid #dbe5ed;border-radius:18px;box-shadow:0 18px 60px rgba(6,36,72,.08)}
+.admin-page .admin-login h2{font-size:clamp(28px,3.4vw,42px);line-height:1.08;letter-spacing:-.035em;margin:0 0 30px}
+.admin-page .admin-login.admin-form{display:grid;grid-template-columns:minmax(0,1fr);gap:17px}
+.admin-page .admin-login label{grid-column:1;min-width:0;font-size:11px}
+.admin-page .admin-login input{min-width:0;border-radius:8px;padding:13px 14px;font-size:15px;font-weight:500;letter-spacing:normal}
+.admin-page .admin-login input:focus{outline:2px solid #1478b3;outline-offset:2px}
+.admin-page .admin-login .form-action{grid-column:1;border-radius:8px;padding:16px}
+.admin-page .admin-login .admin-reset-button{grid-column:1;justify-self:center;text-decoration:none;padding:5px 10px}
+.admin-page .admin-login .form-message{grid-column:1;margin:0;border-radius:8px;font-size:13px;line-height:1.5}
+.admin-page .admin-toolbar h2{font-size:clamp(30px,4vw,52px);line-height:1.06}
+.admin-page .admin-tabs{gap:8px;border-bottom:1px solid #dce4e8;padding-bottom:14px}
+.admin-page .admin-tabs button{border-radius:8px;padding:12px 15px}
+.admin-page .admin-product{background:#fff;border-radius:12px;padding:clamp(18px,2.5vw,30px)}
+.admin-page .admin-record{border-radius:12px}
+@media(max-width:700px){.admin-page{padding:28px 16px 64px}.admin-page .admin-login{padding:24px 20px}.admin-page .admin-tabs button{flex:1 1 auto;font-size:12px}}
