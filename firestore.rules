@@ -50,11 +50,25 @@ service cloud.firestore {
     }
 
     match /merchOrders/{id} {
-      allow create: if request.resource.data.orderId == id
+      allow create: if request.resource.data.keys().hasAll(['orderId','customerName','phone','total','status','createdAt'])
+                    && request.resource.data.orderId == id
+                    && id.matches('GC26-M-[A-Za-z0-9-]{4,64}')
                     && request.resource.data.customerName is string
+                    && request.resource.data.customerName.size() >= 2
+                    && request.resource.data.customerName.size() <= 120
                     && request.resource.data.phone is string
-                    && request.resource.data.total is number;
+                    && request.resource.data.phone.size() >= 10
+                    && request.resource.data.phone.size() <= 30
+                    && request.resource.data.total is number
+                    && request.resource.data.total > 0
+                    && request.resource.data.status == 'Payment reported - awaiting verification'
+                    && request.resource.data.createdAt == request.time;
       allow read, update, delete: if isAdmin();
+    }
+
+    match /siteSettings/{id} {
+      allow read: if id == 'media';
+      allow create, update, delete: if id == 'media' && isAdmin();
     }
 
     match /products/{id} {
