@@ -14,17 +14,19 @@ const THEME_ART='/assets/branding/the-outpouring.webp'
 const LOGO='/assets/branding/glory-conference-logo.webp'
 const ministers=[['HOST','PROPHET JOSHUA OHANYE','/assets/ministers/joshua-ohanye.webp'],['MUSIC MINISTER','CHINYERE UDOMA','/assets/ministers/chinyere-udoma.webp'],['MUSIC MINISTER','REV. CHRIS OKOLO','/assets/ministers/chris-okolo.webp']]
 const nav=[['ABOUT','/about'],['PRAYER GUIDE','/prayer-guide'],['SCHEDULE','/schedule'],['TESTIMONIES','/testimonies'],['MERCH','/merch'],['GIVE','/giving']]
+const shirtColours=['White','Navy Blue','Black']
+const shirtSizes=['S','M','L','XL','XXL']
 const defaultProducts=[
-  {id:'tshirt',name:'THE OUTPOURING T-SHIRT',price:8500,colours:['White','Black','Navy Blue'],sizes:['S','M','L','XL','XXL'],media:'',available:true},
-  {id:'sweatshirt',name:'THE OUTPOURING SWEATSHIRT',price:14500,colours:['White','Black','Navy Blue'],sizes:['S','M','L','XL','XXL'],media:''},
-  {id:'hoodie',name:'THE OUTPOURING HOODIE',price:14500,colours:['White','Navy Blue','Black'],sizes:['S','M','L','XL','XXL'],media:''},
+  {id:'not-empty-overflowing',name:'NOT EMPTY. OVERFLOWING.',price:8500,colours:shirtColours,sizes:shirtSizes,media:'',available:true},
+  {id:'made-for-his-glory',name:'I WAS MADE FOR HIS GLORY',price:8500,colours:shirtColours,sizes:shirtSizes,media:'',available:true},
+  {id:'the-outpouring',name:'THE OUTPOURING',price:8500,colours:shirtColours,sizes:shirtSizes,media:'',available:true},
+  {id:'no-more-shame',name:'NO MORE SHAME. NOW GLORY.',price:8500,colours:shirtColours,sizes:shirtSizes,media:'',available:true},
+  {id:'drought-is-over',name:'THE DROUGHT IS OVER',price:8500,colours:shirtColours,sizes:shirtSizes,media:'',available:true},
   {id:'cap',name:'GLORY CONFERENCE FACE CAP',price:4500,colours:['White','Navy Blue','Black'],sizes:['ONE SIZE'],media:''}
 ]
-const merchFolders={tshirt:'tshirts',hoodie:'hoodies',sweatshirt:'sweatshirts',cap:'caps'}
+const merchFolders={...Object.fromEntries(defaultProducts.filter(p=>p.id!=='cap').map(p=>[p.id,'tshirts'])),cap:'caps'}
 const defaultMerchMedia={
-  tshirt:{white:'/assets/merch/tshirts/white.mp4','navy-blue':'/assets/merch/tshirts/navy.mp4',black:'/assets/merch/tshirts/black-preview.svg'},
-  hoodie:{white:'/assets/merch/hoodies/white-sharp.mp4','navy-blue':'/assets/merch/hoodies/navy.webp',black:'/assets/merch/hoodies/black-preview.svg'},
-  sweatshirt:{white:'/assets/merch/sweatshirts/white.webp','navy-blue':'/assets/merch/sweatshirts/navy.mp4',black:'/assets/merch/sweatshirts/black-preview.svg'},
+  ...Object.fromEntries(defaultProducts.filter(p=>p.id!=='cap').map(p=>[p.id,{white:'/assets/merch/collections/'+p.id+'-white.svg','navy-blue':'/assets/merch/collections/'+p.id+'-navy.svg',black:'/assets/merch/collections/'+p.id+'-black.svg'}])),
   cap:{white:'/assets/merch/caps/white.png','navy-blue':'/assets/merch/caps/navy.png',black:'/assets/merch/caps/black.png'}
 }
 const merchColourKey=colour=>colour.toLowerCase().replace(/\s+/g,'-')
@@ -65,7 +67,7 @@ return <main className="testimonies-page"><Header/><section className="testimony
 function Merch(){
   const[products,setProducts]=useState(defaultProducts);
   const[choices,setChoices]=useState(()=>Object.fromEntries(defaultProducts.map(p=>[p.id,{size:p.sizes[0],colour:p.colours[0],qty:1}])));
-  const[cart,setCart]=useState(()=>{try{return JSON.parse(localStorage.getItem('gc26-merch-cart')||'[]')}catch{return[]}});
+  const[cart,setCart]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('gc26-merch-cart')||'[]');return Array.isArray(saved)?saved.filter(x=>defaultProducts.some(p=>p.id===x.id)):[]}catch{return[]}});
   const[cartOpen,setCartOpen]=useState(false),[checkoutOpen,setCheckoutOpen]=useState(false),[submitting,setSubmitting]=useState(false);
   const[customer,setCustomer]=useState({name:'',phone:'',email:'',city:''});
   const[paymentReady,setPaymentReady]=useState(false),[paymentCopied,setPaymentCopied]=useState(false),[checkoutError,setCheckoutError]=useState(''),[savedOrder,setSavedOrder]=useState(null);
