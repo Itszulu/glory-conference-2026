@@ -12,8 +12,8 @@ service cloud.firestore {
     }
 
     match /admins/{uid} {
-      allow read: if isAdmin() && request.auth.uid == uid;
-      allow write: if false;
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list, create, update, delete: if false;
     }
 
     match /registrations/{id} {
