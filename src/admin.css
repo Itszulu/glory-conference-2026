@@ -33,3 +33,33 @@
 .admin-design-media label{display:grid;gap:7px;min-width:0}
 .admin-design-media label a{color:#086a91;font-size:12px}
 .admin-design-media input[type=file]{width:100%;min-width:0}
+
+/* Conference management console — refined visual system */
+.admin-page{max-width:1440px!important;padding:clamp(32px,5vw,72px) clamp(18px,5vw,72px) 100px!important}
+.admin-page .admin-login{max-width:510px!important;width:100%;border-radius:24px!important;border:1px solid #cbdce8!important;box-shadow:0 30px 85px rgba(5,34,66,.12)!important;padding:clamp(28px,4vw,52px)!important}
+.admin-login-kicker{font-size:11px;font-weight:900;letter-spacing:.18em;color:#087eaa;margin:0 0 20px}
+.admin-page .admin-login h2{font-size:clamp(44px,5vw,68px)!important;line-height:.94!important;letter-spacing:-.065em!important;margin:0 0 18px!important}
+.admin-login-subtitle{font-size:14px;line-height:1.75;color:#5b7083;margin:0 0 14px}
+.admin-page .admin-login label{font-size:11px!important;letter-spacing:.1em!important;color:#1a4260!important}
+.admin-page .admin-login input{min-height:52px;border:1px solid #b8ccda!important;border-radius:10px!important;background:#f9fcfe!important}
+.admin-page .admin-login .form-action{min-height:55px;border-radius:10px!important;background:#073a61!important}
+.admin-page .admin-login .form-action:hover{background:#075780!important}
+.admin-toolbar{padding:24px 28px;border:1px solid #dbe6ed;border-radius:20px;background:linear-gradient(120deg,#fff,#f1f8fb);margin-bottom:20px!important}
+.admin-toolbar h2{letter-spacing:-.055em!important;margin-bottom:10px!important}
+.admin-dashboard-subtitle{font-size:14px;line-height:1.7;color:#547082;max-width:550px}
+.admin-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 25px}
+.admin-metrics>div{background:#fff;border:1px solid #d9e7ef;border-radius:15px;padding:22px 20px;display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 35px rgba(6,36,72,.04)}
+.admin-metrics span{font-size:10px;font-weight:900;letter-spacing:.12em;color:#52768d}
+.admin-metrics strong{font-size:clamp(28px,3vw,43px);line-height:1;color:#06365a}
+.admin-page .admin-tabs{background:#eaf2f7;border:1px solid #d7e5ee;padding:8px!important;border-radius:14px;gap:6px!important}
+.admin-page .admin-tabs button{border:0!important;background:transparent!important;border-radius:9px!important;color:#31546d!important;transition:background .2s,color .2s}
+.admin-page .admin-tabs button.active{background:#06365a!important;color:white!important;box-shadow:0 4px 14px rgba(6,54,90,.15)}
+.admin-page .admin-product{border:1px solid #dbe7ee!important;border-radius:18px!important;box-shadow:0 12px 35px rgba(6,36,72,.04)}
+.admin-page .admin-product h3{font-size:clamp(19px,2vw,27px);letter-spacing:-.03em}
+.admin-page .admin-form input:not([type=checkbox]):not([type=file]),.admin-page .admin-media-url-editor input{border-radius:9px;min-height:47px;background:#fbfdff}
+.admin-page .admin-form input:focus-visible,.admin-page button:focus-visible{outline:3px solid #40a9cf;outline-offset:2px}
+.admin-page .admin-media-preview{max-width:340px;max-height:320px;overflow:hidden;border-radius:12px;background:#e8f0f4;margin:14px 0}
+.admin-page .admin-media-preview img,.admin-page .admin-media-preview video{width:100%;max-height:320px;object-fit:contain;display:block}
+.admin-page .form-message{border-left:4px solid #0d83aa;border-radius:9px;line-height:1.6}
+@media(max-width:900px){.admin-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.admin-page .admin-toolbar{padding:20px}.admin-metrics{gap:9px}.admin-metrics>div{padding:16px 13px}.admin-page .admin-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.admin-page .admin-tabs button{padding:12px 8px!important;font-size:11px!important}.admin-page .admin-product{padding:18px!important}}
