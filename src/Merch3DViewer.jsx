@@ -14,7 +14,23 @@ export default function Merch3DViewer({ modelSrc, colour = 'Black', fallback, al
   useEffect(() => {
     if (!modelSrc) return
     let active = true
-    import('@google/model-viewer').then(() => { if (active) setReady(true) }).catch(() => { if (active) setError(true) })
+    (async () => {
+      if (!customElements.get('model-viewer')) {
+        await new Promise((resolve, reject) => {
+          const existing = document.querySelector('script[data-gc-model-viewer]')
+          if (existing) { existing.addEventListener('load', resolve, { once: true }); existing.addEventListener('error', reject, { once: true }); return }
+          const script = document.createElement('script')
+          script.type = 'module'
+          script.dataset.gcModelViewer = 'true'
+          script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/4.1.0/model-viewer.min.js'
+          script.onload = resolve
+          script.onerror = reject
+          document.head.appendChild(script)
+        })
+      }
+      await customElements.whenDefined('model-viewer')
+      if (active) setReady(true)
+    })().catch(() => { if (active) setError(true) })
     return () => { active = false }
   }, [modelSrc])
   useEffect(() => {
