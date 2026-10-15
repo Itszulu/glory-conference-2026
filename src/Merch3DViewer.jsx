@@ -11,6 +11,7 @@ export default function Merch3DViewer({ modelSrc, colour = 'Black', fallback, al
   const host = useRef(null)
   const [ready, setReady] = useState(false)
   const [error, setError] = useState(false)
+  useEffect(() => { setError(false) }, [modelSrc])
   useEffect(() => {
     if (!modelSrc) return
     let active = true
@@ -54,7 +55,7 @@ export default function Merch3DViewer({ modelSrc, colour = 'Black', fallback, al
   return <div className="merch-3d-viewer">
     <model-viewer ref={host} src={modelSrc} alt={alt} camera-controls touch-action="pan-y"
       auto-rotate={false} shadow-intensity="1" exposure="1" environment-image="neutral"
-      camera-orbit="0deg 75deg auto" style={{ width: '100%', height: '100%', minHeight: 340, background: 'transparent' }} />
+      camera-orbit="0deg 75deg auto" onError={() => setError(true)} style={{ width: '100%', height: '100%', minHeight: 340, background: 'transparent' }} />
     <div className="merch-3d-angles">
       {[[ 'FRONT', '0deg 75deg auto' ], [ 'SIDE', '90deg 75deg auto' ], [ 'BACK', '180deg 75deg auto' ]].map(([label, orbit]) =>
         <button key={label} type="button" onClick={() => { if (host.current) host.current.cameraOrbit = orbit }}>{label}</button>
