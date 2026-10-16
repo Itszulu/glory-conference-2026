@@ -13,6 +13,16 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
   const [available, setAvailable] = useState(null)
   const [loaded, setLoaded] = useState(false)
   useEffect(() => {
+    const handleScroll = event => {
+      if (event.origin !== window.location.origin || event.source !== frame.current?.contentWindow) return
+      if (event.data?.type !== 'gc-shirt-scroll') return
+      const delta = Number(event.data.delta)
+      if (Number.isFinite(delta) && Math.abs(delta) < 200) window.scrollBy(0, delta)
+    }
+    window.addEventListener('message', handleScroll)
+    return () => window.removeEventListener('message', handleScroll)
+  }, [])
+  useEffect(() => {
     let active = true
     const files = [
       `/assets/merch/models/shirt-${key}.glb`,
