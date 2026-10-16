@@ -17,7 +17,7 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
     let active = true
     const files = [
       `/assets/merch/models/shirt-${key}.glb`,
-      ...(productId !== 'drought-is-over' ? [`/assets/merch/designs/outpouring-front-${key}.png`] : []),
+      `/assets/merch/designs/outpouring-front-${key}.png`,
       ...(productId === 'the-outpouring' ? [`/assets/merch/designs/outpouring-back-${key}.png`] : []),
       ...(productId === 'made-for-his-glory' && design === 'Simple Typography' ? [`/assets/merch/designs/made-for-his-glory-simple-back-${key}.png`] : []),
       ...(productId === 'made-for-his-glory' && design === 'Bold Design' ? [`/assets/merch/designs/made-for-his-glory-bold-back-${key}.png`] : []),
