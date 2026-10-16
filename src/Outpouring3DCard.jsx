@@ -22,6 +22,7 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
       ...(productId === 'made-for-his-glory' && design === 'Simple Typography' ? [`/assets/merch/designs-webp/made-for-his-glory-simple-back-${key}.webp`] : []),
       ...(productId === 'made-for-his-glory' && design === 'Bold Design' ? [`/assets/merch/designs-webp/made-for-his-glory-bold-back-${key}.webp`] : []),
       ...(productId === 'not-empty-overflowing' ? [`/assets/merch/designs-webp/not-empty-overflowing-back-${key}.webp`] : []),
+      ...(productId === 'no-more-shame' ? [`/assets/merch/designs/NO_MORE_SHAME_NOW_GLORY_BACK_${key.toUpperCase()}.png`] : []),
 
     ]
     const isValid = async url => {
