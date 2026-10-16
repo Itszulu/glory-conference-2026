@@ -69,7 +69,7 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
     className="merch-3d-iframe"
     title="Interactive 3D T-shirt viewer"
     src={`/merch-3d-preview.html?embed=1&product=${encodeURIComponent(productId)}&design=${encodeURIComponent(initialSelection.current.design)}&color=${encodeURIComponent(initialSelection.current.colour)}`}
-    loading="eager"
+    loading="lazy"
     allow="fullscreen"
   />
 }
