@@ -12,8 +12,7 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
   const initialSelection = useRef({ colour: key, design })
   const [available, setAvailable] = useState(null)
   const [loaded, setLoaded] = useState(false)
-  const [droughtArtwork, setDroughtArtwork] = useState('')
-  const [resolvedColour, setResolvedColour] = useState(key)
+  const [droughtArtwork, setDroughtArtwork] = useState({ colour: '', url: '' })
   useEffect(() => {
     let active = true
     const files = [
@@ -52,26 +51,24 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
         : Promise.resolve('')
     ]).then(([results, artwork]) => {
       if (!active) return
-      const valid = results.every(Boolean) && (productId !== 'drought-is-over' || Boolean(artwork))
-      if (valid) {
-        setDroughtArtwork(artwork)
-        setResolvedColour(key)
-      }
-      setAvailable(valid)
+      // Garment colour is independent of whether its print PNG exists.
+      if (productId === 'drought-is-over') setDroughtArtwork({ colour: key, url: artwork })
+      setAvailable(results.every(Boolean))
     })
     return () => { active = false }
   }, [key, productId, design])
   useEffect(() => {
-    if (available !== true || !loaded) return
-    frame.current?.contentWindow?.postMessage({ type: 'gc-shirt-colour', colour: resolvedColour, productId, design, backArtwork: droughtArtwork }, window.location.origin)
-  }, [resolvedColour, productId, design, droughtArtwork, available, loaded])
+    if (!loaded) return
+    const artwork = droughtArtwork.colour === key ? droughtArtwork.url : ''
+    frame.current?.contentWindow?.postMessage({ type: 'gc-shirt-colour', colour: key, productId, design, backArtwork: artwork }, window.location.origin)
+  }, [key, productId, design, droughtArtwork, loaded])
   if (available === false && productId !== 'drought-is-over') return fallback
   return <iframe
     ref={frame}
     onLoad={() => setLoaded(true)}
     className="merch-3d-iframe"
     title="Interactive 3D T-shirt viewer"
-    src={`/merch-3d-preview.html?embed=1&product=${encodeURIComponent(productId)}&design=${encodeURIComponent(initialSelection.current.design)}&color=${encodeURIComponent(initialSelection.current.colour)}&backArtwork=${encodeURIComponent(droughtArtwork)}`}
+    src={`/merch-3d-preview.html?embed=1&product=${encodeURIComponent(productId)}&design=${encodeURIComponent(initialSelection.current.design)}&color=${encodeURIComponent(initialSelection.current.colour)}`}
     loading="eager"
     allow="fullscreen"
   />
