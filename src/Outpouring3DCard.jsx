@@ -13,6 +13,7 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
   const [available, setAvailable] = useState(null)
   const [loaded, setLoaded] = useState(false)
   const [droughtArtwork, setDroughtArtwork] = useState('')
+  const [resolvedColour, setResolvedColour] = useState(key)
   useEffect(() => {
     let active = true
     const files = [
@@ -35,6 +36,8 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
       'THE_DROUGHT_IS_OVER_BACK_' + key,
       'THE_DROUGHT_IS_OVER_back_' + key,
       'THE_DROUGHT_IS_OVER_BACK_' + (key === 'navy' ? 'NAVY_BLUE' : key.toUpperCase()),
+      'THE_DROUGHT_IS_OVER_back_' + (key === 'navy' ? 'navy' : key),
+      'THE_DROUGHT_IS_OVER_BACK_' + key + '_6000x7500',
     ]
     Promise.all([
       Promise.all(files.map(isValid)),
@@ -49,21 +52,25 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
         : Promise.resolve('')
     ]).then(([results, artwork]) => {
       if (!active) return
-      setDroughtArtwork(artwork)
-      setAvailable(results.every(Boolean) && (productId !== 'drought-is-over' || Boolean(artwork)))
+      const valid = results.every(Boolean) && (productId !== 'drought-is-over' || Boolean(artwork))
+      if (valid) {
+        setDroughtArtwork(artwork)
+        setResolvedColour(key)
+      }
+      setAvailable(valid)
     })
     return () => { active = false }
   }, [key, productId, design])
   useEffect(() => {
     if (available !== true || !loaded) return
-    frame.current?.contentWindow?.postMessage({ type: 'gc-shirt-colour', colour: key, productId, design, backArtwork: droughtArtwork }, window.location.origin)
-  }, [key, productId, design, droughtArtwork, available, loaded])
-  if (available === false) return fallback
+    frame.current?.contentWindow?.postMessage({ type: 'gc-shirt-colour', colour: resolvedColour, productId, design, backArtwork: droughtArtwork }, window.location.origin)
+  }, [resolvedColour, productId, design, droughtArtwork, available, loaded])
+  if (available === false && productId !== 'drought-is-over') return fallback
   return <iframe
     ref={frame}
     onLoad={() => setLoaded(true)}
     className="merch-3d-iframe"
-    title="Interactive Outpouring T-shirt: drag to rotate; front, side and back views"
+    title="Interactive 3D T-shirt viewer"
     src={`/merch-3d-preview.html?embed=1&product=${encodeURIComponent(productId)}&design=${encodeURIComponent(initialSelection.current.design)}&color=${encodeURIComponent(initialSelection.current.colour)}&backArtwork=${encodeURIComponent(droughtArtwork)}`}
     loading="eager"
     allow="fullscreen"
