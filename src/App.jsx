@@ -114,7 +114,22 @@ function Register(){
   const change=e=>setForm(v=>({...v,[e.target.name]:e.target.value}));
   const toggleDay=day=>{setError('');setForm(v=>({...v,days:v.days.includes(day)?v.days.filter(x=>x!==day):[...v.days,day]}))};
   const submit=async e=>{e.preventDefault();if(submitting)return;setError('');if(!form.days.length){setError('Select at least one conference day to continue.');return}const clean={...form,fullName:form.fullName.trim(),phone:form.phone.trim(),email:form.email.trim(),church:form.church.trim()};if(clean.fullName.length<2||clean.phone.replace(/\D/g,'').length<10||clean.church.length<2){setError('Please enter your full name, a valid phone number and your church or ministry.');return}setSubmitting(true);const id=makeId('GC26-R-');try{await setDoc(doc(db,'registrations',id),{...clean,registrationId:id,createdAt:serverTimestamp()});setRegistrationId(id)}catch{setError('Registration could not be saved. Check your connection and try again. Your details are still in the form.')}finally{setSubmitting(false)}};
-  return <Shell eyebrow="NOVEMBER 12 — 14 · NSUKKA" title="REGISTER"><section className="page-light center register-page"><div className="registration-form">{registrationId?<div className="registration-success"><style>{`@media print {
+  return <Shell eyebrow="NOVEMBER 12 — 14 · NSUKKA" title="REGISTER"><section className="page-light center register-page"><div className="registration-form">{registrationId?<div className="registration-success"><style>{`@media screen {
+.registration-success { width: min(100%, 760px); max-width: 760px; margin: 0 auto; padding: clamp(24px, 4vw, 44px); box-sizing: border-box; text-align: center; }
+.registration-success h2 { font-size: clamp(2.1rem, 5vw, 4.2rem); line-height: 1.04; max-width: 100%; margin: 14px auto 24px; overflow-wrap: normal; }
+.registration-success > p:not(.eyebrow):not(.print-attendee) { max-width: 520px; margin: 18px auto; }
+.registration-success > strong { display: block; margin: 16px auto 22px; overflow-wrap: anywhere; }
+.registration-success-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 20px auto 24px; }
+.registration-success-actions button { flex: 0 1 auto; }
+@media (max-width: 600px) {
+.registration-success { width: calc(100% - 24px); margin: 0 auto; padding: 28px 18px; }
+.registration-success h2 { font-size: clamp(1.8rem, 8vw, 2.65rem); line-height: 1.08; margin: 12px auto 20px; }
+.registration-success > strong { margin: 14px auto 20px; }
+.registration-success-actions { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; margin: 18px auto 22px; }
+.registration-success-actions button { width: 100%; min-width: 0; box-sizing: border-box; }
+}
+}
+@media print {
 @page { size: A4 portrait; margin: 15mm; }
 html, body, #root { height: auto !important; min-height: 0 !important; background: white !important; }
 body { margin: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
