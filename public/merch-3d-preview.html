@@ -17,6 +17,30 @@ const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(32,9/16,0.01,10
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;frame.prepend(renderer.domElement);
 scene.add(new THREE.HemisphereLight(0xffffff,0x53637a,3));const light=new THREE.DirectionalLight(0xffffff,2.5);light.position.set(4,7,8);scene.add(light);
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.enablePan=false;
+// In an embedded mobile viewer, forward deliberate vertical swipes to the shop page.
+// Horizontal swipes and two-finger gestures continue using OrbitControls unchanged.
+let swipeStart=null,swipeLastY=0,swipeMode=null;
+renderer.domElement.addEventListener('touchstart',e=>{
+  if(!embedded||e.touches.length!==1){swipeStart=null;swipeMode=null;controls.enabled=true;return}
+  swipeStart={x:e.touches[0].clientX,y:e.touches[0].clientY};
+  swipeLastY=swipeStart.y;swipeMode=null;
+},{passive:true});
+renderer.domElement.addEventListener('touchmove',e=>{
+  if(!embedded||!swipeStart||e.touches.length!==1)return;
+  const x=e.touches[0].clientX,y=e.touches[0].clientY;
+  if(!swipeMode&&Math.hypot(x-swipeStart.x,y-swipeStart.y)>9){
+    swipeMode=Math.abs(y-swipeStart.y)>Math.abs(x-swipeStart.x)*1.2?'scroll':'rotate';
+    if(swipeMode==='scroll')controls.enabled=false;
+  }
+  if(swipeMode==='scroll'){
+    const delta=swipeLastY-y;
+    if(delta)parent.postMessage({type:'gc-shirt-scroll',delta},location.origin);
+  }
+  swipeLastY=y;
+},{passive:true});
+function finishSwipe(){swipeStart=null;swipeMode=null;controls.enabled=true}
+renderer.domElement.addEventListener('touchend',finishSwipe,{passive:true});
+renderer.domElement.addEventListener('touchcancel',finishSwipe,{passive:true});
 const loader=new GLTFLoader(),texLoader=new THREE.TextureLoader();let shirt=null,decal=null,frontDecal=null,modelMesh=null,bounds=null,current='',revision=0;
 function resize(){const w=frame.clientWidth,h=frame.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}new ResizeObserver(resize).observe(frame);
 function disposeShirt(){if(frontDecal){scene.remove(frontDecal);frontDecal.geometry.dispose();frontDecal.material.map?.dispose();frontDecal.material.dispose();frontDecal=null}if(decal){scene.remove(decal);decal.geometry.dispose();decal.material.dispose();decal=null}if(shirt){scene.remove(shirt);shirt=null}modelMesh=null}
