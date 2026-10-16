@@ -32,7 +32,7 @@ export default function Outpouring3DCard({ colour = 'Black', fallback }) {
   if (available === false) return fallback
   return <iframe
     ref={frame}
-    onLoad={() => setLoaded(true)
+    onLoad={() => setLoaded(true)}
     className="merch-3d-iframe"
     title="Interactive Outpouring T-shirt: drag to rotate; front, side and back views"
     src="/merch-3d-preview.html?embed=1"
