@@ -53,5 +53,5 @@ window.addEventListener('message',event=>{if(event.origin!==location.origin||eve
 document.querySelectorAll('[data-color]').forEach(b=>b.addEventListener('click',()=>loadModel(b.dataset.color)));
 document.querySelectorAll('[data-angle]').forEach(b=>b.addEventListener('click',()=>positionCamera(b.dataset.angle)));
 document.querySelectorAll('.controls input').forEach(el=>el.addEventListener('input',()=>applyPrint()));
-function tick(){requestAnimationFrame(tick);controls.update();renderer.render(scene,camera)}resize();tick();loadModel(['black','navy','white'].includes(params.get('color'))?params.get('color'):'black');
+let viewerVisible=true;const viewerObserver=new IntersectionObserver(entries=>{viewerVisible=entries[0]?.isIntersecting??true;if(viewerVisible)renderer.render(scene,camera)},{threshold:0});viewerObserver.observe(frame);function tick(){requestAnimationFrame(tick);if(!viewerVisible||document.hidden)return;controls.update();renderer.render(scene,camera)}resize();tick();loadModel(['black','navy','white'].includes(params.get('color'))?params.get('color'):'black');
 </script></body></html>
