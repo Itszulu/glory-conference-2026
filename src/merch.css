@@ -60,3 +60,6 @@ body.cart-open .menu-backdrop{display:none!important}
 .merch-3d-angles button{cursor:pointer;background:#fff;color:#05294d;border:1px solid #d0dbe3;border-radius:30px;padding:10px 15px;font-size:11px;font-weight:800;letter-spacing:.07em}
 .merch-3d-angles button:hover,.merch-3d-angles button:focus-visible{background:#05294d;color:white}
 .merch-3d-hint{position:absolute;bottom:19px;left:0;right:0;text-align:center;font-size:11px;color:#233e52;pointer-events:none}
+
+/* The approved Three.js viewer fills the existing product media slot. */
+.merch-media .merch-3d-iframe{display:block;width:100%;height:100%;border:0;background:linear-gradient(140deg,#e7eef2,#b9c9d4)}
