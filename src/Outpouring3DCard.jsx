@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const colourNames = { Black: 'black', 'Navy Blue': 'navy', White: 'white' }
 
@@ -8,7 +8,9 @@ const colourNames = { Black: 'black', 'Navy Blue': 'navy', White: 'white' }
  */
 export default function Outpouring3DCard({ colour = 'Black', fallback }) {
   const key = colourNames[colour] || 'black'
-  const [available, setAvailable] = useState(false)
+  const frame = useRef(null)
+  const [available, setAvailable] = useState(null)
+  const [loaded, setLoaded] = useState(false)
   useEffect(() => {
     let active = true
     const files = [
@@ -16,7 +18,6 @@ export default function Outpouring3DCard({ colour = 'Black', fallback }) {
       `/assets/merch/designs/outpouring-front-${key}.png`,
       `/assets/merch/designs/outpouring-back-${key}.png`,
     ]
-    setAvailable(false)
     Promise.all(files.map(async url => {
       const response = await fetch(url, { method: 'HEAD' })
       return response.ok && !response.headers.get('content-type')?.includes('text/html')
@@ -24,13 +25,18 @@ export default function Outpouring3DCard({ colour = 'Black', fallback }) {
       .catch(() => { if (active) setAvailable(false) })
     return () => { active = false }
   }, [key])
-  if (!available) return fallback
+  useEffect(() => {
+    if (available !== true || !loaded) return
+    frame.current?.contentWindow?.postMessage({ type: 'gc-shirt-colour', colour: key }, window.location.origin)
+  }, [key, available, loaded])
+  if (available === false) return fallback
   return <iframe
-    key={key}
+    ref={frame}
+    onLoad={() => setLoaded(true)
     className="merch-3d-iframe"
-    title={`Interactive ${colour} Outpouring T-shirt: drag to rotate; front, side and back views`}
-    src={`/merch-3d-preview.html?embed=1&color=${key}`}
-    loading="lazy"
+    title="Interactive Outpouring T-shirt: drag to rotate; front, side and back views"
+    src="/merch-3d-preview.html?embed=1"
+    loading="eager"
     allow="fullscreen"
   />
 }
