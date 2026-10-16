@@ -8,16 +8,16 @@
 *{box-sizing:border-box}body{margin:0;background:#f3f2ec;color:#05294d;font-family:system-ui,sans-serif}.page{max-width:700px;margin:28px auto;padding:0 16px}h1{font-size:clamp(24px,4vw,36px)}.note{line-height:1.5}.frame{position:relative;aspect-ratio:9/16;max-height:760px;width:min(100%,427.5px);margin:24px auto;background:radial-gradient(circle at 50% 32%,#e6edf2,#b9c9d4);border-radius:20px;overflow:hidden}.frame model-viewer{display:block;width:100%;height:100%;--poster-color:transparent}.angles{position:absolute;bottom:54px;left:0;right:0;display:flex;gap:7px;justify-content:center}.angles button,.swatches button{padding:9px 13px;border:1px solid #bdccd5;border-radius:22px;background:white;color:#05294d;cursor:pointer;font-weight:700}.hint{position:absolute;bottom:19px;text-align:center;width:100%;font-size:12px}.swatches{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.swatches button[aria-pressed="true"]{outline:3px solid #0a769b}.status{text-align:center;font-size:13px;min-height:22px}.error{color:#a02828}.frame img{width:100%;height:100%;object-fit:cover}a{color:#075d89}
 </style>
 </head>
-<body><main class="page"><h1>THE OUTPOURING — 3D Preview</h1><p class="note">Standalone test only. Your live merchandise page is unchanged. The prototype is not final artwork.</p>
+<body><main class="page"><h1>THE OUTPOURING — 3D Preview</h1><p class="note">Standalone quality-control preview only. Your live merchandise page is unchanged. The previous low-poly prototype has been rejected and will not be presented as finished merchandise.</p>
 <div class="frame" id="frame">
-<model-viewer id="viewer" src="/assets/merch/models/the-outpouring-prototype.glb" alt="3D prototype T-shirt" camera-controls touch-action="pan-y" shadow-intensity="1" exposure="1" environment-image="neutral" camera-orbit="0deg 75deg auto" field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 8m">
+<model-viewer id="viewer" src="/assets/merch/models/the-outpouring-premium.glb" alt="3D prototype T-shirt" camera-controls touch-action="pan-y" shadow-intensity="1" exposure="1" environment-image="neutral" camera-orbit="0deg 75deg auto" field-of-view="30deg" min-camera-orbit="auto auto 1m" max-camera-orbit="auto auto 8m">
 </model-viewer>
 <div class="angles"><button data-orbit="0deg 75deg auto">FRONT</button><button data-orbit="90deg 75deg auto">SIDE</button><button data-orbit="180deg 75deg auto">BACK</button></div>
 <div class="hint">Drag to rotate · Scroll or pinch to zoom</div>
 </div>
 <div class="swatches"><button data-colour="Black" aria-pressed="true">Black</button><button data-colour="Navy Blue" aria-pressed="false">Navy Blue</button><button data-colour="White" aria-pressed="false">White</button></div>
-<p class="status" id="status" role="status">Loading 3D prototype…</p>
-<p class="note">If the model is missing, place <code>the-outpouring-prototype.glb</code> in <code>public/assets/merch/models/</code> and refresh. <a href="/merch">Return to merchandise</a>.</p>
+<p class="status" id="status" role="status">Awaiting an approved premium GLB model…</p>
+<p class="note">If the model is missing, place <code>the-outpouring-premium.glb</code> in <code>public/assets/merch/models/</code> and refresh. <a href="/merch">Return to merchandise</a>.</p>
 </main>
 <script>
 const viewer=document.getElementById('viewer'), status=document.getElementById('status');
