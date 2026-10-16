@@ -9,6 +9,7 @@ const colourNames = { Black: 'black', 'Navy Blue': 'navy', White: 'white' }
 export default function Outpouring3DCard({ colour = 'Black', productId = 'the-outpouring', design = 'Simple Typography', fallback }) {
   const key = colourNames[colour] || 'black'
   const frame = useRef(null)
+  const initialSelection = useRef({ colour: key, design })
   const [available, setAvailable] = useState(null)
   const [loaded, setLoaded] = useState(false)
   useEffect(() => {
@@ -36,7 +37,7 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
     onLoad={() => setLoaded(true)}
     className="merch-3d-iframe"
     title="Interactive Outpouring T-shirt: drag to rotate; front, side and back views"
-    src={`/merch-3d-preview.html?embed=1&product=${encodeURIComponent(productId)}&design=${encodeURIComponent(design)}`}
+    src={`/merch-3d-preview.html?embed=1&product=${encodeURIComponent(productId)}&design=${encodeURIComponent(initialSelection.current.design)}&color=${encodeURIComponent(initialSelection.current.colour)}`}
     loading="eager"
     allow="fullscreen"
   />
