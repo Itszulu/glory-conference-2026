@@ -20,7 +20,7 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
       ...(productId === 'the-outpouring' ? [`/assets/merch/designs/outpouring-back-${key}.png`] : []),
       ...(productId === 'made-for-his-glory' && design === 'Simple Typography' ? [`/assets/merch/designs/made-for-his-glory-simple-back-${key}.png`] : []),
       ...(productId === 'made-for-his-glory' && design === 'Bold Design' ? [`/assets/merch/designs/made-for-his-glory-bold-back-${key}.png`] : []),
-      ...(productId === 'not-empty-overflowing' ? [`/assets/merch/designs/not-empty-overflowing-back-${key}-4k.png`] : []),
+      ...(productId === 'not-empty-overflowing' ? [`/assets/merch/designs/not-empty-overflowing-back-${key}.png`] : []),
     ]
     Promise.all(files.map(async url => {
       const response = await fetch(url, { method: 'HEAD' })
