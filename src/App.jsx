@@ -130,13 +130,15 @@ function Register(){
 }
 }
 @media print {
+main > .site-footer, main > footer, footer.site-footer, .unified-footer, .footer-clean { display: none !important; }
+.registration-success h2 { color: #0d244d !important; -webkit-text-fill-color: #0d244d !important; opacity: 1 !important; }
 @page { size: A4 portrait; margin: 14mm; }
 html, body, #root, main { height: auto !important; min-height: 0 !important; overflow: visible !important; background: #fff !important; }
 body { margin: 0 !important; }
 main > header, main > .site-header, main > .page-hero, main > footer, main > .site-footer, .register-page ~ * { display: none !important; }
 main > .register-page { display: block !important; }
 .register-page, .registration-form { width: 100% !important; max-width: none !important; min-height: 0 !important; height: auto !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: #fff !important; box-shadow: none !important; overflow: visible !important; }
-.registration-success { display: block !important; box-sizing: border-box !important; width: 100% !important; max-width: 165mm !important; min-height: 0 !important; height: auto !important; margin: 8mm auto 0 !important; padding: 14mm 12mm !important; border: 1px solid #cbd9e6 !important; border-top: 4px solid #1261a8 !important; border-radius: 3mm !important; background: #fff !important; color: #13233b !important; text-align: center !important; box-shadow: none !important; break-inside: avoid !important; page-break-inside: avoid !important; }
+.registration-success { display: block !important; box-sizing: border-box !important; width: 100% !important; max-width: 165mm !important; min-height: 0 !important; height: auto !important; margin: 36mm auto 0 !important; padding: 14mm 12mm !important; border: 1px solid #cbd9e6 !important; border-top: 4px solid #1261a8 !important; border-radius: 3mm !important; background: #fff !important; color: #13233b !important; text-align: center !important; box-shadow: none !important; break-inside: avoid !important; page-break-inside: avoid !important; }
 .registration-success .registration-success-actions { display: none !important; }
 .registration-success .print-confirmation-brand { display: block !important; font-size: 14pt !important; font-weight: 800 !important; letter-spacing: .08em !important; color: #0d244d !important; margin-bottom: 4mm !important; }
 .registration-success .print-confirmation-theme { display: block !important; color: #1261a8 !important; font-size: 10pt !important; letter-spacing: .12em !important; margin-bottom: 9mm !important; }
