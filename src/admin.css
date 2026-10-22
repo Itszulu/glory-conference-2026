@@ -234,3 +234,68 @@
  .admin-page .gc-order-controls label{flex-basis:100%}
  .gc-order-lines{padding:15px 20px}
 }
+
+
+/* Admin reception — structured desktop/mobile application layout */
+.admin-page .gc-reception{display:grid;gap:24px;min-width:0}
+.admin-page .gc-reception-heading{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.admin-page .gc-section-eyebrow{font-size:.7rem;letter-spacing:.16em;font-weight:900;color:#0c779e;margin:0 0 10px}
+.admin-page .gc-reception-heading h3{font-size:clamp(1.75rem,3vw,2.55rem);line-height:1.15;letter-spacing:-.04em;color:#0b304f;margin:0 0 12px}
+.admin-page .gc-reception-heading p:not(.gc-section-eyebrow){font-size:.95rem;line-height:1.65;color:#60778a;max-width:640px;margin:0}
+.admin-page .gc-outline-button{border:1px solid #bad2df;background:#fff;border-radius:10px;min-height:46px;padding:12px 18px;font-size:.75rem;letter-spacing:.06em;font-weight:850;color:#0c4569;cursor:pointer}
+.admin-page .gc-outline-button:hover{background:#eef7fb}
+.admin-page .gc-reception-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.admin-page .gc-reception-stats>div{display:grid;gap:12px;padding:23px 25px;background:#fff;border:1px solid #dce7ef;border-radius:15px;box-shadow:0 8px 26px rgba(10,50,80,.045)}
+.admin-page .gc-reception-stats span{font-size:.7rem;font-weight:850;letter-spacing:.08em;color:#647d91}
+.admin-page .gc-reception-stats strong{font-size:clamp(1.9rem,3vw,2.65rem);line-height:1;color:#0b3657}
+.admin-page .gc-reception-card{background:#fff;border:1px solid #dce7ef;border-radius:18px;box-shadow:0 10px 34px rgba(10,50,80,.055);padding:clamp(22px,3vw,36px);min-width:0}
+.admin-page .gc-reception-card-head{display:flex;align-items:flex-start;gap:15px;padding-bottom:24px;margin-bottom:24px;border-bottom:1px solid #e4ecf2}
+.admin-page .gc-step-number{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#e8f4fa;color:#0b648a;font-size:.9rem;font-weight:900}
+.admin-page .gc-reception-card-head h4{font-size:clamp(1.2rem,2vw,1.55rem);line-height:1.3;color:#113a58;margin:0 0 7px}
+.admin-page .gc-reception-card-head p{font-size:.9rem;line-height:1.6;color:#647b8f;margin:0}
+.admin-page .gc-reception-fields{display:grid;grid-template-columns:minmax(180px,.38fr) minmax(0,1fr);gap:18px;align-items:end}
+.admin-page .gc-reception-fields label,.admin-page .gc-walkin-form label{display:grid;gap:9px;min-width:0;color:#315571;font-size:.72rem;letter-spacing:.06em;font-weight:850;line-height:1.4}
+.admin-page .gc-reception-fields input,.admin-page .gc-reception-fields select,.admin-page .gc-walkin-form input,.admin-page .gc-walkin-form select{display:block;width:100%;min-width:0;min-height:52px;border:1px solid #c5d5e1;border-radius:10px;background:#f9fcfe;color:#153751;font-size:.96rem;font-weight:500;letter-spacing:normal;padding:13px 15px}
+.admin-page .gc-reception-fields input::placeholder,.admin-page .gc-walkin-form input::placeholder{color:#8b9ead}
+.admin-page .gc-reception-fields input:focus,.admin-page .gc-reception-fields select:focus,.admin-page .gc-walkin-form input:focus,.admin-page .gc-walkin-form select:focus{outline:3px solid rgba(23,133,173,.16);border-color:#1685ad}
+.admin-page .gc-reception-results{display:grid;gap:10px;margin-top:20px}
+.admin-page .gc-reception-empty{margin:0;padding:26px 20px;background:#f4f8fb;border:1px dashed #c9dbe7;border-radius:11px;color:#5c758a;font-size:.94rem;line-height:1.6;text-align:center}
+.admin-page .gc-reception-result{display:flex;align-items:center;gap:16px;min-width:0;padding:17px;background:#fbfdff;border:1px solid #e0e9f0;border-radius:12px}
+.admin-page .gc-reception-person{flex:1;min-width:0;display:grid;gap:5px}
+.admin-page .gc-reception-person strong{font-size:1rem;color:#173c59;overflow-wrap:anywhere}
+.admin-page .gc-reception-person span,.admin-page .gc-reception-person small{font-size:.82rem;color:#607b8e;overflow-wrap:anywhere}
+.admin-page .gc-checkin-button,.admin-page .gc-checkin-done{flex:none;min-height:43px;padding:11px 16px;border:0;border-radius:9px;background:#0b5575;color:#fff;font-size:.75rem;font-weight:850;cursor:pointer}
+.admin-page .gc-checkin-done{background:#e9f5ef;color:#176546;border:1px solid #b9ddc8}
+.admin-page .gc-checkin-button:disabled,.admin-page .gc-checkin-done:disabled{opacity:.55;cursor:wait}
+.admin-page .gc-walkin-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.admin-page .gc-walkin-wide,.admin-page .gc-walkin-submit{grid-column:1/-1}
+.admin-page .gc-walkin-submit{display:flex;justify-content:flex-end;padding-top:8px}
+.admin-page .gc-walkin-submit .form-action{width:auto;min-width:230px;padding:15px 24px}
+@media(max-width:900px){
+ .admin-page .gc-reception-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+ .admin-page .gc-reception-stats>div{padding:17px}
+ .admin-page .gc-reception-fields{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:640px){
+ .admin-page .gc-reception{gap:16px}
+ .admin-page .gc-reception-heading{align-items:stretch;gap:16px}
+ .admin-page .gc-reception-heading .gc-outline-button{width:100%}
+ .admin-page .gc-reception-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .admin-page .gc-reception-stats>div{padding:16px;border-radius:12px}
+ .admin-page .gc-reception-stats>div:last-child{grid-column:1/-1}
+ .admin-page .gc-reception-stats strong{font-size:1.95rem}
+ .admin-page .gc-reception-card{padding:20px 16px;border-radius:14px}
+ .admin-page .gc-reception-card-head{gap:12px;padding-bottom:18px;margin-bottom:20px}
+ .admin-page .gc-step-number{width:38px;height:38px;border-radius:9px}
+ .admin-page .gc-walkin-form{grid-template-columns:minmax(0,1fr);gap:16px}
+ .admin-page .gc-walkin-wide,.admin-page .gc-walkin-submit{grid-column:auto}
+ .admin-page .gc-walkin-submit .form-action{width:100%}
+ .admin-page .gc-reception-result{flex-wrap:wrap;padding:13px;gap:12px}
+ .admin-page .gc-reception-result .gc-record-avatar{width:40px;height:40px}
+ .admin-page .gc-reception-person{flex-basis:calc(100% - 56px)}
+ .admin-page .gc-checkin-button,.admin-page .gc-checkin-done{width:100%}
+}
+@media(max-width:370px){
+ .admin-page .gc-reception-stats{grid-template-columns:minmax(0,1fr)}
+ .admin-page .gc-reception-stats>div:last-child{grid-column:auto}
+}
