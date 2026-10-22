@@ -299,3 +299,19 @@
  .admin-page .gc-reception-stats{grid-template-columns:minmax(0,1fr)}
  .admin-page .gc-reception-stats>div:last-child{grid-column:auto}
 }
+
+/* Admin 21-day artwork library */
+.admin-page .gc-prayer-admin{background:#fff;border:1px solid #dce7ef;border-radius:18px;padding:clamp(20px,3vw,32px);display:grid;gap:24px}
+.admin-page .gc-prayer-admin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.admin-page .gc-prayer-admin-card{display:grid;align-content:start;gap:13px;padding:21px;border:1px solid #dce6ee;border-radius:13px;background:#f9fcfe;min-width:0}
+.admin-page .gc-prayer-admin-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#153b58}
+.admin-page .gc-prayer-admin-card-top span{font-weight:900;font-size:1.05rem}
+.admin-page .gc-prayer-admin-card-top strong{font-size:.85rem;color:#59758a}
+.admin-page .gc-prayer-upload-status{font-size:.73rem;font-weight:850;letter-spacing:.05em;color:#996526;background:#fff3e2;border-radius:6px;padding:9px 11px}
+.admin-page .gc-prayer-upload-status.is-uploaded{background:#e6f5ee;color:#17724c}
+.admin-page .gc-prayer-upload-file{font-size:.8rem;color:#547086;overflow-wrap:anywhere;margin:0}
+.admin-page .gc-prayer-upload-label{display:grid;gap:10px;color:#143e5c;font-size:.75rem;font-weight:850;letter-spacing:.03em}
+.admin-page .gc-prayer-upload-label input{width:100%;min-width:0;padding:10px;background:#fff;border:1px solid #c8d8e4;border-radius:8px;font-size:.82rem}
+.admin-page .gc-prayer-admin-card small{font-size:.76rem;color:#708598;line-height:1.5}
+@media(max-width:950px){.admin-page .gc-prayer-admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.admin-page .gc-prayer-admin{padding:17px}.admin-page .gc-prayer-admin-grid{grid-template-columns:minmax(0,1fr)}}
