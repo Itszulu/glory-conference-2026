@@ -215,3 +215,22 @@
  .admin-page .gc-record-view{width:100%}
 }
 @media(prefers-reduced-motion:reduce){.admin-page .admin-tabs button,.admin-page .form-action,.admin-page .gc-record-row{transition:none}}
+
+/* Unified order management panels and reversible check-in controls */
+.admin-page .gc-order-card{display:grid;gap:18px}
+.admin-page .gc-order-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap}
+.admin-page .gc-order-heading h3{margin:0 0 6px;font-size:1.06rem;overflow-wrap:anywhere}
+.admin-page .gc-order-heading p{margin:0}
+.admin-page .gc-order-amount{font-size:1.35rem;color:#0d4767;white-space:nowrap}
+.admin-page .gc-order-items{padding:14px 16px;background:#f2f7fa;border:1px solid #e0eaf0;border-radius:9px;color:#38566e;line-height:1.65}
+.admin-page .gc-order-controls{display:flex;align-items:end;justify-content:space-between;flex-wrap:wrap;gap:15px}
+.admin-page .gc-order-controls label{display:grid;gap:8px;flex:1 1 250px;font-size:.72rem;letter-spacing:.05em;font-weight:800;color:#3d5c73}
+.admin-page .gc-order-controls select{min-height:46px;padding:11px 12px;width:100%}
+.gc-order-lines{padding:15px 32px;background:#f7fafc;border-bottom:1px solid #e1e9ef}
+.gc-order-lines p{margin:8px 0;color:#3e5b73;line-height:1.5}
+@media(max-width:650px){
+ .admin-page .gc-order-controls{align-items:stretch}
+ .admin-page .gc-order-controls .gc-record-view{width:100%}
+ .admin-page .gc-order-controls label{flex-basis:100%}
+ .gc-order-lines{padding:15px 20px}
+}
