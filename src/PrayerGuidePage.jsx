@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Header, Footer } from './App.jsx'
+import { storage } from './firebase'
+import { ref as storageRef, getDownloadURL } from 'firebase/storage'
 import './prayer-guide.css'
 
 // All release dates use Nigerian civil time (Africa/Lagos, UTC+1).
@@ -104,10 +106,14 @@ export default function PrayerGuidePage(){
   const [selected,setSelected]=useState(()=>Math.max(1,Math.min(21,Math.floor((Date.now()-START_UTC)/DAY_MS)+1)))
   const [completed,setCompleted]=useState(()=>{try{return JSON.parse(localStorage.getItem('gc26-prayer-completed')||'[]').filter(n=>Number.isInteger(n)&&n>=1&&n<=21)}catch{return []}})
   const [showAll,setShowAll]=useState(false)
+  const [artwork,setArtwork]=useState('')
+  const [artworkStatus,setArtworkStatus]=useState('')
   useEffect(()=>{const timer=setInterval(()=>setNow(Date.now()),1000);const refresh=()=>setNow(Date.now());document.addEventListener('visibilitychange',refresh);return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',refresh)}},[])
   useEffect(()=>{try{localStorage.setItem('gc26-prayer-completed',JSON.stringify(completed))}catch{}},[completed])
   useEffect(()=>{document.title='21-Day Prayer Guide | Glory Conference 2026';return()=>{document.title='Glory Conference 2026'}},[])
   const slot=DAYS[selected-1],unlocked=now>=slot.unlockAt
+  useEffect(()=>{let active=true;setArtwork('');setArtworkStatus('');if(now<START_UTC+(selected-1)*DAY_MS)return;getDownloadURL(storageRef(storage,'prayer-designs/'+String(selected).padStart(2,'0')+'/share-artwork')).then(url=>{if(active)setArtwork(url)}).catch(e=>{if(active)setArtworkStatus(e.code==='storage/object-not-found'?'The shareable prayer artwork has not been uploaded yet.':'Artwork unavailable. Please try again later.')});return()=>{active=false}},[selected,unlocked])
+  const downloadArtwork=async()=>{if(!artwork)return;setArtworkStatus('Preparing your image…');try{const response=await fetch(artwork);if(!response.ok)throw new Error('Download failed');const blob=await response.blob();const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download='Glory-Conference-2026-Prayer-Day-'+String(selected).padStart(2,'0')+(blob.type==='image/png'?'.png':blob.type==='image/webp'?'.webp':'.jpg');document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);setArtworkStatus('Image downloaded. You can share it to your status.')}catch{setArtworkStatus('Download could not start. Please retry.') }}
   const prayer=unlocked?RELEASED_PRAYERS.find(p=>p.number===selected):null
   const phase=PHASES.find(p=>selected>=p.from&&selected<=p.to)
   const choose=n=>{setSelected(n);document.getElementById('prayer-detail')?.scrollIntoView({behavior:'smooth',block:'start'})}
@@ -132,6 +138,7 @@ export default function PrayerGuidePage(){
           <div className="prayer-detail-content"><div className="prayer-scripture"><small>TODAY'S SCRIPTURES</small><h3>{prayer.scripture}</h3><p>Read and meditate on these passages before praying.</p></div><div className="prayer-points"><small>PRAYER BURDEN</small><p>{prayer.burden}</p><small>PRAYER POINTS</small><ol>{prayer.prayers.map((point,i)=><li key={i}>{point}</li>)}</ol></div></div>
           <div className="prayer-actions"><button type="button" className="prayer-mark" onClick={toggle}>{completed.includes(selected)?'✓ MARKED AS PRAYED':'✓ MARK DAY AS PRAYED'}</button><div><button type="button" disabled={selected===1} onClick={()=>choose(selected-1)}>← PREVIOUS</button><button type="button" disabled={selected===21} onClick={()=>choose(selected+1)}>NEXT DAY →</button></div></div>
         </>}
+        {unlocked&&<div className="prayer-artwork-section"><div><small>SHARE TODAY’S PRAYER</small><h3>Download the prayer design</h3><p>Save the 4:5 artwork and share it to your WhatsApp or social media status.</p></div>{artwork?<><img className="prayer-artwork-preview" src={artwork} alt={'Shareable prayer artwork for day '+selected} loading="lazy"/><button type="button" className="prayer-artwork-download" onClick={downloadArtwork}>↓ DOWNLOAD PRAYER IMAGE</button></>:<p className="prayer-artwork-note">{artworkStatus||'Checking for today’s artwork…'}</p>}{artwork&&artworkStatus&&<p className="prayer-artwork-note" role="status">{artworkStatus}</p>}</div>}
         {!prayer&&<div className="prayer-actions"><div><button type="button" disabled={selected===1} onClick={()=>choose(selected-1)}>← PREVIOUS</button><button type="button" disabled={selected===21} onClick={()=>choose(selected+1)}>NEXT DAY →</button></div></div>}
       </article>
       <button className="prayer-overview-toggle" type="button" aria-expanded={showAll} onClick={()=>setShowAll(v=>!v)}>{showAll?'HIDE DAY OVERVIEW ↑':'VIEW ALL 21 DAYS ↓'}</button>
