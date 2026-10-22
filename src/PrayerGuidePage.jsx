@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Header, Footer } from './App.jsx'
-import { storage } from './firebase'
-import { ref as storageRef, getDownloadURL } from 'firebase/storage'
+import { db } from './firebase'
+import { doc, getDoc } from 'firebase/firestore'
 import './prayer-guide.css'
 
 // All release dates use Nigerian civil time (Africa/Lagos, UTC+1).
@@ -112,7 +112,15 @@ export default function PrayerGuidePage(){
   useEffect(()=>{try{localStorage.setItem('gc26-prayer-completed',JSON.stringify(completed))}catch{}},[completed])
   useEffect(()=>{document.title='21-Day Prayer Guide | Glory Conference 2026';return()=>{document.title='Glory Conference 2026'}},[])
   const slot=DAYS[selected-1],unlocked=now>=slot.unlockAt
-  useEffect(()=>{let active=true;setArtwork('');setArtworkStatus('');if(now<START_UTC+(selected-1)*DAY_MS)return;getDownloadURL(storageRef(storage,'prayer-designs/'+String(selected).padStart(2,'0')+'/share-artwork')).then(url=>{if(active)setArtwork(url)}).catch(e=>{if(active)setArtworkStatus(e.code==='storage/object-not-found'?'The shareable prayer artwork has not been uploaded yet.':'Artwork unavailable. Please try again later.')});return()=>{active=false}},[selected,unlocked])
+  useEffect(()=>{let active=true;setArtwork('');setArtworkStatus('');if(!unlocked)return;
+    getDoc(doc(db,'prayerDesigns',String(selected).padStart(2,'0'))).then(snapshot=>{
+      if(!active)return;
+      const record=snapshot.exists()?snapshot.data():null;
+      if(record?.provider==='cloudinary'&&record.imageUrl?.startsWith('https://res.cloudinary.com/wgd4cbdt/'))setArtwork(record.imageUrl);
+      else setArtworkStatus('The shareable prayer design has not been uploaded yet.');
+    }).catch(()=>{if(active)setArtworkStatus('Artwork unavailable. Please try again later.')});
+    return()=>{active=false}
+  },[selected,unlocked])
   const downloadArtwork=async()=>{if(!artwork)return;setArtworkStatus('Preparing your image…');try{const response=await fetch(artwork);if(!response.ok)throw new Error('Download failed');const blob=await response.blob();const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download='Glory-Conference-2026-Prayer-Day-'+String(selected).padStart(2,'0')+(blob.type==='image/png'?'.png':blob.type==='image/webp'?'.webp':'.jpg');document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);setArtworkStatus('Image downloaded. You can share it to your status.')}catch{setArtworkStatus('Download could not start. Please retry.') }}
   const prayer=unlocked?RELEASED_PRAYERS.find(p=>p.number===selected):null
   const phase=PHASES.find(p=>selected>=p.from&&selected<=p.to)
