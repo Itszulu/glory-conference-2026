@@ -89,6 +89,18 @@ service cloud.firestore {
       allow create, update, delete: if id == 'media' && isAdmin();
     }
 
+    match /prayerDesigns/{day} {
+      // Public artwork metadata is visible only after the corresponding day opens.
+      // Only admins may upload/replace records; never expose a Storage token URL.
+      allow get: if isAdmin() || (
+        day.matches('0[1-9]|1[0-9]|2[01]') &&
+        request.time >= timestamp.date(2026, 10, 22) - duration.value(1, 'h') +
+          duration.value(int(day) - 1, 'd')
+      );
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
     match /products/{id} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
