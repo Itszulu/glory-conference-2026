@@ -136,3 +136,14 @@
  .prayer-page .prayer-locked-state h3{font-size:clamp(1.2rem,5.5vw,1.6rem)}
  .prayer-page .prayer-locked-state p{font-size:.95rem}
 }
+
+/* Public prayer artwork download card, only rendered on released days. */
+.prayer-page .prayer-artwork-section{display:flex;flex-direction:column;align-items:flex-start;gap:17px;padding:clamp(24px,4vw,44px);background:#102d4f;border-top:1px solid rgba(255,255,255,.15);color:#fff}
+.prayer-page .prayer-artwork-section small{font-size:.72rem;letter-spacing:.12em;color:#9ed0f2;font-weight:900}
+.prayer-page .prayer-artwork-section h3{font-size:clamp(1.25rem,2.8vw,2rem);line-height:1.25;color:#fff;margin:9px 0}
+.prayer-page .prayer-artwork-section p{color:#d1e0f0;font-size:.95rem;line-height:1.6;margin:0}
+.prayer-page .prayer-artwork-preview{display:block;width:min(100%,340px);height:auto;aspect-ratio:4/5;object-fit:contain;border-radius:10px;border:1px solid rgba(255,255,255,.22);background:#091d36}
+.prayer-page .prayer-artwork-download{min-height:50px;padding:14px 22px;border:1px solid #9fc7e6;border-radius:9px;background:#f3f9ff;color:#103a5e;font-weight:900;font-size:.85rem;cursor:pointer;letter-spacing:.03em}
+.prayer-page .prayer-artwork-download:hover{background:#dceffc}
+.prayer-page .prayer-artwork-note{font-size:.86rem!important;color:#b8d4e8!important}
+@media(max-width:760px){.prayer-page .prayer-artwork-section{padding:26px 20px;gap:15px}.prayer-page .prayer-artwork-preview{width:min(100%,300px)}.prayer-page .prayer-artwork-download{width:100%;white-space:normal}}
