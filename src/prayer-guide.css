@@ -93,3 +93,46 @@
  .prayer-page .prayer-day-tile span{display:block}
  .prayer-page .prayer-hero h1{font-size:2.25rem}
 }
+
+/* Dedicated locked / unpublished prayer panel; avoid unpadded text at card edges. */
+.prayer-page .prayer-locked-state{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:14px;
+  padding:clamp(28px,4.5vw,56px);
+  margin:0;
+  min-height:240px;
+  background:linear-gradient(135deg,#102a4b 0%,#0e2444 100%);
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+.prayer-page .prayer-locked-state small{
+  display:inline-block;
+  color:#a9cdf7;
+  font-size:.7rem;
+  font-weight:800;
+  letter-spacing:.12em;
+  line-height:1.5;
+}
+.prayer-page .prayer-locked-state h3{
+  color:#fff;
+  font-size:clamp(1.25rem,2.6vw,2rem);
+  line-height:1.3;
+  letter-spacing:-.025em;
+  max-width:28ch;
+  margin:0;
+  overflow-wrap:break-word;
+}
+.prayer-page .prayer-locked-state p{
+  color:#d1e1f4;
+  font-size:clamp(.94rem,1.4vw,1.05rem);
+  line-height:1.65;
+  max-width:55ch;
+  margin:0;
+}
+.prayer-page .prayer-locked-state p strong{color:#fff;font-weight:700}
+@media(max-width:760px){
+ .prayer-page .prayer-locked-state{padding:28px 22px 30px;gap:14px;min-height:0}
+ .prayer-page .prayer-locked-state h3{font-size:clamp(1.2rem,5.5vw,1.6rem)}
+ .prayer-page .prayer-locked-state p{font-size:.95rem}
+}
