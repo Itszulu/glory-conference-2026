@@ -45,3 +45,51 @@
 
 /* Keep prayer-guide hero accent identical to the cyan used on the merch hero. */
 .prayer-page .prayer-hero h1 span{color:#8ce9ff!important;background:none!important;background-image:none!important;-webkit-text-fill-color:#8ce9ff!important}
+
+
+/* Responsive layout corrections — keep every section within its viewport. */
+.prayer-page,.prayer-page *{box-sizing:border-box}
+.prayer-page{width:100%;max-width:100%;overflow-x:clip}
+.prayer-page .prayer-hero{min-height:0;padding:clamp(128px,12vw,170px) clamp(20px,6vw,90px) clamp(65px,8vw,100px)}
+.prayer-page .prayer-hero-inner{max-width:1240px}
+.prayer-page .prayer-hero h1{font-size:clamp(2.65rem,6.2vw,6.7rem);line-height:1.02;overflow-wrap:break-word}
+.prayer-page .prayer-intro{width:100%;max-width:none;min-height:0;padding:clamp(50px,6vw,86px) clamp(20px,6vw,90px);grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(22px,5vw,80px);align-items:center}
+.prayer-page .prayer-intro>div{min-width:0}
+.prayer-page .prayer-intro h2{font-size:clamp(2rem,4.1vw,4.7rem);line-height:1.08;overflow-wrap:break-word;margin:14px 0}
+.prayer-page .prayer-intro p:not(.eyebrow){font-size:clamp(1rem,1.55vw,1.25rem);line-height:1.65;margin:0}
+.prayer-page .prayer-workspace{min-width:0}
+.prayer-page .prayer-days-grid{grid-template-columns:repeat(7,minmax(0,1fr))}
+.prayer-page .prayer-detail{width:100%;min-width:0}
+.prayer-page .prayer-detail-head{min-width:0}
+.prayer-page .prayer-detail-head>div{min-width:0}
+.prayer-page .prayer-detail-head h2{font-size:clamp(1.5rem,3.8vw,3.4rem);overflow-wrap:anywhere}
+.prayer-page .prayer-detail>.prayer-scripture{padding:clamp(22px,4vw,48px);min-width:0}
+.prayer-page .prayer-detail>.prayer-scripture h3{font-size:clamp(1.05rem,2.3vw,1.55rem);line-height:1.45;overflow-wrap:break-word}
+.prayer-page .prayer-detail>.prayer-scripture p{overflow-wrap:break-word}
+@media(max-width:760px){
+ .prayer-page .prayer-hero{padding:120px 20px 56px}
+ .prayer-page .prayer-hero h1{font-size:clamp(2.35rem,9vw,4rem);letter-spacing:-.045em}
+ .prayer-page .prayer-intro{grid-template-columns:minmax(0,1fr);gap:14px;padding:52px 22px}
+ .prayer-page .prayer-intro h2{font-size:clamp(2rem,8vw,3.5rem)}
+ .prayer-page .prayer-intro p:not(.eyebrow){font-size:1rem}
+ .prayer-page .prayer-workspace{padding:48px 16px 60px}
+ .prayer-page .prayer-days-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+ .prayer-page .prayer-day-tile{min-height:80px;padding:10px 5px;border-radius:8px}
+ .prayer-page .prayer-day-tile strong{font-size:1.35rem}
+ .prayer-page .prayer-day-tile small,.prayer-page .prayer-day-tile span{font-size:.65rem}
+ .prayer-page .prayer-day-tile b{top:5px;right:7px}
+ .prayer-page .prayer-detail-head{padding:24px 20px;gap:12px}
+ .prayer-page .prayer-detail-head h2{font-size:clamp(1.5rem,6vw,2.25rem);margin-top:10px}
+ .prayer-page .prayer-detail-count{font-size:.85rem}
+ .prayer-page .prayer-detail>.prayer-scripture{padding:24px 20px}
+ .prayer-page .prayer-detail-content{padding:24px 20px}
+ .prayer-page .prayer-actions{padding:18px 16px;gap:12px}
+ .prayer-page .prayer-actions>div{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .prayer-page .prayer-actions button{min-width:0;min-height:44px;white-space:normal;line-height:1.3}
+ .prayer-page .prayer-overview-toggle{max-width:100%}
+}
+@media(max-width:380px){
+ .prayer-page .prayer-days-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .prayer-page .prayer-day-tile span{display:block}
+ .prayer-page .prayer-hero h1{font-size:2.25rem}
+}
