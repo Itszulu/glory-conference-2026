@@ -17,8 +17,10 @@ service cloud.firestore {
     }
 
     match /registrations/{id} {
-      allow create: if request.resource.data.keys().hasOnly(['registrationId','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','createdAt'])
+      allow create: if request.resource.data.keys().hasOnly(['registrationId','conferenceYear','title','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','createdAt'])
                     && request.resource.data.keys().hasAll(['registrationId','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','createdAt'])
+                    && (!('title' in request.resource.data) || request.resource.data.title in ['', 'Pastor', 'Reverend', 'Prophet', 'Bishop', 'Apostle', 'Minister', 'Evangelist'])
+                    && request.resource.data.conferenceYear == 2026
                     && request.resource.data.registrationId == id
                     && id.matches('GC26-R-[A-Za-z0-9-]{4,64}')
                     && request.resource.data.fullName is string
@@ -47,6 +49,21 @@ service cloud.firestore {
                     && request.resource.data.heardFrom in ['Church','Friend / Family','WhatsApp','Instagram','Facebook','YouTube','Other']
                     && request.resource.data.createdAt == request.time;
       allow read, update, delete: if isAdmin();
+    }
+
+    match /checkIns/{id} {
+      allow read: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['registrationId','fullName','day','checkedInAt','checkedInBy'])
+        && request.resource.data.keys().hasAll(['registrationId','fullName','day','checkedInAt','checkedInBy'])
+        && request.resource.data.registrationId is string
+        && request.resource.data.registrationId.matches('GC26-R-[A-Za-z0-9-]{4,64}')
+        && request.resource.data.day in ['Nov 12','Nov 13','Nov 14']
+        && id == request.resource.data.registrationId + '_' + request.resource.data.day
+        && exists(/databases/$(database)/documents/registrations/$(request.resource.data.registrationId))
+        && request.resource.data.checkedInBy == request.auth.uid
+        && request.resource.data.checkedInAt == request.time;
+      allow update, delete: if false;
     }
 
     match /merchOrders/{id} {
