@@ -121,7 +121,7 @@ export default function PrayerGuidePage(){
       <div className="prayer-hero-meta"><span>JOEL 2:28</span><span>21 DAYS</span><span>NEW PRAYERS AT 12:00 AM WAT</span></div>
       <a href="#prayer-days" className="button primary">EXPLORE THE PRAYER GUIDE ↓</a>
     </div></section>
-    <section className="prayer-intro"><div><p className="eyebrow dark">A HEART MADE READY</p><h2>PREPARE THE VESSEL.<br/>STIR THE FIRE.</h2></div><div><p>Join us daily in Scripture and prayer. Each day's guide opens at midnight Nigerian time. Previous days remain available to revisit.</p><p className="prayer-note">Prayer points for later days will be added as they are received. No demo prayers are displayed.</p></div></section>
+    <section className="prayer-intro"><div><p className="eyebrow dark">A HEART MADE READY</p><h2>PREPARE THE VESSEL.<br/>STIR THE FIRE.</h2></div><div><p>Join us daily in Scripture and prayer. Each day's guide opens at midnight Nigerian time. Previous days remain available to revisit.</p></div></section>
     <section id="prayer-days" className="prayer-workspace">
       <div className="prayer-workspace-top"><div><p className="eyebrow dark">YOUR PRAYER JOURNEY</p><h2>THE 21-DAY GUIDE.</h2></div><div className="prayer-progress" aria-label={completed.length+' of 21 days marked complete'}><strong>{completed.length}<small> / 21</small></strong><span>DAYS COMPLETED</span><div className="prayer-progress-track"><div style={{width:(completed.length/21*100)+'%'}}/></div></div></div>
       <div className="prayer-phases">{PHASES.map((p,i)=><button type="button" key={p.name} className={phase===p?'active':''} onClick={()=>choose(p.from)}><small>PHASE 0{i+1} · DAYS {p.from}–{p.to}</small><strong>{p.name}</strong><span>{p.subtitle}</span></button>)}</div>
