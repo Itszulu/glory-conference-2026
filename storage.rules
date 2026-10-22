@@ -6,6 +6,39 @@ service firebase.storage {
         && firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid))
         && firestore.get(/databases/(default)/documents/admins/$(request.auth.uid)).data.role == 'admin';
     }
+    // Original 4:5 prayer artworks stay private until their Nigerian release day.
+    function prayerDayReleased(day) {
+      return       (day == '01' && request.time >= timestamp.date(2026, 10, 22)) ||
+              (day == '02' && request.time >= timestamp.date(2026, 10, 23)) ||
+              (day == '03' && request.time >= timestamp.date(2026, 10, 24)) ||
+              (day == '04' && request.time >= timestamp.date(2026, 10, 25)) ||
+              (day == '05' && request.time >= timestamp.date(2026, 10, 26)) ||
+              (day == '06' && request.time >= timestamp.date(2026, 10, 27)) ||
+              (day == '07' && request.time >= timestamp.date(2026, 10, 28)) ||
+              (day == '08' && request.time >= timestamp.date(2026, 10, 29)) ||
+              (day == '09' && request.time >= timestamp.date(2026, 10, 30)) ||
+              (day == '10' && request.time >= timestamp.date(2026, 10, 31)) ||
+              (day == '11' && request.time >= timestamp.date(2026, 11, 1)) ||
+              (day == '12' && request.time >= timestamp.date(2026, 11, 2)) ||
+              (day == '13' && request.time >= timestamp.date(2026, 11, 3)) ||
+              (day == '14' && request.time >= timestamp.date(2026, 11, 4)) ||
+              (day == '15' && request.time >= timestamp.date(2026, 11, 5)) ||
+              (day == '16' && request.time >= timestamp.date(2026, 11, 6)) ||
+              (day == '17' && request.time >= timestamp.date(2026, 11, 7)) ||
+              (day == '18' && request.time >= timestamp.date(2026, 11, 8)) ||
+              (day == '19' && request.time >= timestamp.date(2026, 11, 9)) ||
+              (day == '20' && request.time >= timestamp.date(2026, 11, 10)) ||
+              (day == '21' && request.time >= timestamp.date(2026, 11, 11));
+    }
+    match /prayer-designs/{day}/{fileName} {
+      allow read: if prayerDayReleased(day);
+      allow write: if isAdmin()
+        && fileName == 'share-artwork'
+        && request.resource != null
+        && request.resource.size <= 15 * 1024 * 1024
+        && request.resource.contentType.matches('image/jpeg|image/png|image/webp');
+      allow delete: if isAdmin();
+    }
     match /site-media/{allPaths=**} {
       allow read: if true;
       allow write: if isAdmin()
