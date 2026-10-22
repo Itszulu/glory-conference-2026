@@ -17,9 +17,10 @@ service cloud.firestore {
     }
 
     match /registrations/{id} {
-      allow create: if request.resource.data.keys().hasOnly(['registrationId','title','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','createdAt'])
+      allow create: if request.resource.data.keys().hasOnly(['registrationId','conferenceYear','title','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','createdAt'])
                     && request.resource.data.keys().hasAll(['registrationId','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','createdAt'])
                     && (!('title' in request.resource.data) || request.resource.data.title in ['', 'Pastor', 'Reverend', 'Prophet', 'Bishop', 'Apostle', 'Minister', 'Evangelist'])
+                    && request.resource.data.conferenceYear == 2026
                     && request.resource.data.registrationId == id
                     && id.matches('GC26-R-[A-Za-z0-9-]{4,64}')
                     && request.resource.data.fullName is string
