@@ -63,7 +63,8 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/registrations/$(request.resource.data.registrationId))
         && request.resource.data.checkedInBy == request.auth.uid
         && request.resource.data.checkedInAt == request.time;
-      allow update, delete: if false;
+      allow update: if false;
+      allow delete: if isAdmin();
     }
 
     match /merchOrders/{id} {
