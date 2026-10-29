@@ -35,7 +35,7 @@ const findMerchModel=(p,colour,design)=>{
   if(explicit)return explicit;
   const colourKey=merchColourKey(colour),id=p.id.toLowerCase();
   const tokens=id.split('-').filter(t=>t.length>2);
-  const candidates=merchModels.filter(path=>path.toLowerCase().includes('/merch/')&&/\.glb$|\.gltf$/i.test(path));
+  const candidates=merchModels.filter(path=>/\.(glb|gltf)$/i.test(path));
   const ranked=candidates.map(path=>{const name=path.toLowerCase(),colourMatch=name.includes(colourKey)||name.includes(colourKey.replace('navy-blue','navy'));const productMatch=name.includes('/'+id+'/')||name.includes('/'+id+'-')||tokens.every(t=>name.includes(t))||(id==='cap'&&name.includes('/caps/'))||(id==='tshirt'&&name.includes('/tshirts/'))||(id==='hoodie'&&name.includes('/hoodies/'))||(id==='sweatshirt'&&name.includes('/sweatshirts/'));return {path,score:(productMatch?10:0)+(colourMatch?3:0)}}).filter(x=>x.score>=10).sort((a,b)=>b.score-a.score);
   return ranked[0]?.path||'';
 }
