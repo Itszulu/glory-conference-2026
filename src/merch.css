@@ -52,5 +52,3 @@ body.cart-open .menu-backdrop{display:none!important}
 .checkout-order-saved{padding:18px 0;line-height:1.7}
 .checkout-order-saved .form-action{display:block;text-align:center;text-decoration:none;margin:18px 0;padding:14px}
 .checkout-close-order{padding:12px;border:1px solid currentColor;border-radius:9px;background:transparent;cursor:pointer}
-
-.merch-media .merch-3d-toggle{position:absolute;right:14px;bottom:14px;z-index:5;border:1px solid #ffffffb0;border-radius:999px;padding:12px 16px;background:#062448ed;color:#fff;font-weight:900;font-size:11px;letter-spacing:.08em;cursor:pointer;box-shadow:0 8px 24px #0003}.merch-media .merch-3d-toggle:focus-visible{outline:3px solid #19a4e3;outline-offset:3px}.merch-media model-viewer{display:block;width:100%;height:100%;min-height:300px;touch-action:pan-y}
