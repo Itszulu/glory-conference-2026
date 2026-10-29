@@ -22,11 +22,17 @@ const defaultProducts=[
   {id:'the-outpouring',name:'THE OUTPOURING',price:8500,colours:shirtColours,sizes:shirtSizes,media:'',available:true},
   {id:'no-more-shame',name:'NO MORE SHAME. NOW GLORY.',price:8500,colours:shirtColours,sizes:shirtSizes,media:'',available:true},
   {id:'drought-is-over',name:'THE DROUGHT IS OVER',price:8500,colours:shirtColours,sizes:shirtSizes,media:'',available:true},
+  {id:'tshirt',name:'THE OUTPOURING T-SHIRT',price:8500,colours:shirtColours,sizes:shirtSizes,media:'',available:true},
+  {id:'hoodie',name:'THE OUTPOURING HOODIE',price:14500,colours:shirtColours,sizes:shirtSizes,media:'',available:true},
+  {id:'sweatshirt',name:'THE OUTPOURING SWEATSHIRT',price:14500,colours:shirtColours,sizes:shirtSizes,media:'',available:true},
   {id:'cap',name:'GLORY CONFERENCE FACE CAP',price:4500,colours:['White','Navy Blue','Black'],sizes:['ONE SIZE'],media:''}
 ]
 const merchFolders={...Object.fromEntries(defaultProducts.filter(p=>p.id!=='cap').map(p=>[p.id,'tshirts'])),cap:'caps'}
 const defaultMerchMedia={
   ...Object.fromEntries(defaultProducts.filter(p=>p.id!=='cap').map(p=>[p.id,{white:'/assets/merch/collections/'+p.id+'-white.svg','navy-blue':'/assets/merch/collections/'+p.id+'-navy.svg',black:'/assets/merch/collections/'+p.id+'-black.svg'}])),
+  tshirt:{white:'/assets/merch/tshirts/white.mp4','navy-blue':'/assets/merch/tshirts/navy.mp4'},
+  hoodie:{white:'/assets/merch/hoodies/white-sharp.mp4','navy-blue':'/assets/merch/hoodies/navy.webp'},
+  sweatshirt:{white:'/assets/merch/sweatshirts/white.webp'},
   cap:{white:'/assets/merch/caps/white.png','navy-blue':'/assets/merch/caps/navy.png',black:'/assets/merch/caps/black.png'}
 }
 const isVideoMedia=url=>/\.(mp4|webm)(?:[?&#]|$)/i.test(decodeURIComponent(url||''))
