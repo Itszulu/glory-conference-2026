@@ -65,3 +65,11 @@ Production deployment should only happen after build, emulator/security-rule che
 ### Remaining operational work
 
 No actual staff identities are created by this GitHub change. Firebase Auth accounts and `admins/{uid}` role records must be created by a trusted administrator. No server-side canonical identity registry or retroactive duplicate migration exists; those require a privileged backend and explicit rollout planning. A dedicated check-in test day and rules/emulator test suite is still recommended.
+
+## Visitor directions (homepage / registration confirmation / schedule)
+
+- The Schedule page's published venue is `No. 4 Uwani Ugwu Street, off Ikenga Junction, Nsukka`.
+- Visitors may open an external Google Maps route or choose to load the optional map on the homepage. The map is **not** loaded automatically; no visitor GPS permission is requested by the website.
+- The Google Maps destination is **Ikenga Hotel, Nsukka**, approximately `6.8366763, 7.3675346` (`R9Q8+7Q9`). This is a *navigation landmark*, **not the verified conference building entrance**. This distinction is displayed in the UI.
+- The one source of truth for venue/map settings is `src/conferenceVenue.js`. If organizers supply the exact official venue pin, update that one file and verify every path.
+- Confirm that mobile Google Maps launches properly for both Android and iPhone, and that the published street address really matches the event venue before widely sharing directions.
