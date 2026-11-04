@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Check, Copy, Printer } from 'lucide-react'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { db } from './firebase'
+import { attendeeRegistrationId } from './registrationIdentity'
 import './glory-connect.css'
 
 const days = ['Nov 12', 'Nov 13', 'Nov 14']
@@ -11,13 +12,12 @@ const frequencies = [
   { value: 'Third time or more', label: "I've attended three or more times" }
 ]
 const affiliations = [
-  { value: 'Host ministry', label: "I'm part of the host ministry" },
+  { value: 'DISRM', label: "I'm part of DISRM" },
   { value: 'Visiting from another church', label: "I'm visiting from another church" },
   { value: 'Not currently part of a church', label: "I'm not currently part of a church" },
   { value: 'Prefer not to say', label: 'Prefer not to say' }
 ]
 const locations = ['Abuja (FCT)','Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara','Outside Nigeria']
-const registrationId = () => 'GC26-R-' + Array.from(crypto.getRandomValues(new Uint8Array(12)), n => (n % 36).toString(36).toUpperCase()).join('')
 const digitCount = value => (value.match(/\d/g) || []).length
 
 export default function GloryConnectRegistration() {
@@ -50,8 +50,8 @@ export default function GloryConnectRegistration() {
       return
     }
     setBusy(true);setError('')
-    const id=registrationId()
     try {
+      const id=await attendeeRegistrationId(form.fullName,form.phone)
       await setDoc(doc(db,'registrations',id), {
         registrationId:id,conferenceYear:2026,title:'',
         fullName:form.fullName.trim(),phone:form.phone.trim(),email:form.email.trim(),
@@ -66,7 +66,7 @@ export default function GloryConnectRegistration() {
       setCompletedId(id)
       window.scrollTo({top:0,behavior:'smooth'})
     } catch(e) {
-      setError('Registration could not be saved. Please check your connection and try again. Nothing was submitted successfully.')
+      setError(e?.code==='permission-denied' ? 'We could not complete your registration. You may already be registered under this name and phone number. Please contact the welcome team if you need help.' : 'Registration could not be saved. Please check your connection and try again.')
     } finally {setBusy(false)}
   }
 
@@ -132,7 +132,7 @@ export default function GloryConnectRegistration() {
             </div>
             <div className="gc-paper-note"><strong>ARRIVAL INFORMATION</strong><p>Visit the welcome desk when you arrive. Our team can locate your registration by name or reference. Printing this confirmation is optional.</p></div>
           </div>
-          <footer className="gc-paper-footer"><span>GLORY CONFERENCE 2026</span><span>gloryconf.web.app</span></footer>
+          <footer className="gc-paper-footer"><span>GLORY CONFERENCE 2026 <small>· OFFICIAL ATTENDEE RECORD</small></span><img src="/assets/branding/the-outpouring.webp" alt="The Outpouring" /></footer>
         </article>
       </> : <>
         <p className="eyebrow dark">GLORY CONFERENCE 2026</p>
