@@ -55,3 +55,28 @@ body.cart-open .menu-backdrop{display:none!important}
 
 /* Original interactive merchandise preview inside the existing product media area. */
 .merch-media .merch-3d-iframe{display:block;width:100%;height:100%;border:0;background:linear-gradient(140deg,#e7eef2,#b9c9d4)}
+
+
+/* Product preview: the iframe must fill the portrait canvas, not sit
+   as a landscape-sized element at the top of the card on phones. */
+.merch-card .merch-media{min-width:0;isolation:isolate}
+.merch-card .merch-media > .merch-3d-iframe{
+  position:absolute!important;inset:0!important;
+  width:100%!important;height:100%!important;
+  max-width:none!important;max-height:none!important;
+  display:block!important;border:0!important;
+}
+@media(max-width:650px){
+  .merch-grid,.merch-card{width:100%;min-width:0;max-width:100%}
+  .merch-card .merch-media{
+    width:100%!important;height:auto!important;
+    aspect-ratio:9 / 16!important;max-height:none!important;
+    overflow:hidden!important;
+  }
+  .merch-card .merch-media > .merch-product-media{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:contain;
+  }
+  .merch-store-head{min-width:0}
+  .merch-store-head > p{max-width:100%;overflow-wrap:anywhere}
+}
