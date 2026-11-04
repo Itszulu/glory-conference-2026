@@ -3,6 +3,8 @@ import { Check, Copy, Printer } from 'lucide-react'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { db } from './firebase'
 import { attendeeRegistrationId } from './registrationIdentity'
+import { VenueDirections } from './VenueDirections'
+import { conferenceVenue } from './conferenceVenue'
 import './glory-connect.css'
 
 const days = ['Nov 12', 'Nov 13', 'Nov 14']
@@ -102,13 +104,14 @@ export default function GloryConnectRegistration() {
           <div className="gc-confirmation-details">
             <div><span>REGISTERED ATTENDEE</span><strong>{attendeeName}</strong></div>
             <div><span>CONFERENCE DATES</span><strong>12–14 November 2026</strong></div>
-            <div><span>LOCATION</span><strong>Nsukka, Nigeria</strong></div>
+            <div><span>LOCATION</span><strong>{conferenceVenue.addressLine1}, {conferenceVenue.city}</strong></div>
           </div>
           <div className="gc-confirmation-reference">
             <div className="gc-confirmation-reference-text"><span>YOUR REGISTRATION REFERENCE</span><strong>{completedId}</strong></div>
             <button className="gc-confirmation-copy" type="button" onClick={copyId} aria-label={copied?'Registration reference copied':'Copy registration reference'} title={copied?'Copied':'Copy reference'}>{copied?<Check size={19}/>:<Copy size={19}/>}<span>{copied?'Copied':'Copy'}</span></button>
           </div>
           <p className="gc-confirmation-arrival">When you arrive, our welcome team can find your registration using your name or reference. No printed document is required.</p>
+          <VenueDirections compact/>
           <button type="button" className="gc-confirmation-print" onClick={()=>window.print()}><Printer size={19} aria-hidden="true"/> SAVE OR PRINT CONFIRMATION</button>
           <p className="gc-confirmation-fine">An A4-ready confirmation is available if you'd like to keep a copy.</p>
         </div>
@@ -128,7 +131,7 @@ export default function GloryConnectRegistration() {
               <div><span>CONFERENCE</span><strong>Glory Conference 2026 — The Outpouring</strong></div>
               <div><span>DATES</span><strong>12–14 November 2026</strong></div>
               <div><span>PLANNED ATTENDANCE</span><strong>{attendingDays}</strong></div>
-              <div><span>LOCATION</span><strong>Nsukka, Nigeria</strong></div>
+              <div><span>VENUE ADDRESS</span><strong>{conferenceVenue.fullAddress}</strong></div>
             </div>
             <div className="gc-paper-note"><strong>ARRIVAL INFORMATION</strong><p>Visit the welcome desk when you arrive. Our team can locate your registration by name or reference. Printing this confirmation is optional.</p></div>
           </div>
