@@ -1,0 +1,68 @@
+/* Glory Connect: scoped styles, leaving the existing shop and conference layout untouched */
+.gc-connect-registration .gc-connect-progress{display:flex;align-items:center;gap:8px;margin:0 0 28px}
+.gc-connect-progress>span{width:60px;height:5px;border-radius:8px;background:#62829a}
+.gc-connect-progress>span.active{background:#96ecff}
+.gc-connect-progress strong{margin-left:12px;font-size:11px;letter-spacing:.12em;color:#c6ebfa}
+.gc-connect-section{grid-column:1/-1;padding:0 0 8px}
+.gc-connect-section strong{color:#98e9ff;letter-spacing:.12em;font-size:12px}
+.gc-connect-section p{color:#e3eff6;font-size:14px;line-height:1.5;margin:8px 0}
+.gc-connect-registration .gc-connect-form{padding:0!important}
+.gc-connect-choice{border:0;padding:0;margin:0;min-width:0;display:flex;flex-direction:column;gap:9px}
+.gc-connect-choice legend{font-size:11px;color:#9be9ff;font-weight:800;letter-spacing:.08em;padding:0;margin-bottom:12px}
+.gc-connect-registration .gc-connect-choice>label,.gc-connect-registration .gc-connect-days>label{display:flex!important;align-items:center;gap:12px;padding:15px 16px;border:1px solid #ffffff40;border-radius:12px;background:#ffffff09;cursor:pointer;font-size:14px!important;font-weight:650!important;letter-spacing:normal!important;color:#fff!important}
+.gc-connect-registration .gc-connect-choice label.chosen,.gc-connect-registration .gc-connect-days label.chosen{background:#c9f2ff19;border-color:#9be9ff}
+.gc-connect-registration .gc-connect-choice input[type=radio],.gc-connect-registration .gc-connect-choice input[type=checkbox]{appearance:auto!important;width:18px!important;height:18px!important;min-height:0!important;flex:0 0 18px!important;margin:0!important;accent-color:#9be9ff}
+.gc-connect-days{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.gc-connect-registration .gc-connect-consent{display:flex!important;flex-direction:row!important;align-items:flex-start;gap:12px;font-size:13px!important;line-height:1.6!important;letter-spacing:normal!important;color:#e8f8ff!important}
+.gc-connect-registration .gc-connect-consent input{appearance:auto!important;min-height:20px!important;width:20px!important;flex:0 0 20px!important;margin:1px 0 0!important;accent-color:#69d8f4}
+.gc-connect-privacy{font-size:12px;line-height:1.6;color:#c5deec;margin:0}
+.gc-connect-actions{grid-column:1/-1;display:flex;gap:12px;flex-wrap:wrap}
+.gc-connect-actions>button{cursor:pointer;min-height:54px;padding:14px 22px;font-weight:800;border-radius:28px;border:1px solid #d0f2fb;background:transparent;color:#fff}
+.gc-connect-actions>button[type=submit]{background:#e9faff;color:#052a52;flex:1}
+.gc-connect-actions>button:disabled{opacity:.6;cursor:wait}
+.gc-connect-success{max-width:830px;margin:0 auto}
+.gc-connect-admin{display:grid;gap:18px;color:#092b4e}
+.gc-connect-admin-head h3{font-size:clamp(26px,3vw,42px);margin:4px 0;color:#082a4c}
+.gc-connect-admin-head p{color:#556f82;line-height:1.6;margin:0}
+.gc-connect-admin-head .gc-connect-kicker{font-size:11px;font-weight:900;letter-spacing:.17em;color:#1682a5}
+.gc-connect-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.gc-connect-metrics article{background:#fff;border:1px solid #dae5ec;border-radius:14px;padding:20px;display:grid;gap:12px}
+.gc-connect-metrics span{font-size:11px;color:#57748a;font-weight:800}
+.gc-connect-metrics strong{font-size:32px;color:#092b4e}
+.gc-connect-toolbar{display:grid;grid-template-columns:minmax(0,2fr) minmax(170px,1fr);gap:16px}
+.gc-connect-toolbar label,.gc-connect-followup-form label{display:grid;gap:8px;font-size:12px;color:#32536d;font-weight:800}
+.gc-connect-toolbar input,.gc-connect-toolbar select,.gc-connect-followup-form input,.gc-connect-followup-form select,.gc-connect-followup-form textarea{box-sizing:border-box;width:100%;min-width:0;padding:12px;border-radius:10px;border:1px solid #bbd0db;background:#fff;color:#072b4c;font:inherit;font-size:15px}
+.gc-connect-summary{color:#57748a;font-size:13px}
+.gc-connect-people{display:grid;gap:9px}
+.gc-connect-person{display:flex;align-items:center;gap:14px;padding:16px;background:#fff;border:1px solid #d6e4ec;border-radius:14px;min-width:0}
+.gc-connect-avatar{display:grid;place-items:center;flex:0 0 45px;width:45px;height:45px;border-radius:50%;background:#e5f1f8;color:#0d527c;font-weight:900}
+.gc-connect-person>div:nth-child(2){flex:1;min-width:0}
+.gc-connect-person h4{margin:0 0 4px;color:#082a4c;font-size:16px}
+.gc-connect-person p{margin:0 0 3px;color:#4a6b80;font-size:12px;overflow-wrap:anywhere}
+.gc-connect-person small{color:#377d95;font-weight:750}
+.gc-connect-person button,.gc-connect-followup-form button[type=submit]{background:#073e67;border:0;color:#fff;border-radius:9px;padding:13px 15px;font-size:11px;font-weight:800;cursor:pointer}
+.gc-connect-dialog-backdrop{position:fixed;inset:0;z-index:22000;display:grid;place-items:center;padding:16px;background:#031429c9;overflow-y:auto}
+.gc-connect-dialog{width:min(740px,100%);max-height:calc(100dvh - 32px);overflow-y:auto;background:#f8fbfd;border-radius:18px;padding:clamp(18px,4vw,32px);box-sizing:border-box}
+.gc-connect-dialog-top{display:flex;justify-content:space-between;gap:12px}
+.gc-connect-dialog-top h3{font-size:28px;line-height:1.1;color:#092b4c;margin:8px 0}
+.gc-connect-dialog-top p,.gc-connect-dialog-top small{color:#57748a}
+.gc-connect-dialog-top button{flex:0 0 42px;width:42px;height:42px;border:0;border-radius:10px;background:#e3eff6;color:#0b3455;font-size:27px;cursor:pointer}
+.gc-connect-profile-facts{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0}
+.gc-connect-profile-facts span{background:#e9f2f7;color:#264e69;padding:8px 10px;border-radius:6px;font-size:12px;overflow-wrap:anywhere}
+.gc-connect-followup-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.gc-connect-followup-form .full,.gc-connect-private-note,.gc-connect-alert{grid-column:1/-1}
+.gc-connect-private-note{color:#587084;font-size:12px;line-height:1.5}
+.gc-connect-alert{padding:14px;border:1px solid #bcd5e1;border-radius:8px;color:#123c56;background:#eff7fb}
+.gc-connect-whatsapp{display:inline-flex;align-items:center;justify-content:center;border-radius:8px;background:#e8f6ec;color:#0e5230;font-weight:800;font-size:12px;padding:10px 14px;text-decoration:none}
+@media(max-width:700px){
+ .gc-connect-days{grid-template-columns:1fr}
+ .gc-connect-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .gc-connect-toolbar,.gc-connect-followup-form{grid-template-columns:1fr}
+ .gc-connect-person{align-items:flex-start;flex-wrap:wrap}
+ .gc-connect-person button{margin-left:59px}
+ .gc-connect-registration .gc-connect-section{grid-column:1}
+ .gc-connect-registration .gc-connect-choice{grid-column:1}
+ .gc-connect-registration .gc-connect-form{gap:18px!important}
+ .gc-connect-actions>button{width:100%}
+}
+@media print{.gc-connect-success .registration-success-actions{display:none}}
