@@ -12,7 +12,7 @@ export function VenueDirections({ compact=false, print=false }) {
   if (compact) return <div className="gc-venue-compact">
     <div className="gc-venue-compact-info">
       <MapPin aria-hidden="true" size={20}/>
-      <div><strong>Find the conference venue</strong><span>{conferenceVenue.addressLine1}, {conferenceVenue.city}</span></div>
+      <div><strong>Find the conference venue</strong><span>{conferenceVenue.addressLine1}, {conferenceVenue.city}</span><small>Maps opens at Ikenga Hotel landmark</small></div>
     </div>
     <a href={venueDirectionsUrl} target="_blank" rel="noopener noreferrer" className="gc-venue-link"><Navigation size={16} aria-hidden="true"/> GET DIRECTIONS</a>
   </div>
@@ -27,13 +27,13 @@ export function VenueDirections({ compact=false, print=false }) {
           <a className="gc-venue-primary" href={venueDirectionsUrl} target="_blank" rel="noopener noreferrer"><Navigation size={18} aria-hidden="true"/> GET DIRECTIONS <ExternalLink size={15} aria-hidden="true"/></a>
           <a className="gc-venue-secondary" href={venueSearchUrl} target="_blank" rel="noopener noreferrer"><MapPin size={17} aria-hidden="true"/> VIEW IN GOOGLE MAPS</a>
         </div>
-        <p className="gc-venue-caveat">Directions use the published street address. Confirm the destination shown in Maps before travelling.</p>
+        <p className="gc-venue-caveat">Google Maps directions lead to Ikenga Hotel as a landmark, not the exact entrance. The conference venue is at the published street address; ask the welcome team for final guidance.</p>
       </div>
       <div className="gc-venue-map-card">
-        <div className="gc-venue-map-heading"><span><Map size={18} aria-hidden="true"/> VENUE MAP</span><small>Loads only when requested</small></div>
-        {mapVisible ? <iframe title="Google Maps search for Glory Conference 2026 venue address" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src={venueEmbedUrl} allowFullScreen/> :
-          <div className="gc-venue-map-placeholder"><div className="gc-venue-map-icon"><MapPin size={34} aria-hidden="true"/></div><strong>Explore the venue area</strong><p>Open a map of the address without leaving this page.</p><button type="button" onClick={()=>setMapVisible(true)}><Map size={18} aria-hidden="true"/> SHOW MAP</button></div>}
-        <div className="gc-venue-map-bottom"><MapPin size={16} aria-hidden="true"/><span>Uwani Ugwu Street · Nsukka</span></div>
+        <div className="gc-venue-map-heading"><span><Map size={18} aria-hidden="true"/> LANDMARK MAP</span><small>Loads only when requested</small></div>
+        {mapVisible ? <iframe title="Google Maps showing Ikenga Hotel navigation landmark in Nsukka" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src={venueEmbedUrl} allowFullScreen/> :
+          <div className="gc-venue-map-placeholder"><div className="gc-venue-map-icon"><MapPin size={34} aria-hidden="true"/></div><strong>Explore the venue area</strong><p>Open a map of Ikenga Hotel, the navigation landmark near the published venue address.</p><button type="button" onClick={()=>setMapVisible(true)}><Map size={18} aria-hidden="true"/> SHOW MAP</button></div>}
+        <div className="gc-venue-map-bottom"><MapPin size={16} aria-hidden="true"/><span>Map landmark: Ikenga Hotel · Nsukka</span></div>
       </div>
     </div>
   </section>
