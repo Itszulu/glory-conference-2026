@@ -124,7 +124,18 @@
    The browser/printer still controls whether the user selects A4 paper. */
 @page{size:A4 portrait;margin:0}
 @media print{
- html,body,#root{background:#fff!important;margin:0!important;padding:0!important;width:210mm!important;min-height:297mm!important;overflow:visible!important}
+ html,body,#root{background:#fff!important;margin:0!important;padding:0!important;width:210mm!important;height:297mm!important;min-height:0!important;overflow:hidden!important}
+ #root > main > :not(.register-page){display:none!important}
+ #root > main,.register-page.page-light,.register-page .registration-form{
+   display:block!important;
+   width:210mm!important;height:297mm!important;min-height:0!important;
+   max-width:none!important;
+   box-sizing:border-box!important;
+   margin:0!important;padding:0!important;
+   overflow:hidden!important;
+   background:#fff!important;border:0!important;
+ }
+ .register-page .registration-form > :not(.gc-confirmation-paper){display:none!important}
  body *{visibility:hidden!important}
  .gc-confirmation-paper,.gc-confirmation-paper *{visibility:visible!important}
  .gc-confirmation-paper{
