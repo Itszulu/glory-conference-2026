@@ -65,7 +65,11 @@ service cloud.firestore {
                         (request.resource.data.firstTime == 'No' && request.resource.data.attendanceFrequency in ['Second time','Third time or more']))
                     && request.resource.data.createdAt == request.time;
       allow read: if isCheckInStaff() || isFollowUpStaff();
-      allow update, delete: if isAdmin();
+      // Admin profile edits include an audit timestamp; a repeat setDoc without
+      // updatedAt must never silently replace an existing registration.
+      allow update: if isAdmin()
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if isAdmin();
     }
 
     // Staff follow-up notes are private: never publicly query or write them.
