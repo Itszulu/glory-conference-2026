@@ -801,3 +801,25 @@ body #root main > footer.unified-footer small{
   padding:18px 25px!important;
  }
 }
+
+
+/* Stable mobile header geometry: keep both logo and hamburger inside viewport. */
+@media(max-width:650px){
+  header.nav{
+    left:12px!important;right:12px!important;
+    top:12px!important;transform:none!important;
+    width:calc(100% - 24px)!important;max-width:calc(100% - 24px)!important;
+    padding:0 12px!important;gap:8px!important;
+    box-sizing:border-box!important;
+  }
+  header.nav .brand{
+    flex:0 1 175px!important;min-width:0!important;
+    max-width:calc(100% - 58px)!important;
+  }
+  header.nav .brand-logo{max-width:100%!important;object-fit:contain!important}
+  header.nav .menu-button{
+    flex:0 0 44px!important;min-width:44px!important;
+    width:44px!important;height:44px!important;
+    margin:0 0 0 auto!important;box-sizing:border-box!important;
+  }
+}
