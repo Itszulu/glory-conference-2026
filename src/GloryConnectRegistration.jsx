@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Check, Copy, Printer } from 'lucide-react'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { db } from './firebase'
 import './glory-connect.css'
@@ -23,6 +24,7 @@ export default function GloryConnectRegistration() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [completedId, setCompletedId] = useState('')
+  const [copied, setCopied] = useState(false)
   const [form, setForm] = useState({
     fullName:'', phone:'', email:'', cityState:'', church:'',
     attendanceFrequency:'', affiliation:'', days:['Nov 12','Nov 13','Nov 14'],
@@ -68,24 +70,71 @@ export default function GloryConnectRegistration() {
     } finally {setBusy(false)}
   }
 
+  const copyId = async () => {
+    if (!completedId) return
+    try {
+      await navigator.clipboard.writeText(completedId)
+      setCopied(true)
+    } catch {
+      // Older mobile browsers or an insecure context may disable Clipboard API.
+      const field=document.createElement('textarea')
+      field.value=completedId
+      field.style.position='fixed'
+      field.style.opacity='0'
+      document.body.appendChild(field)
+      field.select()
+      const success=document.execCommand('copy')
+      field.remove()
+      if (success) setCopied(true)
+    }
+  }
+  const attendeeName=form.fullName.trim()
+  const attendingDays=form.days.map(day=>day.replace('Nov ','November ')).join(' · ')
   return <section className="page-light center register-page">
     <div className="registration-form">
-      {completedId ? <div className="registration-success" role="status">
-        <p className="eyebrow dark">REGISTRATION COMPLETE</p>
-        <h2>YOU'RE REGISTERED.</h2>
-        <p>{form.attendanceFrequency==='First time'
-          ? `We're glad to welcome you to your first Glory Conference, ${form.fullName.trim().split(/\s+/)[0]}.`
-          : `Welcome back to Glory Conference, ${form.fullName.trim().split(/\s+/)[0]}.`}</p>
-        <p>Your registration is confirmed. Our team can find you by name or registration number when you arrive.</p>
-        <p>Your registration number:</p>
-        <strong>{completedId}</strong>
-        <div className="registration-success-actions">
-          <button type="button" onClick={()=>navigator.clipboard?.writeText(completedId)}>COPY REGISTRATION ID</button>
-          <button type="button" onClick={()=>window.print()}>PRINT CONFIRMATION</button>
+      {completedId ? <>
+        <div className="registration-success gc-confirmation" role="status" aria-live="polite">
+          <div className="gc-confirmation-topline"><img src="/assets/branding/glory-conference-logo.webp" alt="Glory Conference" /><span>GLORY CONFERENCE 2026</span></div>
+          <div className="gc-confirmation-seal" aria-hidden="true"><Check size={30} strokeWidth={2.5}/></div>
+          <p className="gc-confirmation-overline">REGISTRATION SUCCESSFUL</p>
+          <h2>You're all set.</h2>
+          <p className="gc-confirmation-lead">Your place at <strong>The Outpouring</strong> is confirmed.</p>
+          <div className="gc-confirmation-details">
+            <div><span>REGISTERED ATTENDEE</span><strong>{attendeeName}</strong></div>
+            <div><span>CONFERENCE DATES</span><strong>12–14 November 2026</strong></div>
+            <div><span>LOCATION</span><strong>Nsukka, Nigeria</strong></div>
+          </div>
+          <div className="gc-confirmation-reference">
+            <div className="gc-confirmation-reference-text"><span>YOUR REGISTRATION REFERENCE</span><strong>{completedId}</strong></div>
+            <button className="gc-confirmation-copy" type="button" onClick={copyId} aria-label={copied?'Registration reference copied':'Copy registration reference'} title={copied?'Copied':'Copy reference'}>{copied?<Check size={19}/>:<Copy size={19}/>}<span>{copied?'Copied':'Copy'}</span></button>
+          </div>
+          <p className="gc-confirmation-arrival">When you arrive, our welcome team can find your registration using your name or reference. No printed document is required.</p>
+          <button type="button" className="gc-confirmation-print" onClick={()=>window.print()}><Printer size={19} aria-hidden="true"/> SAVE OR PRINT CONFIRMATION</button>
+          <p className="gc-confirmation-fine">An A4-ready confirmation is available if you'd like to keep a copy.</p>
         </div>
-        <p><strong>12–14 November 2026 · Nsukka, Nigeria</strong></p>
-        <p>We look forward to welcoming you to The Outpouring. You do not need to print your confirmation.</p>
-      </div> : <>
+        <article className="gc-confirmation-paper" aria-label="A4 printable conference registration confirmation">
+          <div className="gc-paper-header">
+            <img src="/assets/branding/glory-conference-logo.webp" alt="Glory Conference logo"/>
+            <div><span>GLORY CONFERENCE 2026</span><strong>THE OUTPOURING</strong></div>
+          </div>
+          <div className="gc-paper-main">
+            <p className="gc-paper-kicker">OFFICIAL REGISTRATION CONFIRMATION</p>
+            <h1>Registration confirmed.</h1>
+            <p className="gc-paper-subtitle">This document confirms your registration for Glory Conference 2026.</p>
+            <div className="gc-paper-divider"/>
+            <div className="gc-paper-record">
+              <div><span>ATTENDEE NAME</span><strong>{attendeeName}</strong></div>
+              <div><span>REGISTRATION REFERENCE</span><strong className="gc-paper-code">{completedId}</strong></div>
+              <div><span>CONFERENCE</span><strong>Glory Conference 2026 — The Outpouring</strong></div>
+              <div><span>DATES</span><strong>12–14 November 2026</strong></div>
+              <div><span>PLANNED ATTENDANCE</span><strong>{attendingDays}</strong></div>
+              <div><span>LOCATION</span><strong>Nsukka, Nigeria</strong></div>
+            </div>
+            <div className="gc-paper-note"><strong>ARRIVAL INFORMATION</strong><p>Visit the welcome desk when you arrive. Our team can locate your registration by name or reference. Printing this confirmation is optional.</p></div>
+          </div>
+          <footer className="gc-paper-footer"><span>GLORY CONFERENCE 2026</span><span>gloryconf.web.app</span></footer>
+        </article>
+      </> : <>
         <p className="eyebrow dark">GLORY CONFERENCE 2026</p>
         <h2>MAKE ROOM FOR<br/>THE OUTPOURING.</h2>
         <p className="reg-intro">Complete the form below to register for Glory Conference 2026. Fields marked with <span className="required">*</span> are required.</p>
