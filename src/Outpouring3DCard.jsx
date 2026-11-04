@@ -12,6 +12,7 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
   const hostRef = useRef(null)
   const iframeRef = useRef(null)
   const selectionRef = useRef({ colour: key, productId, design })
+  const initialSelectionRef = useRef({ colour: key, productId, design })
   const readyRef = useRef(false)
   const [nearViewport, setNearViewport] = useState(false)
 
@@ -59,13 +60,14 @@ export default function Outpouring3DCard({ colour = 'Black', productId = 'the-ou
     sendSelection()
   }, [key, productId, design, nearViewport])
 
+  const initial = initialSelectionRef.current
   return <div ref={hostRef} className="gc-merch-viewer-host">
     {nearViewport
       ? <iframe
           ref={iframeRef}
           className="merch-3d-iframe"
           title={`Interactive 3D T-shirt viewer: ${productId}`}
-          src={`/merch-3d-preview.html?embed=1&product=${encodeURIComponent(productId)}&design=${encodeURIComponent(design)}&color=${encodeURIComponent(key)}`}
+          src={`/merch-3d-preview.html?embed=1&product=${encodeURIComponent(initial.productId)}&design=${encodeURIComponent(initial.design)}&color=${encodeURIComponent(initial.colour)}`}
           loading="lazy"
           onLoad={() => sendSelection()}
           allow="fullscreen"
