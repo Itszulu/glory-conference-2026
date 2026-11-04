@@ -1,0 +1,38 @@
+/* Glory Conference venue: reuse existing navy / cyan visual language. */
+.gc-venue{background:radial-gradient(circle at 82% 20%,#0a597b,#052e56 44%,#021b38 88%);color:#fff;padding:clamp(65px,8vw,115px) clamp(18px,6vw,90px)}
+.gc-venue-layout{max-width:1280px;margin:auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.88fr);gap:clamp(30px,5vw,70px);align-items:center}
+.gc-venue-eyebrow{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:900;letter-spacing:.18em;color:#9be9ff;margin:0 0 24px}
+.gc-venue h2{font-size:clamp(43px,5.5vw,86px);color:#fff;line-height:.98;letter-spacing:-.063em;margin:0 0 25px;overflow-wrap:normal}
+.gc-venue h2 span{color:#9be9ff}
+.gc-venue-intro{font-size:15px;line-height:1.8;max-width:530px;color:#d0e4ef;margin:0 0 28px}
+.gc-venue-address{border-left:3px solid #9be9ff;padding:5px 0 5px 19px;display:grid;gap:5px;margin:0 0 30px}
+.gc-venue-address span{font-size:10px;font-weight:900;letter-spacing:.16em;color:#9be9ff;margin-bottom:6px}
+.gc-venue-address strong{font-size:17px;line-height:1.5;color:#fff}
+.gc-venue-cta-row{display:flex;flex-wrap:wrap;gap:12px}
+.gc-venue-primary,.gc-venue-secondary{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:51px;border-radius:30px;padding:12px 18px;text-decoration:none;font-size:11px;font-weight:900;letter-spacing:.045em;transition:transform .15s ease}
+.gc-venue-primary{color:#052a52!important;background:#e9faff;border:1px solid #e9faff}
+.gc-venue-secondary{color:#fff!important;border:1px solid rgba(214,243,252,.5);background:rgba(255,255,255,.055)}
+.gc-venue-primary:hover,.gc-venue-secondary:hover{transform:translateY(-2px)}
+.gc-venue-caveat{color:#b7d3e2;font-size:12px;line-height:1.7;margin:20px 0 0;max-width:570px}
+.gc-venue-map-card{border:1px solid rgba(173,226,248,.28);border-radius:18px;background:#082c4b;overflow:hidden;box-shadow:0 24px 60px rgba(0,12,32,.18)}
+.gc-venue-map-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:18px 20px;border-bottom:1px solid rgba(173,226,248,.2)}
+.gc-venue-map-heading span{display:flex;align-items:center;gap:9px;color:#bfeeff;font-size:11px;letter-spacing:.08em;font-weight:900}
+.gc-venue-map-heading small{color:#a7c9de;font-size:11px}
+.gc-venue-map-placeholder{min-height:310px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:22px;text-align:center;background:radial-gradient(circle,#0f5676,#072f53 72%);box-sizing:border-box}
+.gc-venue-map-icon{width:76px;height:76px;border:1px solid rgba(164,234,255,.3);background:rgba(160,220,243,.08);border-radius:50%;display:grid;place-items:center;color:#9be9ff}
+.gc-venue-map-placeholder strong{font-size:20px;color:#fff}
+.gc-venue-map-placeholder p{font-size:13px;line-height:1.65;color:#bdd5e4;max-width:295px;margin:0}
+.gc-venue-map-placeholder button{display:flex;align-items:center;gap:9px;border:0;background:#e9faff;color:#062b4b;border-radius:30px;padding:12px 20px;font-size:12px;font-weight:900;cursor:pointer}
+.gc-venue-map-card iframe{width:100%;display:block;border:0;height:350px;background:#ecf3f8}
+.gc-venue-map-bottom{display:flex;align-items:center;gap:8px;padding:16px 20px;color:#d2e5f0;font-size:12px}
+.gc-venue-compact{background:rgba(180,225,245,.075);border:1px solid rgba(180,225,245,.25);border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 20px;margin:22px 0 4px;text-align:left}
+.gc-venue-compact-info{display:flex;align-items:flex-start;gap:12px;min-width:0;color:#9be9ff}
+.gc-venue-compact-info>div{display:grid;gap:4px}
+.gc-venue-compact-info strong{font-size:13px;color:#fff}
+.gc-venue-compact-info span{font-size:12px;color:#d0e4ef;line-height:1.4}
+.gc-venue-compact-info small{font-size:10px;color:#aac9da}
+.gc-venue-link{flex:none;border:1px solid #a9e9fa;border-radius:30px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;background:#e9faff;color:#062b4b!important;font-size:11px;font-weight:900;padding:12px 15px;min-height:42px;box-sizing:border-box}
+.gc-venue-print{display:none}
+@media(max-width:820px){.gc-venue-layout{grid-template-columns:1fr}.gc-venue h2{font-size:clamp(42px,8vw,70px)}}
+@media(max-width:560px){.gc-venue{padding:66px 22px}.gc-venue-map-placeholder{min-height:270px}.gc-venue-cta-row>a{width:100%;box-sizing:border-box}.gc-venue-compact{flex-direction:column;align-items:stretch;padding:16px}.gc-venue-link{align-self:stretch;justify-content:center}.gc-venue-map-heading{padding:15px}.gc-venue-map-heading small{font-size:10px}.gc-venue-address strong{font-size:15px}}
+@media print{.gc-venue,.gc-venue-compact{display:none!important}}
