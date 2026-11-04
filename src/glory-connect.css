@@ -1,26 +1,33 @@
-/* Glory Connect: scoped styles, leaving the existing shop and conference layout untouched */
-.gc-connect-registration .gc-connect-progress{display:flex;align-items:center;gap:8px;margin:0 0 28px}
-.gc-connect-progress>span{width:60px;height:5px;border-radius:8px;background:#62829a}
-.gc-connect-progress>span.active{background:#96ecff}
-.gc-connect-progress strong{margin-left:12px;font-size:11px;letter-spacing:.12em;color:#c6ebfa}
-.gc-connect-section{grid-column:1/-1;padding:0 0 8px}
-.gc-connect-section strong{color:#98e9ff;letter-spacing:.12em;font-size:12px}
-.gc-connect-section p{color:#e3eff6;font-size:14px;line-height:1.5;margin:8px 0}
-.gc-connect-registration .gc-connect-form{padding:0!important}
-.gc-connect-choice{border:0;padding:0;margin:0;min-width:0;display:flex;flex-direction:column;gap:9px}
-.gc-connect-choice legend{font-size:11px;color:#9be9ff;font-weight:800;letter-spacing:.08em;padding:0;margin-bottom:12px}
-.gc-connect-registration .gc-connect-choice>label,.gc-connect-registration .gc-connect-days>label{display:flex!important;align-items:center;gap:12px;padding:15px 16px;border:1px solid #ffffff40;border-radius:12px;background:#ffffff09;cursor:pointer;font-size:14px!important;font-weight:650!important;letter-spacing:normal!important;color:#fff!important}
-.gc-connect-registration .gc-connect-choice label.chosen,.gc-connect-registration .gc-connect-days label.chosen{background:#c9f2ff19;border-color:#9be9ff}
-.gc-connect-registration .gc-connect-choice input[type=radio],.gc-connect-registration .gc-connect-choice input[type=checkbox]{appearance:auto!important;width:18px!important;height:18px!important;min-height:0!important;flex:0 0 18px!important;margin:0!important;accent-color:#9be9ff}
-.gc-connect-days{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.gc-connect-registration .gc-connect-consent{display:flex!important;flex-direction:row!important;align-items:flex-start;gap:12px;font-size:13px!important;line-height:1.6!important;letter-spacing:normal!important;color:#e8f8ff!important}
-.gc-connect-registration .gc-connect-consent input{appearance:auto!important;min-height:20px!important;width:20px!important;flex:0 0 20px!important;margin:1px 0 0!important;accent-color:#69d8f4}
-.gc-connect-privacy{font-size:12px;line-height:1.6;color:#c5deec;margin:0}
-.gc-connect-actions{grid-column:1/-1;display:flex;gap:12px;flex-wrap:wrap}
-.gc-connect-actions>button{cursor:pointer;min-height:54px;padding:14px 22px;font-weight:800;border-radius:28px;border:1px solid #d0f2fb;background:transparent;color:#fff}
-.gc-connect-actions>button[type=submit]{background:#e9faff;color:#052a52;flex:1}
-.gc-connect-actions>button:disabled{opacity:.6;cursor:wait}
-.gc-connect-success{max-width:830px;margin:0 auto}
+/* Registration intentionally inherits the original register.css form styles,
+   including labels, select menus, grid spacing, date buttons, and submit button. */
+.register-page .reg-grid .gc-registration-consent{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:flex-start;
+  gap:12px;
+  font-size:12px!important;
+  line-height:1.6;
+  letter-spacing:normal!important;
+  color:#c1d8e9!important;
+}
+.register-page .reg-grid .gc-registration-consent input[type="checkbox"]{
+  appearance:auto!important;
+  display:block!important;
+  margin:2px 0 0!important;
+  padding:0!important;
+  width:20px!important;
+  height:20px!important;
+  min-height:20px!important;
+  flex:0 0 20px;
+  accent-color:#9be9ff;
+}
+.register-page .gc-registration-privacy{
+  grid-column:1/-1;
+  color:#c1d8e9;
+  font-size:12px;
+  line-height:1.65;
+  margin:0;
+}
 .gc-connect-admin{display:grid;gap:18px;color:#092b4e}
 .gc-connect-admin-head h3{font-size:clamp(26px,3vw,42px);margin:4px 0;color:#082a4c}
 .gc-connect-admin-head p{color:#556f82;line-height:1.6;margin:0}
@@ -55,14 +62,9 @@
 .gc-connect-alert{padding:14px;border:1px solid #bcd5e1;border-radius:8px;color:#123c56;background:#eff7fb}
 .gc-connect-whatsapp{display:inline-flex;align-items:center;justify-content:center;border-radius:8px;background:#e8f6ec;color:#0e5230;font-weight:800;font-size:12px;padding:10px 14px;text-decoration:none}
 @media(max-width:700px){
- .gc-connect-days{grid-template-columns:1fr}
  .gc-connect-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
  .gc-connect-toolbar,.gc-connect-followup-form{grid-template-columns:1fr}
  .gc-connect-person{align-items:flex-start;flex-wrap:wrap}
  .gc-connect-person button{margin-left:59px}
- .gc-connect-registration .gc-connect-section{grid-column:1}
- .gc-connect-registration .gc-connect-choice{grid-column:1}
- .gc-connect-registration .gc-connect-form{gap:18px!important}
- .gc-connect-actions>button{width:100%}
 }
 @media print{.gc-connect-success .registration-success-actions{display:none}}
