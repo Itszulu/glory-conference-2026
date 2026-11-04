@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import PrayerGuidePage from './PrayerGuidePage.jsx'
 import { collection, doc, getDoc, getDocs, onSnapshot, serverTimestamp, setDoc, updateDoc, runTransaction, writeBatch, deleteDoc } from 'firebase/firestore'
 import { onAuthStateChanged, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from 'firebase/auth'
@@ -38,7 +39,56 @@ const merchMediaPath=(p,colour)=>{const key=merchColourKey(colour);return p.medi
 const mergeMerchProduct=(p,saved)=>{const merged={...p,...saved};if(Array.isArray(merged.colours)&&merged.colours.includes('White'))merged.colours=['White',...merged.colours.filter(c=>c!=='White')];return merged}
 const makeId=prefix=>prefix+Array.from(crypto.getRandomValues(new Uint8Array(12)),n=>(n%36).toString(36).toUpperCase()).join('')
 function ThemeArtwork({className=''}){const media=useSiteMedia();const[failed,setFailed]=useState(false);if(failed)return <h1 className={'theme-fallback '+className}><span>THE</span> OUTPOURING</h1>;return <img loading="lazy" decoding="async" className={'theme-art '+className} src={media.theme} alt="The Outpouring" onError={()=>setFailed(true)}/>}
-export function Header(){const media=useSiteMedia();const[scrolled,setScrolled]=useState(false),[open,setOpen]=useState(false);useEffect(()=>{const f=()=>setScrolled(scrollY>30);f();addEventListener('scroll',f);return()=>removeEventListener('scroll',f)},[]);useEffect(()=>{document.body.classList.toggle('menu-open',open);return()=>document.body.classList.remove('menu-open')},[open]);useEffect(()=>{const close=()=>setOpen(false);addEventListener('gc-close-nav',close);return()=>removeEventListener('gc-close-nav',close)},[]);useEffect(()=>{const mq=window.matchMedia('(min-width: 1200px)');const sync=()=>setOpen(false);mq.addEventListener('change',sync);window.addEventListener('orientationchange',sync);return()=>{mq.removeEventListener('change',sync);window.removeEventListener('orientationchange',sync)}},[]);return <><header className={scrolled?'nav nav-scrolled':'nav'}><a className="brand" href="/"><img loading="lazy" decoding="async" className="brand-logo" src={media.logo} alt="Glory Conference 2026"/></a><nav className={open?'nav-links open':'nav-links'}><div className="mobile-menu-head"><span>MENU</span><button aria-label="Close menu" onClick={()=>setOpen(false)}>×</button></div>{nav.map(([n,u])=><a key={u} href={u}>{n}</a>)}<a className="mobile-register" href="/register">REGISTER →</a><p className="mobile-menu-note">GLORY CONFERENCE 2026 · THE OUTPOURING</p></nav><a className="nav-cta" href="/register">REGISTER</a><button className="menu-button" aria-label="Open menu" aria-expanded={open} onClick={()=>setOpen(true)}><span/><span/></button></header><button className={open?'menu-backdrop open':'menu-backdrop'} aria-label="Close menu" onClick={()=>setOpen(false)}/></>}
+export function Header(){
+  const media=useSiteMedia();
+  const [scrolled,setScrolled]=useState(false);
+  const [open,setOpen]=useState(false);
+  useEffect(()=>{
+    const sync=()=>setScrolled(window.scrollY>30);
+    sync();window.addEventListener('scroll',sync,{passive:true});
+    return()=>window.removeEventListener('scroll',sync);
+  },[]);
+  useEffect(()=>{
+    document.body.classList.toggle('menu-open',open);
+    return()=>document.body.classList.remove('menu-open');
+  },[open]);
+  useEffect(()=>{
+    const close=()=>setOpen(false);
+    window.addEventListener('gc-close-nav',close);
+    const onKey=e=>{if(e.key==='Escape')close()};
+    window.addEventListener('keydown',onKey);
+    const mq=window.matchMedia('(min-width: 1200px)');
+    const onResize=()=>{if(mq.matches)close()};
+    mq.addEventListener('change',onResize);
+    window.addEventListener('orientationchange',onResize);
+    return()=>{
+      window.removeEventListener('gc-close-nav',close);
+      window.removeEventListener('keydown',onKey);
+      mq.removeEventListener('change',onResize);
+      window.removeEventListener('orientationchange',onResize);
+    };
+  },[]);
+  return <>
+    <header className={scrolled?'nav nav-scrolled':'nav'}>
+      <a className="brand" href="/"><img loading="lazy" decoding="async" className="brand-logo" src={media.logo} alt="Glory Conference 2026"/></a>
+      <nav className="nav-links" aria-label="Desktop navigation">
+        {nav.map(([name,url])=><a key={url} href={url}>{name}</a>)}
+      </nav>
+      <a className="nav-cta" href="/register">REGISTER</a>
+      <button className="menu-button" aria-label="Open menu" aria-controls="gc-mobile-navigation" aria-expanded={open} onClick={()=>setOpen(true)}><span/><span/></button>
+    </header>
+    {open&&createPortal(<>
+      <button className="gc-mobile-nav-backdrop" aria-label="Close navigation" onClick={()=>setOpen(false)}/>
+      <nav id="gc-mobile-navigation" className="gc-mobile-nav-drawer" aria-label="Mobile navigation">
+        <div className="gc-mobile-nav-head"><strong>MENU</strong><button type="button" aria-label="Close menu" onClick={()=>setOpen(false)}>×</button></div>
+        {nav.map(([name,url])=><a key={url} href={url} onClick={()=>setOpen(false)}>{name}</a>)}
+        <a className="gc-mobile-nav-register" href="/register" onClick={()=>setOpen(false)}>REGISTER →</a>
+        <p className="gc-mobile-nav-note">GLORY CONFERENCE 2026 · THE OUTPOURING</p>
+      </nav>
+    </>,document.body)}
+  </>;
+}
+
 function Countdown(){const target=new Date('2026-11-12T16:00:00+01:00').getTime();const[getLeft,setGetLeft]=useState(()=>Math.max(0,target-Date.now()));useEffect(()=>{const tick=()=>setGetLeft(Math.max(0,target-Date.now()));tick();const id=setInterval(tick,1000);return()=>clearInterval(id)},[]);const total=Math.floor(getLeft/1000),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),mins=Math.floor(total%3600/60),secs=total%60;const pad=n=>String(n).padStart(2,'0');return <section className="countdown" aria-label="Countdown to Glory Conference 2026"><p className="eyebrow">COUNTDOWN TO THE OUTPOURING</p><div className="countdown-grid"><div><strong>{days}</strong><span>DAYS</span></div><div><strong>{pad(hours)}</strong><span>HOURS</span></div><div><strong>{pad(mins)}</strong><span>MINS</span></div><div><strong>{pad(secs)}</strong><span>SECS</span></div></div><p className="countdown-date">NOVEMBER 12, 2026 · 4:00PM · NSUKKA</p></section>}
 export function Footer(){const media=useSiteMedia();const links=[['HOME','/'],['ABOUT','/about'],['PASTORS & MINISTERS','/pastors-ministers'],['VOLUNTEER','/volunteer'],['PRAYER GUIDE','/prayer-guide'],['SCHEDULE','/schedule'],['TESTIMONIES','/testimonies'],['MERCH','/merch'],['GIVE','/giving'],['REGISTER','/register']];return <footer className="site-footer footer-clean unified-footer"><img className="footer-theme" src={media.theme} alt="The Outpouring"/><nav className="footer-nav" aria-label="Footer navigation">{links.map(([n,u])=><a key={u} href={u}>{n}</a>)}</nav><div className="footer-meta"><span>NOVEMBER 12–14, 2026</span><span>NSUKKA · NIGERIA</span><span>+234 703 640 3016</span></div><small>© 2026 GLORY CONFERENCE. ALL RIGHTS RESERVED.</small></footer>}
 function Shell({eyebrow,title,children}){return <main><Header/><section className="page-hero"><div className="rain"/><p className="eyebrow">{eyebrow}</p><h1>{title}</h1><p>GLORY CONFERENCE 2026 · THE OUTPOURING</p></section>{children}<Footer/></main>}
