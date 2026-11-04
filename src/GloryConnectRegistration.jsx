@@ -75,7 +75,7 @@ export default function GloryConnectRegistration() {
       {completedId ? <div className="registration-success gc-connect-success" role="status">
         <p className="eyebrow dark">WELCOME TO GLORY CONFERENCE 2026</p>
         <h2>YOUR PLACE IS RESERVED.</h2>
-        <p>{form.fullName.trim().split(/\s+/)[0]}, we're looking forward to welcoming you to The Outpouring.</p>
+        <p>{form.attendanceFrequency==='First time'?`It's wonderful to have you joining us for the first time, ${form.fullName.trim().split(/\s+/)[0]}. Our welcome team will be glad to help you settle in.`:`Welcome back, ${form.fullName.trim().split(/\s+/)[0]}! We're glad you're part of The Outpouring again.`}</p>
         <p><strong>November 12–14, 2026 · Nsukka, Nigeria</strong></p>
         <p>Registration reference</p><strong>{completedId}</strong>
         <div className="registration-success-actions">
@@ -95,7 +95,7 @@ export default function GloryConnectRegistration() {
         <form className="reg-grid gc-connect-form" onSubmit={step===1?next:submit}>
           {step===1 ? <>
             <div className="gc-connect-section"><strong>01 · ABOUT YOU</strong><p>Just enough to recognize and welcome you.</p></div>
-            <label className="full">FULL NAME *<input autoFocus required autoComplete="name" maxLength={120} value={form.fullName} onChange={e=>set('fullName',e.target.value)} placeholder="Your first and last name"/></label>
+            <label className="full">FULL NAME *<input required autoComplete="name" maxLength={120} value={form.fullName} onChange={e=>set('fullName',e.target.value)} placeholder="Your first and last name"/></label>
             <label>WHATSAPP / PHONE *<input required type="tel" inputMode="tel" autoComplete="tel" maxLength={30} value={form.phone} onChange={e=>set('phone',e.target.value)} placeholder="e.g. 08012345678"/></label>
             <label>EMAIL (OPTIONAL)<input type="email" autoComplete="email" maxLength={254} value={form.email} onChange={e=>set('email',e.target.value)} placeholder="you@example.com"/></label>
             <label>STATE OF RESIDENCE *<select required value={form.cityState} onChange={e=>set('cityState',e.target.value)}><option value="">Select your state</option>{locations.map(place=><option key={place} value={place}>{place}</option>)}</select></label>
