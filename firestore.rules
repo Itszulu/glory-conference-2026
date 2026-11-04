@@ -17,7 +17,7 @@ service cloud.firestore {
     }
 
     match /registrations/{id} {
-      allow create: if request.resource.data.keys().hasOnly(['registrationId','conferenceYear','title','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','createdAt'])
+      allow create: if request.resource.data.keys().hasOnly(['registrationId','conferenceYear','title','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','attendanceFrequency','affiliation','followUpConsent','consentRecordedAt','createdAt'])
                     && request.resource.data.keys().hasAll(['registrationId','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','createdAt'])
                     && (!('title' in request.resource.data) || request.resource.data.title in ['', 'Pastor', 'Reverend', 'Prophet', 'Bishop', 'Apostle', 'Minister', 'Evangelist'])
                     && request.resource.data.conferenceYear == 2026
@@ -32,10 +32,10 @@ service cloud.firestore {
                     && request.resource.data.email is string
                     && request.resource.data.email.size() <= 254
                     && request.resource.data.church is string
-                    && request.resource.data.church.size() >= 2
+                    && request.resource.data.church.size() >= 0
                     && request.resource.data.church.size() <= 150
-                    && request.resource.data.gender in ['Male','Female']
-                    && request.resource.data.ageRange in ['Under 18','18–24','25–34','35–44','45–54','55+']
+                    && request.resource.data.gender in ['','Male','Female']
+                    && request.resource.data.ageRange in ['','Under 18','18–24','25–34','35–44','45–54','55+']
                     && request.resource.data.cityState is string
                     && request.resource.data.cityState.size() > 0
                     && request.resource.data.cityState.size() <= 40
@@ -47,8 +47,40 @@ service cloud.firestore {
                     && request.resource.data.accommodation in ['Yes','No']
                     && request.resource.data.firstTime in ['Yes','No']
                     && request.resource.data.heardFrom in ['Church','Friend / Family','WhatsApp','Instagram','Facebook','YouTube','Other']
+                    && (!('attendanceFrequency' in request.resource.data) ||
+                        request.resource.data.attendanceFrequency in ['First time','Second time','Third time or more'])
+                    && (!('affiliation' in request.resource.data) ||
+                        request.resource.data.affiliation in ['Host ministry','Visiting from another church','Not currently part of a church','Prefer not to say'])
+                    && (!('followUpConsent' in request.resource.data) ||
+                        request.resource.data.followUpConsent is bool)
+                    && (!('consentRecordedAt' in request.resource.data) ||
+                        request.resource.data.consentRecordedAt == request.time)
+                    && (!('attendanceFrequency' in request.resource.data) ||
+                        (request.resource.data.firstTime == 'Yes' && request.resource.data.attendanceFrequency == 'First time') ||
+                        (request.resource.data.firstTime == 'No' && request.resource.data.attendanceFrequency in ['Second time','Third time or more']))
                     && request.resource.data.createdAt == request.time;
       allow read, update, delete: if isAdmin();
+    }
+
+    // Staff follow-up notes are private: never publicly query or write them.
+    match /followUps/{registrationId} {
+      allow read: if isAdmin();
+      allow create, update: if isAdmin()
+        && exists(/databases/$(database)/documents/registrations/$(registrationId))
+        && request.resource.data.keys().hasOnly(['registrationId','status','owner','notes','nextAction','lastContactOutcome','updatedBy','updatedAt'])
+        && request.resource.data.registrationId == registrationId
+        && request.resource.data.status in ['Unassigned','Awaiting contact','Contacted','Completed','Do not contact']
+        && request.resource.data.owner is string
+        && request.resource.data.owner.size() <= 120
+        && request.resource.data.notes is string
+        && request.resource.data.notes.size() <= 2000
+        && request.resource.data.nextAction is string
+        && request.resource.data.nextAction.size() <= 240
+        && request.resource.data.lastContactOutcome is string
+        && request.resource.data.lastContactOutcome.size() <= 240
+        && request.resource.data.updatedBy == request.auth.uid
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if isAdmin();
     }
 
     match /checkIns/{id} {
