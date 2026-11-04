@@ -74,8 +74,8 @@ export default function GloryConnectRegistration() {
         <p className="eyebrow dark">REGISTRATION COMPLETE</p>
         <h2>YOU'RE REGISTERED.</h2>
         <p>{form.attendanceFrequency==='First time'
-          ? `We're glad to welcome you to your first Glory Conference, ${form.fullName.trim().split(/\\s+/)[0]}.`
-          : `Welcome back to Glory Conference, ${form.fullName.trim().split(/\\s+/)[0]}.`}</p>
+          ? `We're glad to welcome you to your first Glory Conference, ${form.fullName.trim().split(/\s+/)[0]}.`
+          : `Welcome back to Glory Conference, ${form.fullName.trim().split(/\s+/)[0]}.`}</p>
         <p>Your registration is confirmed. Our team can find you by name or registration number when you arrive.</p>
         <p>Your registration number:</p>
         <strong>{completedId}</strong>
