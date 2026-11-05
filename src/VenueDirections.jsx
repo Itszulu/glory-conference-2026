@@ -65,6 +65,7 @@ export function VenueDirections({compact=false}){
     activeRef.current=true
     let widget
     let handler
+    let disposed=false
     let marker
     const start=async()=>{
       if(!mapsKey){setLoading(false);setError('Google Maps key is missing. Add VITE_GOOGLE_MAPS_API_KEY to .env.local and restart your server.');return}
@@ -73,14 +74,15 @@ export function VenueDirections({compact=false}){
         const [{Map},{PlaceAutocompleteElement}]=await Promise.all([
           maps.importLibrary('maps'),maps.importLibrary('places')
         ])
-        if(!activeRef.current)return
+        if(disposed||!activeRef.current)return
         if(!mapHost.current||!placeWidgetHost.current)throw new Error('Map container unavailable.')
         const map=new Map(mapHost.current,{
           center:destination,zoom:14,mapTypeControl:false,streetViewControl:false,
           fullscreenControl:true,gestureHandling:'cooperative'
         })
         mapRef.current=map
-        marker=new maps.Marker({position:destination,map,title:'Ikenga Hotel — navigation landmark, not verified conference entrance'})
+        // A Circle marks the approximate landmark without using deprecated google.maps.Marker.
+        marker=new maps.Circle({center:destination,radius:45,map,strokeColor:'#067ba6',strokeWeight:3,strokeOpacity:1,fillColor:'#0d9ccb',fillOpacity:.85})
         markersRef.current.push(marker)
 
         widget=new PlaceAutocompleteElement()
@@ -91,7 +93,8 @@ export function VenueDirections({compact=false}){
         widget.locationBias={center:destination,radius:25000}
         widget.style.width='100%'
         widget.classList.add('gc-google-places-widget')
-        placeWidgetHost.current.replaceChildren(widget)
+        // Google owns only this empty mount element; React never renders children inside it.
+        placeWidgetHost.current.appendChild(widget)
         placeWidgetRef.current=widget
         handler=async event=>{
           const serial=++routeSerialRef.current
@@ -103,21 +106,22 @@ export function VenueDirections({compact=false}){
             const place=event.placePrediction?.toPlace?.()
             if(!place)throw new Error('Please select one of the suggestions from Google Maps.')
             await place.fetchFields({fields:['displayName','formattedAddress','location']})
-            if(!activeRef.current||serial!==routeSerialRef.current)return
+            if(disposed||!activeRef.current||serial!==routeSerialRef.current)return
             if(!place.location)throw new Error('Google did not return a mapped location. Please choose another result.')
             setOrigin({location:place.location,name:place.displayName||place.formattedAddress||'Selected location',address:place.formattedAddress||''})
           }catch(err){
-            if(activeRef.current&&serial===routeSerialRef.current)setError(err?.message||'Could not load the selected location.')
+            if(!disposed&&activeRef.current&&serial===routeSerialRef.current)setError(err?.message||'Could not load the selected location.')
           }
         }
         widget.addEventListener('gmp-select',handler)
         setLoading(false)
       }catch(err){
-        if(activeRef.current){setLoading(false);setError(err?.message||'The map could not load.')}
+        if(!disposed&&activeRef.current){setLoading(false);setError(err?.message||'The map could not load.')}
       }
     }
     start()
     return ()=>{
+      disposed=true
       activeRef.current=false
       ++routeSerialRef.current
       if(widget&&handler)widget.removeEventListener('gmp-select',handler)
@@ -188,7 +192,8 @@ export function VenueDirections({compact=false}){
         <div className="gc-venue-address"><span>OFFICIAL CONFERENCE ADDRESS</span><strong>{conferenceVenue.addressLine1}</strong><strong>{conferenceVenue.addressLine2}</strong><strong>{conferenceVenue.city}</strong></div>
         <form className="gc-journey-form" onSubmit={plan}>
           <label id="gc-google-origin-label">WHERE ARE YOU COMING FROM?</label>
-          <div ref={placeWidgetHost} className="gc-google-origin" aria-labelledby="gc-google-origin-label">{loading&&<span>Loading Google place search…</span>}</div>
+          <div ref={placeWidgetHost} className="gc-google-origin" aria-labelledby="gc-google-origin-label"/>
+          {loading&&<p className="gc-google-loading" role="status">Loading Google place search…</p>}
           {origin&&<div className="gc-location-selected"><CheckCircle2 size={17} aria-hidden="true"/><span>Selected starting point: <strong>{origin.name}</strong>{origin.address&&<small>{origin.address}</small>}</span></div>}
           <fieldset className="gc-journey-modes"><legend>HOW WILL YOU TRAVEL?</legend>
             <button type="button" className={mode==='DRIVING'?'selected':''} onClick={()=>changeMode('DRIVING')} aria-pressed={mode==='DRIVING'}>By car</button>
