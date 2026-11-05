@@ -1,73 +1,66 @@
-# Glory Conference 2026 — Role-Based Operations Runbook
+# Glory Conference 2026 — Spark Plan Operations
 
-## The operating model
-All staff use `https://gloryconf.org/admin`, but **each sees only the workspace for their assigned role**, with Firestore rules enforcing the restrictions behind the UI.
+**Billing:** Firebase Spark (no Blaze upgrade). The project uses Firebase Hosting, Firestore and Email/Password Authentication. Staff login accounts are created manually in the Firebase Console, and their role assignments are managed in the protected website dashboard. This implementation does not deploy Cloud Functions.
 
-| Role in Firebase | Workspace | Permissions |
+## Account privileges
+
+| Role | Visible workspace | Allowed work |
 | --- | --- | --- |
-| `admin` (main admin) | All operations, staff access, attendee records, commerce, website | Full supervision and operational-role management |
-| `registration` | **Registration desk only** | Search registrations, create walk-in registration; **no check-in or check-out** |
-| `checkin` | **Attendance desk only** | Search registered attendees, record each day's check-in and check-out; **no new registrations** |
-| `followup` | **Glory Connect only** | Work with follow-up notes using assigned privileges, not admin/attendance |
+| `admin` | All administration sections | Staff role assignments, attendee records, website management, registration, attendance, follow-up, commerce |
+| `registration` | Registration desk only | Find existing attendee, create walk-in registration; not check-in/check-out |
+| `checkin` | Attendance desk only | Find registered attendees; record arrival and departure per day; not create registrations |
+| `followup` | Glory Connect only | View permitted attendee data and record follow-up; not registration or check-in |
 
-The public `/register` form includes an optional ministry title (Pastor, Reverend, Prophet, Bishop, Apostle, Minister, Evangelist). The selected title is stored in the registration and shown on the attendee's confirmation.
+The public `/register` includes an optional **ministry title**: Pastor, Reverend, Prophet, Bishop, Apostle, Minister or Evangelist. A selected title is stored in Firestore and displayed on confirmation.
 
-## Safe deployment order
-These changes introduce Cloud Functions in `functions/` and change Firestore role permissions. Hosting alone is **not sufficient**.
+## Deployment commands — no Functions
 
-From Windows CMD in the project:
+In Windows CMD, from `glory-conference-2026`:
+
 ```cmd
 git pull --rebase origin feature/glory-connect-registration-followup
-npm install --prefix functions
 npm run build
-firebase deploy --only functions --project gloryconf
 firebase deploy --only firestore:rules --project gloryconf
 firebase deploy --only hosting --project gloryconf
 ```
 
-**Do not push Hosting until both Functions and Firestore rules deploy successfully.** Firebase Cloud Functions requires the project's billing and deployment services to be correctly configured; Google Cloud billing and API usage may produce charges. You may be prompted to enable Cloud Functions, Cloud Build, Artifact Registry and other services.
+If `firebase deploy` fails with "Failed to make request" for the Hosting API, investigate the connection or API response using `firebase deploy --only hosting --project gloryconf --debug`. Do not assume it is a billing error. Check the Firebase Hosting quota and connection separately. Do not deploy `functions`; Spark does not support deploying the Cloud Functions backend used in the prior draft.
 
-Verify the login path on `gloryconf.org/admin`. A Vite build passing does not replace actual Firebase permission tests.
+The Firestore rules must be deployed successfully before deploying the new registration/attendance interfaces.
 
-## Creating a staff login (main admin)
-1. As an existing main administrator (a Firebase Authentication user with `admins/{uid}.role = "admin"`), sign in to `/admin`.
-2. Select **Staff access → Create new login**.
-3. Enter the staff name, email, and exactly one role (Registration, Attendance, or Glory Connect). Click **Create staff login**.
-4. A server-side callable verifies your administrator role, creates a Firebase Auth user with an unguessable password, and stores a Firestore operational role. The browser never receives a password or server credentials.
-5. **Copy the one-time setup link** and send it privately to the correct staff member, not a public group. The staff member uses it to set a password and then signs in at `/admin`.
-6. To connect an Auth account that already exists, select **Link existing login**, copy its Firebase Auth UID from [Firebase Console Authentication Users](https://console.firebase.google.com/project/gloryconf/authentication/users), and assign the role.
-7. To change permissions, select a different role under their profile. To revoke access, select **Revoke access**, which calls the authenticated server to disable their Firebase Auth account and remove their staff role document. Attendee records remain intact.
+## How the main admin creates a staff login
 
-**Security:** The callable checks `admins/{currentUserUid}.role === "admin"` on the server and permits only the operational roles. It cannot create another full administrator. Existing administrator roles are protected by Firestore rules. Do not share setup links or copy them to untrusted chats.
+1. Sign in to [Firebase Console → Authentication → Users](https://console.firebase.google.com/project/gloryconf/authentication/users) with the Firebase project owner account.
+2. Choose **Add user**, create the staff member using their email and a temporary strong password, and copy the exact **User UID** from the Auth Users list.
+3. Sign in at `https://gloryconf.org/admin` as the main admin whose Firestore `admins/{uid}` document has `role: "admin"`.
+4. Open **Staff access**. Paste the Firebase Authentication UID, enter their name and login email, and assign exactly one operational role.
+5. Save **Assign staff access**. The staff member now signs in at `/admin` with the credentials from Firebase Authentication.
+6. Ask staff to use **Forgot Password** to set their own password; do not send passwords in public/group chats. They will see only the assigned workspace.
 
-## Registration officer workflow
-1. Sign in and see only **Registration desk**.
-2. Search a person's name, phone number or registration ID to avoid duplicates.
-3. If not registered, enter name, phone, city/state, first-time/returning status; ministry title, church, age, gender and email are optional.
-4. Only tick follow-up consent if the attendee explicitly agrees.
-5. Save and read back the generated reference. Ask the guest to proceed to attendance check-in with an attendance officer.
+**Role changes**: Main admin → Staff access → Change role. The staff member signs out and signs back in to refresh their dashboard. The security rules apply role restrictions even if a browser briefly displays an old view.
 
-## Attendance officer workflow
-1. Sign in and see only **Attendance desk**.
-2. Select `Nov 12`, `Nov 13` or `Nov 14`; search a registered guest.
-3. Confirm identity and select **CHECK IN**. The system writes one arrival record per person per day, including `checkedInAt` and `checkedInBy`.
-4. When they leave, find the same record and choose **CHECK OUT**. Firestore records `checkedOutAt` and `checkedOutBy`, preserving the original arrival.
-5. Repeat check-in and repeat check-out attempts fail; operations use Firestore transactions. Attendance staff cannot modify registrations.
-6. If the guest has no registration, send them to the registration officer. Only the main admin can delete or reverse attendance history.
+**Revocation**: Main admin → Staff access → Revoke access removes the Firestore permission document. The account may still authenticate but cannot access protected dashboard data. For complete login lockout, additionally **disable the user in Firebase Authentication → Users**. The Spark plan cannot automatically disable Authentication accounts from ordinary browser code.
 
-## Release verification checklist
-- [ ] New ministry title selected on public registration appears in confirmation and admin records.
-- [ ] Existing admin account loads the full overview and Staff access.
-- [ ] Main admin can create a **test** staff login, obtain the setup link and sign in with that account on another browser.
-- [ ] Registration login sees only Registration desk; creating a walk-in works; attempting check-in is denied by Firestore.
-- [ ] Attendance login sees only Attendance desk; existing attendee check-in and check-out work and record actor/time; attempting registration creation is denied.
-- [ ] Follow-up login sees only Glory Connect; unauthorized attendance/registration changes are denied.
-- [ ] Role change updates future access; revoked staff cannot sign in.
-- [ ] Test all three event days and duplicate operations, offline/error paths, mobile display, keyboard navigation and browser console.
-- [ ] Preserve original homepage and Directions page during rollout.
+**Important:** Staff Access assigns a role to the UID you provide. Confirm the UID and email belong to the intended user. The UI cannot independently validate the Auth identity from Firestore.
 
-## Known boundaries
-- Account setup links are **generated**, not automatically emailed: the admin securely sends them to staff. Automatic invitation emails require a connected email delivery provider.
-- The code-level test suite validates architecture and regression markers. End-to-end real Firebase Auth and Firestore tests must be completed with test accounts.
-- Existing registration titles lost during the old bug cannot be reconstructed automatically.
-- Checkout is one departure record per guest per conference day; this version does not model repeated departures/returns within one day.
+## Registration and attendance workflows
+
+**Registration officer:** Search for an existing attendee by name, phone or reference before adding a new entry. Complete name, phone, city/state and first-time status; ministry title is optional. Record optional follow-up consent only when granted. Save the generated registration reference; the attendee then proceeds to attendance.
+
+**Attendance officer:** Select a conference day, search an already-registered attendee, confirm details and click CHECK IN. Later, choose CHECK OUT to record departure. Each action records `checkedInBy` / `checkedOutBy` and corresponding server timestamps. Firestore transactions prevent repeated check-ins/check-outs for the same attendee/day. One arrival and departure per day are supported.
+
+**Main administrator:** Can view and edit attendee profiles and oversee attendance, with explicit controls for export and reversal. Other staff never gain these permissions.
+
+## Pre-event test checklist
+
+- [ ] Public register form stores title and renders it on confirmation, also works without title.
+- [ ] Main admin's overview, Staff Access, attendee records and other workspaces load.
+- [ ] Registration-only test account sees only registration and cannot check in or check out.
+- [ ] Attendance-only test account sees only attendance and cannot register new attendees.
+- [ ] Attendance check-in then check-out persists the actor UID and server timestamps; duplicate attempts are prevented.
+- [ ] Follow-up test account sees only Glory Connect.
+- [ ] Role change requires sign-out/sign-in for navigation and access changes are enforced by rules.
+- [ ] Revoking a role immediately removes access to protected data; disabling the Firebase Auth account separately blocks future logins.
+- [ ] Mobile layout and error handling are checked for actual staff devices.
+
+Automated build and source tests do not replace tests with real Firebase Authentication identities and deployed Firestore rules. Previous registrations that were saved without a title cannot be reconstructed automatically.
