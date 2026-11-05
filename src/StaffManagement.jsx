@@ -1,20 +1,24 @@
 import {useEffect,useState} from 'react'
 import {collection,deleteDoc,doc,onSnapshot,serverTimestamp,setDoc,updateDoc} from 'firebase/firestore'
-import {db} from './firebase'
+import {httpsCallable,getFunctions} from 'firebase/functions'
+import {app,db} from './firebase'
 import './staff-management.css'
 
 const roles=[
- {value:'registration',name:'Registration desk',description:'Register walk-ins, look up attendees and check in guests.'},
- {value:'checkin',name:'Check-in desk',description:'Look up existing attendees and record arrivals only.'},
+ {value:'registration',name:'Registration desk',description:'Register new attendees and review potential duplicate registrations. Cannot check in or check out.'},
+ {value:'checkin',name:'Attendance desk',description:'Find existing attendees, record check-in and check-out, and view current attendance.'},
  {value:'followup',name:'Glory Connect',description:'View attendee information and manage follow-up notes.'}
 ]
 const empty={uid:'',name:'',email:'',role:'registration'}
+const callable=()=>getFunctions(app,'us-central1')
 export default function StaffManagement({user}){
  const [staff,setStaff]=useState([])
  const [draft,setDraft]=useState(empty)
  const [busy,setBusy]=useState('')
  const [notice,setNotice]=useState('')
  const [search,setSearch]=useState('')
+ const [createMode,setCreateMode]=useState('new')
+ const [setupLink,setSetupLink]=useState('')
  useEffect(()=>{
    const unsubscribe=onSnapshot(collection(db,'admins'),snapshot=>{
      setStaff(snapshot.docs.map(d=>({uid:d.id,...d.data()})).sort((a,b)=>String(a.name||a.email||a.uid).localeCompare(String(b.name||b.email||b.uid))))
@@ -25,16 +29,25 @@ export default function StaffManagement({user}){
    e.preventDefault()
    if(busy)return
    const uid=draft.uid.trim(),name=draft.name.trim(),email=draft.email.trim().toLowerCase()
-   if(!/^[A-Za-z0-9]{10,128}$/.test(uid)){setNotice('Enter the exact Firebase Authentication UID copied from the Users page.');return}
    if(name.length<2||!/^\S+@\S+\.\S+$/.test(email)||!roles.some(r=>r.value===draft.role)){setNotice('Enter a staff name, valid email and operational role.');return}
-   if(staff.some(s=>s.uid===uid)){setNotice('This UID already has a staff assignment. Change their role below instead.');return}
    if(staff.some(s=>String(s.email||'').toLowerCase()===email)){setNotice('That email already has an assignment. Review the staff list first.');return}
-   setBusy(uid);setNotice('')
+   if(createMode==='existing'&&!/^[A-Za-z0-9]{10,128}$/.test(uid)){setNotice('Copy the exact UID of the existing Firebase Authentication user.');return}
+   setBusy(createMode);setNotice('');setSetupLink('')
    try{
-     await setDoc(doc(db,'admins',uid),{uid,name,email,role:draft.role,createdBy:user.uid,createdAt:serverTimestamp(),updatedAt:serverTimestamp()})
-     setDraft(empty);setNotice('Staff role assigned. The person can now sign in using their existing Firebase Authentication account.')
-   }catch(err){setNotice('Could not assign staff role: '+(err?.message||'Check Firestore permissions.'))}
-   finally{setBusy('')}
+     if(createMode==='new'){
+       const result=await httpsCallable(callable(),'createStaffAccount')({name,email,role:draft.role})
+       const data=result.data
+       setSetupLink(data.setupLink||'')
+       setNotice(data.setupLink?'Login created. Share the one-time password setup link privately with this staff member.':'Login created. '+(data.warning||'Use Firebase Authentication to send a password reset.'))
+     }else{
+       if(staff.some(s=>s.uid===uid)){setNotice('That UID already has a role. Use the change-role control.');return}
+       await setDoc(doc(db,'admins',uid),{uid,name,email,role:draft.role,createdBy:user.uid,createdAt:serverTimestamp(),updatedAt:serverTimestamp()})
+       setNotice('Existing login linked. Staff may sign in using their Firebase Authentication credentials.')
+     }
+     setDraft(empty)
+   }catch(err){
+     setNotice(createMode==='new'?'Could not create login: '+(err?.message||'Deploy the Cloud Functions backend first.'):'Could not assign existing login: '+(err?.message||'Check staff permissions.'))
+   }finally{setBusy('')}
  }
  const changeRole=async(member,role)=>{
    if(busy||member.role==='admin'||!roles.some(r=>r.value===role)||member.role===role)return
@@ -45,27 +58,32 @@ export default function StaffManagement({user}){
  }
  const revoke=async member=>{
    if(busy||member.role==='admin')return
-   if(!window.confirm('Revoke dashboard access for '+(member.name||member.email||member.uid)+'? This does not delete their Firebase Authentication login.'))return
+   if(!window.confirm('Disable login and revoke dashboard access for '+(member.name||member.email||member.uid)+'? This does not delete attendee records.'))return
    setBusy(member.uid);setNotice('')
-   try{await deleteDoc(doc(db,'admins',member.uid));setNotice('Staff dashboard access revoked.')}
-   catch(err){setNotice('Unable to revoke staff access: '+(err?.message||'Check permissions.'))}finally{setBusy('')}
+   try{
+     await httpsCallable(callable(),'revokeStaffAccount')({uid:member.uid})
+     setNotice('Account disabled and dashboard access revoked.')
+   }catch(err){setNotice('Unable to disable account: '+(err?.message||'Check the deployed Cloud Functions backend.'))}
+   finally{setBusy('')}
  }
  const matches=staff.filter(m=>[m.uid,m.name,m.email,m.role].some(v=>String(v||'').toLowerCase().includes(search.trim().toLowerCase())))
  return <section className="gc-staff-manager" aria-labelledby="gc-staff-title">
-   <header className="gc-staff-heading"><div><p className="gc-staff-eyebrow">SECURE ACCESS MANAGEMENT</p><h3 id="gc-staff-title">Your conference team</h3><p>Give each person only the access they need. Manage roles here; passwords stay in Firebase Authentication.</p></div><span className="gc-staff-count">{staff.length} STAFF ACCOUNTS</span></header>
+   <header className="gc-staff-heading"><div><p className="gc-staff-eyebrow">SECURE ACCESS MANAGEMENT</p><h3 id="gc-staff-title">Your conference team</h3><p>Create individual staff logins, assign least-privilege roles and disable access when needed.</p></div><span className="gc-staff-count">{staff.length} STAFF ACCOUNTS</span></header>
    <div className="gc-staff-grid">
      <section className="gc-staff-panel">
-       <div className="gc-staff-panel-heading"><span>01</span><div><h4>Assign a staff member</h4><p>Create their login in Firebase Authentication first, then link their UID here.</p></div></div>
-       <ol className="gc-staff-steps"><li>In <a href="https://console.firebase.google.com/project/gloryconf/authentication/users" target="_blank" rel="noreferrer">Firebase Authentication → Users</a>, add an Email/Password user.</li><li>Copy their <strong>User UID</strong>. Share the temporary password privately and ask them to reset it.</li><li>Enter their UID, name, email and operational role below.</li></ol>
+       <div className="gc-staff-panel-heading"><span>01</span><div><h4>Invite a staff member</h4><p>Create a protected login and assign exactly one operational role.</p></div></div>
+       <div className="gc-staff-modes"><button type="button" className={createMode==='new'?'active':''} onClick={()=>{setCreateMode('new');setSetupLink('');setNotice('')}}>CREATE NEW LOGIN</button><button type="button" className={createMode==='existing'?'active':''} onClick={()=>{setCreateMode('existing');setSetupLink('');setNotice('')}}>LINK EXISTING LOGIN</button></div>
+       <p className="gc-staff-setup-note">{createMode==='new'?'A secure server function creates the Firebase account. You receive a one-time password setup link to share privately.':'Already made their Firebase Authentication account? Copy the UID from Firebase Console and link it to a role.'}</p>
        <form onSubmit={add} className="gc-staff-form">
-         <label>FIREBASE AUTH USER UID *<input required spellCheck="false" autoComplete="off" placeholder="Paste exact UID from Firebase" value={draft.uid} onChange={e=>setDraft(v=>({...v,uid:e.target.value}))}/></label>
+         {createMode==='existing'&&<label>EXISTING FIREBASE AUTH UID *<input required spellCheck="false" autoComplete="off" placeholder="Paste exact UID from Firebase" value={draft.uid} onChange={e=>setDraft(v=>({...v,uid:e.target.value}))}/></label>}
          <label>STAFF MEMBER'S NAME *<input required maxLength={100} placeholder="Full name" value={draft.name} onChange={e=>setDraft(v=>({...v,name:e.target.value}))}/></label>
          <label>LOGIN EMAIL *<input required type="email" maxLength={254} placeholder="staff@example.com" value={draft.email} onChange={e=>setDraft(v=>({...v,email:e.target.value}))}/></label>
          <label>STAFF ROLE *<select value={draft.role} onChange={e=>setDraft(v=>({...v,role:e.target.value}))}>{roles.map(r=><option value={r.value} key={r.value}>{r.name}</option>)}</select></label>
          <p className="gc-staff-role-desc">{roles.find(r=>r.value===draft.role)?.description}</p>
-         <button type="submit" disabled={!!busy}>{busy?'ASSIGNING ROLE…':'ASSIGN STAFF ACCESS →'}</button>
+         <button type="submit" disabled={!!busy}>{busy?'SAVING STAFF LOGIN…':createMode==='new'?'CREATE STAFF LOGIN →':'LINK EXISTING LOGIN →'}</button>
        </form>
-       <p className="gc-staff-security">For security, operational staff cannot grant themselves access. This screen cannot create new full administrators.</p>
+       {setupLink&&<div className="gc-staff-setup-link"><strong>ONE-TIME ACCOUNT SETUP LINK</strong><p>Copy and share privately with the correct staff member. Do not post in a group or screenshot publicly. It expires according to Firebase settings.</p><input aria-label="One-time account setup link" readOnly value={setupLink}/><button type="button" onClick={()=>navigator.clipboard.writeText(setupLink).then(()=>setNotice('Setup link copied. Share privately.')).catch(()=>setNotice('Select and copy the link manually.'))}>COPY SETUP LINK</button></div>}
+       <p className="gc-staff-security">Only the main administrator can create operational staff accounts. This screen cannot grant full administrator access.</p>
      </section>
      <section className="gc-staff-panel gc-staff-list-panel">
        <div className="gc-staff-panel-heading"><span>02</span><div><h4>People & permissions</h4><p>Review, update or revoke team access.</p></div></div>
