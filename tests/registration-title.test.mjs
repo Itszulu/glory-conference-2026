@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {readFileSync} from 'node:fs'
 const registration=readFileSync(new URL('../src/GloryConnectRegistration.jsx',import.meta.url),'utf8')
-const admin=readFileSync(new URL('../src/App.jsx',import.meta.url),'utf8')
+const desk=readFileSync(new URL('../src/RegistrationDesk.jsx',import.meta.url),'utf8')
 test('online registrations collect the ministry title choices used by the admin',()=>{
   assert.match(registration,/MINISTRY TITLE \(OPTIONAL\)/)
   assert.match(registration,/name="title" value=\{form.title\}/)
