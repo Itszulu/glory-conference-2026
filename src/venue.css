@@ -103,3 +103,8 @@
 .gc-google-origin gmp-place-autocomplete{width:100%;min-height:54px;display:block}
 .gc-location-selected small{display:block;margin-top:3px;font-size:11px;color:#c4e0ef}
 .gc-venue-cta-row{margin-top:19px}
+
+/* Desktop visibility: keep venue navigation visible before the hero action row enters view. */
+.nav-links .gc-desktop-venue-link{color:#a5edff;font-weight:800;white-space:nowrap}
+.nav-links .gc-desktop-venue-link:hover,.nav-links .gc-desktop-venue-link:focus-visible{color:#fff}
+.hero .actions .gc-hero-directions{display:inline-flex;align-items:center;justify-content:center;margin-top:0;text-decoration:none;font-size:inherit;letter-spacing:inherit;color:inherit}
