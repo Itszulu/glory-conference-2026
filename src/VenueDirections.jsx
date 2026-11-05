@@ -153,7 +153,7 @@ export function VenueDirections({compact=false}){
 
   if(compact)return <div className="gc-venue-compact">
     <div className="gc-venue-compact-info"><MapPin size={20} aria-hidden="true"/><div><strong>Find your way to The Outpouring</strong><span>{conferenceVenue.addressLine1}, {conferenceVenue.city}</span><small>Plan your journey on our website using Ikenga Hotel as a landmark</small></div></div>
-    <a className="gc-venue-link" href="/#venue"><Navigation size={16} aria-hidden="true"/> PLAN MY JOURNEY</a>
+    <a className="gc-venue-link" href="/directions"><Navigation size={16} aria-hidden="true"/> PLAN MY JOURNEY</a>
   </div>
 
   return <section className="gc-venue" id="venue" aria-labelledby="gc-venue-title">
