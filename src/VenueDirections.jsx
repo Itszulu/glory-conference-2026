@@ -56,7 +56,7 @@ export function VenueDirections({ compact=false }) {
   const mounted=useRef(true)
   const requestSerial=useRef(0)
 
-  useEffect(()=>()=>{mounted.current=false;requestSerial.current+=1;overlays.current.forEach(line=>line.setMap(null));overlays.current=[]},[])
+  useEffect(()=>{mounted.current=true;return ()=>{mounted.current=false;requestSerial.current+=1;overlays.current.forEach(line=>line.setMap(null));overlays.current=[]}},[])
 
   const clearRoute=()=>{
     overlays.current.forEach(line=>line.setMap(null))
@@ -68,7 +68,7 @@ export function VenueDirections({ compact=false }) {
     if(!origin.trim()){setError('Enter the town, street, or place you are travelling from.');return}
     if(!mapsKey){setError('The journey planner needs its Google Maps API key configured by the site administrator.');return}
     const requestId=++requestSerial.current
-    setOpened(true);setPending(true);setError('');setJourney(null)
+    setOpened(true);setPending(true);setError('');setJourney(null);setActiveMap(false)
     try {
       const googleMaps=await loadGoogleMaps()
       const [{Map},{Route}]=await Promise.all([googleMaps.importLibrary('maps'),googleMaps.importLibrary('routes')])
@@ -95,11 +95,13 @@ export function VenueDirections({ compact=false }) {
       if(route.viewport)mapInstance.current.fitBounds(route.viewport,45)
       const duration=humanDuration(route.durationMillis)
       const distance=humanDistance(route.distanceMeters)
-      setJourney({duration,distance,warnings:route.warnings||[],traffic:mode==='DRIVING'})
+      const arrival=new Date(Date.now()+route.durationMillis).toLocaleTimeString('en-NG',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'Africa/Lagos'})
+      setJourney({duration,distance,arrival,warnings:route.warnings||[],traffic:mode==='DRIVING'})
       setActiveMap(true)
     }catch(err){
       if(!mounted.current||requestId!==requestSerial.current)return
       clearRoute()
+      setActiveMap(false)
       setError(err?.message||'We could not calculate the journey. Check your starting point and try again.')
     }finally{if(mounted.current&&requestId===requestSerial.current)setPending(false)}
   }
@@ -122,10 +124,10 @@ export function VenueDirections({ compact=false }) {
         <div className="gc-venue-address"><span>OFFICIAL CONFERENCE ADDRESS</span><strong>{conferenceVenue.addressLine1}</strong><strong>{conferenceVenue.addressLine2}</strong><strong>{conferenceVenue.city}</strong></div>
         <form className="gc-journey-form" onSubmit={planRoute}>
           <label htmlFor="gc-journey-origin">WHERE ARE YOU COMING FROM?</label>
-          <div className="gc-journey-origin"><LocateFixed size={19} aria-hidden="true"/><input id="gc-journey-origin" type="text" value={origin} onChange={e=>{setOrigin(e.target.value);setError('');setJourney(null)}} maxLength={180} autoComplete="street-address" placeholder="e.g. Enugu, Odenigbo or UNN Main Gate" required/></div>
+          <div className="gc-journey-origin"><LocateFixed size={19} aria-hidden="true"/><input id="gc-journey-origin" type="text" value={origin} onChange={e=>{requestSerial.current+=1;setOrigin(e.target.value);setError('');clearRoute();setActiveMap(false);setPending(false)}} maxLength={180} autoComplete="street-address" placeholder="e.g. Enugu, Odenigbo or UNN Main Gate" required/></div>
           <fieldset className="gc-journey-modes"><legend>HOW WILL YOU TRAVEL?</legend>
-            <button type="button" onClick={()=>{setMode('DRIVING');setJourney(null)}} className={mode==='DRIVING'?'selected':''} aria-pressed={mode==='DRIVING'}>By car</button>
-            <button type="button" onClick={()=>{setMode('WALKING');setJourney(null)}} className={mode==='WALKING'?'selected':''} aria-pressed={mode==='WALKING'}>Walking</button>
+            <button type="button" onClick={()=>{requestSerial.current+=1;setMode('DRIVING');clearRoute();setActiveMap(false);setPending(false)}} className={mode==='DRIVING'?'selected':''} aria-pressed={mode==='DRIVING'}>By car</button>
+            <button type="button" onClick={()=>{requestSerial.current+=1;setMode('WALKING');clearRoute();setActiveMap(false);setPending(false)}} className={mode==='WALKING'?'selected':''} aria-pressed={mode==='WALKING'}>Walking</button>
           </fieldset>
           <button type="submit" className="gc-journey-submit" disabled={pending}>{pending?'CALCULATING ROUTE…':'SHOW MY ROUTE & ARRIVAL TIME'} <ArrowRight size={18} aria-hidden="true"/></button>
         </form>
@@ -133,7 +135,7 @@ export function VenueDirections({ compact=false }) {
         {journey&&<div className="gc-journey-report" role="status" aria-live="polite">
           <div><Clock3 size={20} aria-hidden="true"/><span>ESTIMATED TRAVEL TIME</span><strong>{journey.duration}</strong></div>
           <div><RouteIcon size={20} aria-hidden="true"/><span>ROUTE DISTANCE</span><strong>{journey.distance}</strong></div>
-          <p>{journey.traffic?'Driving time reflects Google Maps traffic estimates where available.':'Walking times are estimates, not guaranteed arrival times.'}</p>
+          <div className="gc-journey-arrival"><span>ESTIMATED ARRIVAL IF YOU LEAVE NOW</span><strong>{journey.arrival} WAT</strong></div><p>{journey.traffic?'Driving time reflects Google Maps traffic estimates where available.':'Walking times are estimates, not guaranteed arrival times.'}</p>
           {journey.warnings.map((warning,i)=><p className="gc-journey-warning" key={i}>{warning}</p>)}
         </div>}
         <p className="gc-venue-caveat">Map destination: Ikenga Hotel, a nearby navigation landmark. The actual conference entrance is at the official street address above. Travel times are estimates and can change.</p>
