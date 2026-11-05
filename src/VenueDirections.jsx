@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowRight, CheckCircle2, Clock3, LocateFixed, MapPin, Navigation, Route as RouteIcon } from 'lucide-react'
 import { conferenceVenue } from './conferenceVenue'
+import { candidateLocations } from './locationMatching'
 import './venue.css'
 
 const orsKey=(import.meta.env.VITE_ORS_API_KEY||'').trim()
@@ -45,6 +46,8 @@ async function fetchJson(url,options,signal){
 
 export function VenueDirections({compact=false}){
   const [origin,setOrigin]=useState('')
+  const [candidates,setCandidates]=useState([])
+  const [selectedPlace,setSelectedPlace]=useState(null)
   const [mode,setMode]=useState('driving-car')
   const [pending,setPending]=useState(false)
   const [error,setError]=useState('')
@@ -73,6 +76,7 @@ export function VenueDirections({compact=false}){
     requestId.current++
     aborter.current?.abort()
     setPending(false);setError('');setJourney(null);setActiveMap(false)
+    setCandidates([])
     if(routeLayer.current&&mapInstance.current){mapInstance.current.removeLayer(routeLayer.current);routeLayer.current=null}
   }
   const planRoute=async(e)=>{
@@ -83,21 +87,25 @@ export function VenueDirections({compact=false}){
     const controller=new AbortController()
     aborter.current=controller
     const id=++requestId.current
-    setPending(true);setError('');setJourney(null);setActiveMap(false);setOpened(true)
+    setPending(true);setError('');setJourney(null);setActiveMap(false);setOpened(Boolean(selectedPlace))
     try{
-      const query=origin.trim()
-      const searchUrl=new URL(apiBase+'/pelias/v1/search')
-      searchUrl.searchParams.set('api_key',orsKey)
-      searchUrl.searchParams.set('text',query)
-      searchUrl.searchParams.set('boundary.country','NGA')
-      searchUrl.searchParams.set('focus.point.lat',String(conferenceVenue.landmarkLatitude))
-      searchUrl.searchParams.set('focus.point.lon',String(conferenceVenue.landmarkLongitude))
-      searchUrl.searchParams.set('size','5')
-      const places=await fetchJson(searchUrl.toString(),{},controller.signal)
-      if(!mounted.current||id!==requestId.current)return
-      const candidates=(places.features||[]).filter(p=>Array.isArray(p.geometry?.coordinates)&&p.geometry.coordinates.length===2)
-      if(!candidates.length)throw new Error('We could not identify that starting place in Nigeria. Try a nearby major road or landmark.')
-      const place=candidates[0]
+      if(!selectedPlace){
+        const query=origin.trim()
+        const searchUrl=new URL(apiBase+'/pelias/v1/search')
+        searchUrl.searchParams.set('api_key',orsKey)
+        searchUrl.searchParams.set('text',query)
+        searchUrl.searchParams.set('boundary.country','NGA')
+        searchUrl.searchParams.set('focus.point.lat',String(conferenceVenue.landmarkLatitude))
+        searchUrl.searchParams.set('focus.point.lon',String(conferenceVenue.landmarkLongitude))
+        searchUrl.searchParams.set('size','10')
+        const places=await fetchJson(searchUrl.toString(),{},controller.signal)
+        if(!mounted.current||id!==requestId.current)return
+        const matches=candidateLocations(places.features,query)
+        setCandidates(matches)
+        if(!matches.length)throw new Error('No reliable match for that place. We will not send you to another hotel or town. Try a specific road, landmark or nearby well-known address.')
+        return
+      }
+      const place=selectedPlace
       const coords=place.geometry.coordinates
       const profile=mode
       const data=await fetchJson(apiBase+'/openrouteservice/v2/directions/'+profile+'/geojson',{
@@ -157,13 +165,15 @@ export function VenueDirections({compact=false}){
         <div className="gc-venue-address"><span>OFFICIAL CONFERENCE ADDRESS</span><strong>{conferenceVenue.addressLine1}</strong><strong>{conferenceVenue.addressLine2}</strong><strong>{conferenceVenue.city}</strong></div>
         <form className="gc-journey-form" onSubmit={planRoute}>
           <label htmlFor="gc-journey-origin">WHERE ARE YOU COMING FROM?</label>
-          <div className="gc-journey-origin"><LocateFixed size={19} aria-hidden="true"/><input id="gc-journey-origin" type="text" value={origin} onChange={e=>{reset();setOrigin(e.target.value)}} maxLength={180} autoComplete="off" placeholder="e.g. Enugu, Odenigbo or UNN Main Gate" required/></div>
+          <div className="gc-journey-origin"><LocateFixed size={19} aria-hidden="true"/><input id="gc-journey-origin" type="text" value={origin} onChange={e=>{reset();setSelectedPlace(null);setOrigin(e.target.value)}} maxLength={180} autoComplete="off" placeholder="e.g. Enugu, Odenigbo or UNN Main Gate" required/></div>
           <fieldset className="gc-journey-modes"><legend>HOW WILL YOU TRAVEL?</legend>
             <button type="button" onClick={()=>{reset();setMode('driving-car')}} className={mode==='driving-car'?'selected':''} aria-pressed={mode==='driving-car'}>By car</button>
             <button type="button" onClick={()=>{reset();setMode('foot-walking')}} className={mode==='foot-walking'?'selected':''} aria-pressed={mode==='foot-walking'}>Walking</button>
           </fieldset>
-          <button type="submit" className="gc-journey-submit" disabled={pending}>{pending?'CALCULATING ROUTE…':'SHOW MY ROUTE & ARRIVAL TIME'} <ArrowRight size={18} aria-hidden="true"/></button>
+          <button type="submit" className="gc-journey-submit" disabled={pending}>{pending?'SEARCHING…':selectedPlace?'SHOW MY ROUTE & ARRIVAL TIME':'FIND STARTING LOCATION'} <ArrowRight size={18} aria-hidden="true"/></button>
         </form>
+        {candidates.length>0&&!selectedPlace&&<div className="gc-location-choices" aria-label="Choose your starting location"><strong>CHOOSE THE CORRECT PLACE</strong><p>We found these possible matches. Confirm the location before we calculate your journey.</p>{candidates.map((item,i)=><button type="button" key={i} onClick={()=>{setSelectedPlace(item.feature);setCandidates([]);setError('');setOpened(false)}}><MapPin size={16} aria-hidden="true"/><span>{item.label}</span><ArrowRight size={16} aria-hidden="true"/></button>)}</div>}
+        {selectedPlace&&<div className="gc-location-selected"><CheckCircle2 size={17} aria-hidden="true"/><span>Starting from: <strong>{selectedPlace.properties?.label||selectedPlace.properties?.name}</strong></span><button type="button" onClick={()=>{reset();setSelectedPlace(null);setOpened(false)}}>Change</button></div>}
         {error&&<p className="gc-journey-error" role="alert">{error}</p>}
         {journey&&<div className="gc-journey-report" role="status" aria-live="polite">
           <div><Clock3 size={20} aria-hidden="true"/><span>ESTIMATED TRAVEL TIME</span><strong>{journey.duration}</strong></div>
