@@ -54,9 +54,12 @@ test('Google Places owns an empty host node and cannot remove React-owned loadin
   assert.match(venue,/if\(disposed\|\|!activeRef\.current\)return/)
   assert.doesNotMatch(venue,/new maps\.Marker\(/)
 })
-test('hero and existing hamburger both have discoverable directions links',()=>{
-  assert.match(app,/gc-hero-directions" href="\/directions"/)
+test('desktop navigation, desktop hero and hamburger all link to directions',()=>{
+  assert.match(app,/<a className="gc-desktop-venue-link" href="\/directions">DIRECTIONS<\/a>/)
+  assert.match(app,/<a className="button ghost gc-hero-directions" href="\/directions">GET DIRECTIONS/)
   assert.match(app,/href="\/directions" onClick=\{\(\)=>setOpen\(false\)\}/)
+  assert.match(css,/\.nav-links \.gc-desktop-venue-link/)
+  assert.match(css,/\.hero \.actions \.gc-hero-directions/)
 })
 test('runtime sharing URLs still refer to live website',()=>{
   assert.doesNotMatch(main,/gloryconf\.org/)
