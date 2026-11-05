@@ -227,3 +227,7 @@
 .gc-duplicate-warning{border-left:3px solid #1783aa;background:#ecf7fa;border-radius:0 9px 9px 0;padding:14px 17px;color:#36617b;font-size:13px;line-height:1.65}
 .gc-duplicate-empty{background:#fff;border:1px solid #d6e4ec;padding:25px;border-radius:12px;color:#3b6279}
 @media(max-width:600px){.gc-duplicate-row{align-items:flex-start;flex-direction:column;gap:6px}}
+
+/* Welcome-desk opt-in: checkbox stays aligned rather than inheriting input styling. */
+.admin-page .gc-walkin-form .gc-walkin-consent{display:flex;align-items:flex-start;gap:11px;font-size:12px;font-weight:600;line-height:1.65;letter-spacing:0;color:#40647a}
+.admin-page .gc-walkin-form .gc-walkin-consent input[type=checkbox]{appearance:auto!important;flex:none;width:19px;height:19px;min-height:19px;margin:2px 0 0;padding:0;accent-color:#0b7193}
