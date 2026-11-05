@@ -22,16 +22,17 @@ test('existing homepage styling keeps the original hero first',()=>{
   assert.match(layout,/body>div>main:has\(> \.hero\) > \.hero\{order:1!important\}/)
   assert.doesNotMatch(layout,/body>div>main:has\(> \.hero\) > \.gc-venue/)
 })
-test('planner stays in-page and uses free HeiGIT routing and OpenStreetMap',()=>{
-  assert.match(venue,/api\.heigit\.org/)
-  assert.match(venue,/\/pelias\/v1\/search/)
-  assert.match(venue,/\/openrouteservice\/v2\/directions\//)
-  assert.match(venue,/properties\?\.summary\?\.duration/)
-  assert.match(venue,/properties\?\.summary\?\.distance/)
-  assert.match(venue,/L\.polyline\(/)
-  assert.match(venue,/VITE_ORS_API_KEY/)
-  assert.doesNotMatch(venue,/VITE_GOOGLE_MAPS_API_KEY|maps\.googleapis\.com|google\.com\/maps|window\.open/)
-  assert.match(css,/gc-journey-map-canvas/)
+test('directions use a Google landmark iframe, not unreliable routing estimates',()=>{
+  assert.match(venue,/venueEmbedUrl/)
+  assert.match(venue,/<iframe/)
+  assert.match(venue,/Ikenga Hotel/)
+  assert.match(venue,/not the conference entrance|not represent a verified conference entrance/)
+  assert.doesNotMatch(venue,/api\.heigit\.org|pelias\/v1|VITE_ORS_API_KEY|estimated travel time|new Date\(/)
+  assert.match(css,/gc-venue-embedded-map/)
+})
+test('hero and existing hamburger both have discoverable directions links',()=>{
+  assert.match(app,/gc-hero-directions" href="\/directions"/)
+  assert.match(app,/href="\/directions" onClick=\{\(\)=>setOpen\(false\)\}/)
 })
 test('runtime sharing URLs still refer to live website',()=>{
   assert.doesNotMatch(main,/gloryconf\.org/)
