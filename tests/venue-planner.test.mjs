@@ -46,6 +46,18 @@ test('Google-powered direction page uses a real selected Places result and compu
   assert.doesNotMatch(venue,/api\.heigit\.org|pelias\/v1|VITE_ORS_API_KEY/)
   assert.match(css,/gc-google-origin/)
 })
+test('polished journey planner preserves Google search and real route interactions',()=>{
+  assert.match(venue,/className="gc-route-panel"/)
+  assert.match(venue,/className="gc-route-destination"/)
+  assert.match(venue,/CarFront/)
+  assert.match(venue,/Footprints/)
+  assert.match(venue,/GET MY DIRECTIONS/)
+  assert.match(venue,/className="gc-venue-map-bottom"/)
+  assert.match(css,/\.gc-route-panel \.gc-journey-modes button\.selected/)
+  assert.match(css,/\.gc-route-panel \.gc-google-origin:focus-within/)
+  assert.match(css,/@media\(max-width:560px\)/)
+  assert.match(venue,/Route\.computeRoutes\(request\)/)
+})
 test('Google Places owns an empty host node and cannot remove React-owned loading text',()=>{
   assert.match(venue,/<div ref=\{placeWidgetHost\}[^>]*\/>/)
   assert.match(venue,/placeWidgetHost\.current\.appendChild\(widget\)/)
