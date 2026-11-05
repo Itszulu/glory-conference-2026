@@ -73,3 +73,30 @@ No actual staff identities are created by this GitHub change. Firebase Auth acco
 - The Google Maps destination is **Ikenga Hotel, Nsukka**, approximately `6.8366763, 7.3675346` (`R9Q8+7Q9`). This is a *navigation landmark*, **not the verified conference building entrance**. This distinction is displayed in the UI.
 - The one source of truth for venue/map settings is `src/conferenceVenue.js`. If organizers supply the exact official venue pin, update that one file and verify every path.
 - Confirm that mobile Google Maps launches properly for both Android and iPhone, and that the published street address really matches the event venue before widely sharing directions.
+
+## In-page journey planner (2026-11-05)
+
+The original homepage Header and hero are first. The interactive directions panel appears after the giving section near the homepage footer. Schedule and registration-confirmation panels link to the on-page planner, not an external Maps app.
+
+On-site directions require a Google Maps Platform browser key with billing plus Maps JavaScript API and Routes API enabled. This project uses Route.computeRoutes and only loads Maps after visitors enter their starting point. The route, distance, driving/walking duration and leave-now arrival time are calculated by Google, not hardcoded. This is a journey planner, not full turn-by-turn GPS.
+
+### Owner configuration on Windows
+
+1. Open https://console.cloud.google.com/apis/credentials and select the correct Cloud project.
+2. Enable Maps JavaScript API and Routes API, attach active billing, and set budgets/quotas.
+3. Create an API key restricted to website referrers https://gloryconf.web.app/* and https://gloryconf.firebaseapp.com/* (plus any custom domain). Restrict to required APIs. Browser keys are visible in bundles by design; never use an unrestricted key.
+4. In your local repository create .env.local with VITE_GOOGLE_MAPS_API_KEY=YOUR_RESTRICTED_BROWSER_KEY. Never commit .env.local.
+5. Run npm run build after setting the variable. A previously built dist folder without the key cannot show routes.
+6. Complete Firestore/security-rule acceptance tests before deploying the full feature branch.
+
+The endpoint is the Ikenga Hotel navigation landmark (6.8366763, 7.3675346), not an independently verified conference gate. The published street address remains prominent. Replace the destination with the official gate pin once verified.
+
+Without a configured key, users can still read the venue address; trying to calculate a route shows a clear setup error rather than fabricated distance or time. No external redirect occurs.
+
+### Acceptance tests
+
+- Verify the original hero and header appear first, and Maps does not load until route planning is requested.
+- Search from Enugu, Enugu State; confirm the route line and realistic travel distance, duration and leave-now ETA.
+- Edit origin or travel mode; ensure stale routes clear. Try a nonexistent place and verify useful error text.
+- Verify usage quotas, restricted referrers and real Maps API failures.
+- Test Android and iOS layouts and browser back/forward behaviour.
