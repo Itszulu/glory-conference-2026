@@ -155,3 +155,11 @@ Nothing in this change automatically deploys the Firebase Hosting website.
 - Production deployment must inject the key at **Vite build time** (e.g. local `.env.local` or CI secret during production build). Creating a key on the user's local device does not inject it into GitHub Actions or Firebase Hosting builds.
 - A browser-side API key is visible publicly; its website/API restrictions are the security boundary. Set Cloud Billing budget alerts; alarms do not enforce a spending cap.
 - Verify browser console for key authorization failures, Places suggestions in Nsukka and other cities, selected-place confirmation, car and walking routes, mobile overlay, external Google Maps link and absence of map from homepage. Automated build tests cannot validate live Google API responses without a configured key and browser environment.
+
+## OFFICIAL 2026 SOCIAL SHARE IMAGE (2026-11-05)
+
+The site owner selected the 1280×720 JPEG conference flyer uploaded in the ChatGPT conversation for link-sharing previews. `index.html` now uses `https://gloryconf.web.app/glory-conference-2026-social-preview.jpg` for Open Graph and Twitter large-image cards (JPEG, 1280×720).
+
+**CRITICAL REQUIRED ASSET STEP BEFORE DEPLOY:** The GitHub text-file integration cannot upload the JPEG binary. Save the exact supplied image as **`public/glory-conference-2026-social-preview.jpg`** on the local Windows project checkout, commit and push the image to this feature branch, then deploy a build containing it. Without that actual public JPEG the metadata URL will return **404** and link previews will not show the chosen artwork. The file is available for download in the assistant's response. Do not modify the existing hero artwork in order to change the link preview.
+
+After deployment verify `https://gloryconf.web.app/glory-conference-2026-social-preview.jpg` opens directly. Check Facebook Sharing Debugger and WhatsApp previews after any cache refresh. Search engines choose their own thumbnails, so search-result imagery cannot be guaranteed by Open Graph tags.
