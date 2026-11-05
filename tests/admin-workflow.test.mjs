@@ -34,3 +34,11 @@ test('firestore guards against self escalation and updates to administrators',()
 test('check-in staff do not get the personal check-in CSV export',()=>{
  assert.match(app,/\{staffRole==='admin'&&<button className="gc-outline-button" type="button" onClick=\{\(\)=>exportCsv\('glory-conference-checkins.csv',checkIns\)\}/)
 })
+
+test('walk-in desk records explicit communication consent and keeps optional demographics optional',()=>{
+ assert.match(app,/followUpConsent:walkIn.followUpConsent/)
+ assert.match(app,/consentRecordedAt:serverTimestamp\(\)/)
+ assert.match(app,/GENDER \(OPTIONAL\)/)
+ assert.match(app,/AGE RANGE \(OPTIONAL\)/)
+ assert.match(app,/gc-walkin-consent/)
+})
