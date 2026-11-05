@@ -209,7 +209,7 @@ export function VenueDirections({compact=false}){
             <button type="submit" className="gc-journey-submit" disabled={pending||loading||!origin||liveActive}>{pending?'CALCULATING YOUR ROUTE…':'GET MY DIRECTIONS'} <ArrowRight size={18} aria-hidden="true"/></button>
           </form>
         </div>
-        <LiveVenueNavigation mapReady={!loading&&!error&&!!mapsKey} getMap={()=>mapRef.current} onStart={()=>{++routeSerialRef.current;routeLinesRef.current.forEach(line=>line.setMap(null));routeLinesRef.current=[];setRouteInfo(null);setPending(false);setLiveActive(true)}} onStop={()=>setLiveActive(false)}/>
+        <LiveVenueNavigation mapReady={!loading&&!!mapsKey} getMap={()=>mapRef.current} onStart={()=>{++routeSerialRef.current;routeLinesRef.current.forEach(line=>line.setMap(null));routeLinesRef.current=[];setRouteInfo(null);setPending(false);setLiveActive(true)}} onStop={()=>setLiveActive(false)}/>
         {error&&<p className="gc-journey-error" role="alert">{error}</p>}
         {routeInfo&&<div className="gc-journey-report" role="status" aria-live="polite">
           <div><Clock3 size={20} aria-hidden="true"/><span>ESTIMATED TRAVEL TIME</span><strong>{routeInfo.duration}</strong></div>
