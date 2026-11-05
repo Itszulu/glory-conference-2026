@@ -39,6 +39,14 @@ test('Google-powered direction page uses a real selected Places result and compu
   assert.doesNotMatch(venue,/api\.heigit\.org|pelias\/v1|VITE_ORS_API_KEY/)
   assert.match(css,/gc-google-origin/)
 })
+test('Google Places owns an empty host node and cannot remove React-owned loading text',()=>{
+  assert.match(venue,/<div ref=\{placeWidgetHost\}[^>]*\/>/)
+  assert.match(venue,/placeWidgetHost\.current\.appendChild\(widget\)/)
+  assert.doesNotMatch(venue,/replaceChildren\(/)
+  assert.match(venue,/disposed=true/)
+  assert.match(venue,/if\(disposed\|\|!activeRef\.current\)return/)
+  assert.doesNotMatch(venue,/new maps\.Marker\(/)
+})
 test('hero and existing hamburger both have discoverable directions links',()=>{
   assert.match(app,/gc-hero-directions" href="\/directions"/)
   assert.match(app,/href="\/directions" onClick=\{\(\)=>setOpen\(false\)\}/)
