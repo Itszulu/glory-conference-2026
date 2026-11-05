@@ -12,7 +12,7 @@ service cloud.firestore {
         : '';
     }
     function isAdmin() { return staffRole() == 'admin'; }
-    function isCheckInStaff() { return staffRole() in ['admin','checkin','registration']; }
+    function isCheckInStaff() { return staffRole() in ['admin','checkin']; }
     function isRegistrationStaff() { return staffRole() in ['admin','registration']; }
     function isFollowUpStaff() { return staffRole() in ['admin','followup']; }
 
@@ -92,7 +92,7 @@ service cloud.firestore {
                         (request.resource.data.firstTime == 'Yes' && request.resource.data.attendanceFrequency == 'First time') ||
                         (request.resource.data.firstTime == 'No' && request.resource.data.attendanceFrequency in ['Second time','Third time or more']))
                     && request.resource.data.createdAt == request.time;
-      allow read: if isCheckInStaff() || isFollowUpStaff();
+      allow read: if isRegistrationStaff() || isCheckInStaff() || isFollowUpStaff();
       // Admin profile edits include an audit timestamp; a repeat setDoc without
       // updatedAt must never silently replace an existing registration.
       allow update: if isAdmin()
@@ -133,7 +133,14 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/registrations/$(request.resource.data.registrationId))
         && request.resource.data.checkedInBy == request.auth.uid
         && request.resource.data.checkedInAt == request.time;
-      allow update: if false;
+      // A checked-in attendee can be checked out once. All original arrival
+      // details are immutable; the server records the staff UID and timestamp.
+      allow update: if isCheckInStaff()
+        && !('checkedOutAt' in resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['checkedOutAt','checkedOutBy'])
+        && request.resource.data.diff(resource.data).affectedKeys().hasAll(['checkedOutAt','checkedOutBy'])
+        && request.resource.data.checkedOutAt == request.time
+        && request.resource.data.checkedOutBy == request.auth.uid;
       allow delete: if isAdmin();
     }
 
