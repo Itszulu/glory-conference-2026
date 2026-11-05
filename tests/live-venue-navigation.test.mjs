@@ -30,6 +30,15 @@ test('walking route is refreshed from live phone coordinates and retains exact v
 })
 test('no location is saved to attendee or conference database',()=>{
  assert.doesNotMatch(guide,/firebase|firestore|setDoc|addDoc|localStorage|sessionStorage/)
- assert.match(guide,/location is requested only when you tap Start/)
+ assert.match(guide,/location is requested only after you press the button/)
  assert.match(guide,/phones may pause browser tracking in the background/i)
+})
+
+test('current GPS location is first and typing a starting location is optional',()=>{
+ const gpsPosition=parent.indexOf('<LiveVenueNavigation mapReady=')
+ const addressPosition=parent.indexOf('<div className="gc-route-panel">')
+ assert.ok(gpsPosition>=0&&addressPosition>gpsPosition)
+ assert.match(guide,/USE MY CURRENT LOCATION/)
+ assert.match(parent,/OPTIONAL: SEARCH A STARTING LOCATION/)
+ assert.match(parent,/02 \/ 02/)
 })
