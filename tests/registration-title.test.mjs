@@ -12,6 +12,6 @@ test('online registrations collect the ministry title choices used by the admin'
 })
 test('title is retained in the attendee document rather than discarded',()=>{
   assert.match(registration,/title:form.title/)
-  assert.doesNotMatch(registration,/title:''/)
+  assert.doesNotMatch(registration,/registrationId:id,conferenceYear:2026,title:''/)
   assert.match(registration,/title:''\s*,\s*fullName:''/)
 })
