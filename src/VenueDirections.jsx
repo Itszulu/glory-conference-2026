@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowRight, CarFront, CheckCircle2, Clock3, ExternalLink, Footprints, Info, MapPin, Navigation, Route as RouteIcon } from 'lucide-react'
 import { conferenceVenue, venueDirectionsUrl, venueEmbedUrl } from './conferenceVenue'
 import './venue.css'
+import LiveVenueNavigation from './LiveVenueNavigation.jsx'
 
 const mapsKey=(import.meta.env.VITE_GOOGLE_MAPS_API_KEY||'').trim()
 const destination={lat:conferenceVenue.latitude,lng:conferenceVenue.longitude}
@@ -58,6 +59,7 @@ export function VenueDirections({compact=false}){
   const [pending,setPending]=useState(false)
   const [error,setError]=useState('')
   const [routeInfo,setRouteInfo]=useState(null)
+  const [liveActive,setLiveActive]=useState(false)
 
   // The compact link needs no Maps script, Places or billing requests.
   useEffect(()=>{
@@ -143,6 +145,7 @@ export function VenueDirections({compact=false}){
   }
   const plan=async event=>{
     event.preventDefault()
+    if(liveActive){setError('Stop live walking guidance before planning a different journey.');return}
     if(!origin?.location){setError('Choose a starting location from Google’s suggestions first.');return}
     if(!mapRef.current){setError('The map is not ready.');return}
     const serial=++routeSerialRef.current
@@ -188,7 +191,7 @@ export function VenueDirections({compact=false}){
       <div className="gc-venue-copy">
         <p className="gc-venue-eyebrow"><MapPin size={16} aria-hidden="true"/> PLAN YOUR VISIT · NSUKKA</p>
         <h2 id="gc-venue-title">YOUR JOURNEY<br/><span>TO THE OUTPOURING.</span></h2>
-        <p className="gc-venue-intro">Use Google Maps to find a shop, street, hotel, landmark or town anywhere in Nigeria. Select a suggestion and see your route, distance and estimated travel time below.</p>
+        <p className="gc-venue-intro">Don't know your current address? Use Live Walking Guide to follow your phone's location as you move. Or search a shop, street, hotel, landmark or town anywhere in Nigeria to plan a route.</p>
         <div className="gc-venue-address"><span>OFFICIAL CONFERENCE ADDRESS</span><strong>{conferenceVenue.addressLine1}</strong><strong>{conferenceVenue.addressLine2}</strong><strong>{conferenceVenue.city}</strong></div>
         <div className="gc-route-panel">
           <div className="gc-route-panel-head"><span className="gc-route-panel-icon"><Navigation size={19} aria-hidden="true"/></span><div><strong>Plan your journey</strong><small>Get a personalised route to the conference</small></div><span className="gc-route-panel-step">01 / 02</span></div>
@@ -203,9 +206,10 @@ export function VenueDirections({compact=false}){
               <button type="button" className={mode==='DRIVING'?'selected':''} onClick={()=>changeMode('DRIVING')} aria-pressed={mode==='DRIVING'}><CarFront size={18} aria-hidden="true"/> Driving</button>
               <button type="button" className={mode==='WALKING'?'selected':''} onClick={()=>changeMode('WALKING')} aria-pressed={mode==='WALKING'}><Footprints size={18} aria-hidden="true"/> Walking</button>
             </fieldset>
-            <button type="submit" className="gc-journey-submit" disabled={pending||loading||!origin}>{pending?'CALCULATING YOUR ROUTE…':'GET MY DIRECTIONS'} <ArrowRight size={18} aria-hidden="true"/></button>
+            <button type="submit" className="gc-journey-submit" disabled={pending||loading||!origin||liveActive}>{pending?'CALCULATING YOUR ROUTE…':'GET MY DIRECTIONS'} <ArrowRight size={18} aria-hidden="true"/></button>
           </form>
         </div>
+        <LiveVenueNavigation mapReady={!loading&&!error&&!!mapsKey} getMap={()=>mapRef.current} onStart={()=>{++routeSerialRef.current;routeLinesRef.current.forEach(line=>line.setMap(null));routeLinesRef.current=[];setRouteInfo(null);setPending(false);setLiveActive(true)}} onStop={()=>setLiveActive(false)}/>
         {error&&<p className="gc-journey-error" role="alert">{error}</p>}
         {routeInfo&&<div className="gc-journey-report" role="status" aria-live="polite">
           <div><Clock3 size={20} aria-hidden="true"/><span>ESTIMATED TRAVEL TIME</span><strong>{routeInfo.duration}</strong></div>
