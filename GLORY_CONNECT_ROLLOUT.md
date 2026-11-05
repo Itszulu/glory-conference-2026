@@ -142,3 +142,16 @@ This section **supersedes all previous Google API, OpenRouteService, HeiGIT, and
 - Verify the iframe and external directions link in mobile and desktop browsers before deployment. Existing Firestore registration/check-in access checks remain mandatory.
 
 Nothing in this change automatically deploys the Firebase Hosting website.
+
+## CURRENT MAP IMPLEMENTATION — GOOGLE MAPS PLATFORM (2026-11-05)
+
+**This section supersedes all earlier map implementation instructions above.** After the user enabled billing and Maps JavaScript API, Places API (New), and Routes API, `src/VenueDirections.jsx` was upgraded to Google's interactive web platform. It stays on the **separate /directions page**; the original homepage hero/sections are not changed, and links in the hero, existing mobile hamburger menu, Schedule, and registration confirmation point to it.
+
+- In the Windows project folder create/update `.env.local` with `VITE_GOOGLE_MAPS_API_KEY=ACTUAL_KEY`. Never commit a key. Restart `npm run dev` after editing the environment file.
+- Restrict the key in Google Cloud to HTTPS referrer `https://gloryconf.web.app/*` and local development referrer `http://localhost:5173/*`; API restrictions: Maps JavaScript, Places API (New), Routes API. Billing must be linked to the correct Google Cloud project.
+- Google Places New's `PlaceAutocompleteElement` supplies its own input and suggestion dropdown; visitors must **select a suggestion** before the route button activates. `includedRegionCodes=['ng']` restricts to Nigeria **without restricting to Nsukka**; 25-km location bias simply prioritizes nearby businesses on ambiguous queries.
+- `Route.computeRoutes` calculates road paths, duration and distance. `TRAFFIC_AWARE` applies to driving. `WALKING` routes request no driving traffic preference. Results render in the Google Map; travel estimates come from Google's reply, never hardcoded.
+- Destination remains the **Ikenga Hotel landmark**, not a verified conference entrance; the officially published full address appears prominently. The external Google Maps link remains as a fallback.
+- Production deployment must inject the key at **Vite build time** (e.g. local `.env.local` or CI secret during production build). Creating a key on the user's local device does not inject it into GitHub Actions or Firebase Hosting builds.
+- A browser-side API key is visible publicly; its website/API restrictions are the security boundary. Set Cloud Billing budget alerts; alarms do not enforce a spending cap.
+- Verify browser console for key authorization failures, Places suggestions in Nsukka and other cities, selected-place confirmation, car and walking routes, mobile overlay, external Google Maps link and absence of map from homepage. Automated build tests cannot validate live Google API responses without a configured key and browser environment.
