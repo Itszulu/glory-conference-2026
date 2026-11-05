@@ -8,7 +8,7 @@ test('online registrations collect the ministry title choices used by the admin'
   assert.match(registration,/name="title" value=\{form.title\}/)
   assert.match(registration,/set\('title',e.target.value\)/)
   assert.match(registration,/\['Pastor','Reverend','Prophet','Bishop','Apostle','Minister','Evangelist'\]/)
-  assert.match(admin,/MINISTRY TITLE \(OPTIONAL\)/)
+  assert.match(desk,/MINISTRY TITLE \(OPTIONAL\)/)
 })
 test('title is retained in the attendee document rather than discarded',()=>{
   assert.match(registration,/title:form.title/)
