@@ -35,3 +35,12 @@
 .gc-live-fallback{display:inline-block;font-size:11px;text-decoration:underline;text-underline-offset:4px;color:#aceaff;font-weight:750;line-height:1.6}
 @media(max-width:580px){.gc-live-guide-head{flex-wrap:wrap}.gc-live-guide-tag{margin-left:51px}.gc-live-guide-controls button{width:100%}}
 @media(prefers-reduced-motion:reduce){.gc-live-pulse{animation:none}}
+
+/* Make automatic location the clear first choice, with manual planning secondary. */
+.gc-location-choice{margin:28px 0 9px;padding:0 3px;display:grid;gap:7px}
+.gc-location-choice>span{color:#a9edff;font-size:10px;letter-spacing:.15em;font-weight:900}
+.gc-location-choice>strong{color:#fff;font-size:clamp(21px,3vw,27px);font-weight:900;letter-spacing:-.03em}
+.gc-location-choice>p{margin:0;color:#c3dbe9;font-size:12px;line-height:1.7}
+.gc-venue-copy>.gc-live-guide{margin:12px 0 27px;border-color:#83e6fd95;box-shadow:0 12px 40px #00172c35}
+.gc-venue-copy>.gc-live-guide .gc-live-start{width:100%;min-height:57px;font-size:12px}
+.gc-venue-copy>.gc-route-panel{margin-top:10px}
