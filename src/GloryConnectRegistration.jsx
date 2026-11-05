@@ -91,7 +91,7 @@ export default function GloryConnectRegistration() {
       if (success) setCopied(true)
     }
   }
-  const attendeeName=form.fullName.trim()
+  const attendeeName=[form.title,form.fullName.trim()].filter(Boolean).join(' ')
   const attendingDays=form.days.map(day=>day.replace('Nov ','November ')).join(' · ')
   return <section className="page-light center register-page">
     <div className="registration-form">
@@ -143,7 +143,7 @@ export default function GloryConnectRegistration() {
         <h2>MAKE ROOM FOR<br/>THE OUTPOURING.</h2>
         <p className="reg-intro">Complete the form below to register for Glory Conference 2026. Fields marked with <span className="required">*</span> are required.</p>
         <form className="reg-grid" onSubmit={submit}>
-          <label>MINISTRY TITLE (OPTIONAL)<select name="title" value={form.title} onChange={e=>set('title',e.target.value)}><option value="">No title</option>{titles.map(title=><option key={title} value={title}>{title}</option>)}</select></label>
+          <label>MINISTRY TITLE (OPTIONAL)<select name="title" value={form.title} onChange={e=>set('title',e.target.value)}><option value="">No title / Not applicable</option>{titles.map(title=><option key={title} value={title}>{title}</option>)}</select></label>
           <label>FULL NAME *<input required autoComplete="name" minLength={2} maxLength={120} name="fullName" value={form.fullName} onChange={e=>set('fullName',e.target.value)} placeholder="Your full name"/></label>
           <label>WHATSAPP / PHONE *<input required type="tel" autoComplete="tel" inputMode="tel" maxLength={30} name="phone" value={form.phone} onChange={e=>set('phone',e.target.value)} placeholder="08012345678"/></label>
           <label>EMAIL (OPTIONAL)<input type="email" autoComplete="email" maxLength={254} name="email" value={form.email} onChange={e=>set('email',e.target.value)} placeholder="Your email address"/></label>
