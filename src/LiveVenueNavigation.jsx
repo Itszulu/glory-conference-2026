@@ -149,21 +149,21 @@ export default function LiveVenueNavigation({mapReady,getMap,onStart,onStop}){
  }
 
  return <section className="gc-live-guide" aria-labelledby="gc-live-guide-title">
-   <header className="gc-live-guide-head"><span className="gc-live-guide-icon"><Crosshair size={20} aria-hidden="true"/></span><div><strong id="gc-live-guide-title">LIVE WALKING GUIDE</strong><small>No need to know your current street or address</small></div><span className="gc-live-guide-tag">ON THIS SITE</span></header>
-   <p className="gc-live-guide-description">Tap the button and allow location access. Your phone's position will move on the map as you walk, with a refreshed walking route and estimated time remaining.</p>
+   <header className="gc-live-guide-head"><span className="gc-live-guide-icon"><Crosshair size={20} aria-hidden="true"/></span><div><strong id="gc-live-guide-title">LIVE WALKING GUIDE</strong><small>Your phone finds your location automatically</small></div><span className="gc-live-guide-tag">ON THIS SITE</span></header>
+   <p className="gc-live-guide-description">You don't need to know where you are. Tap below, choose Allow when your phone asks for location, and follow your moving position towards DISRM. Your time and distance remaining update as you travel.</p>
    <div className="gc-live-guide-controls">
-     {!active?<button className="gc-live-start" type="button" disabled={!mapReady} onClick={start}><Navigation size={18} aria-hidden="true"/> START LIVE GUIDANCE</button>:<button type="button" className="gc-live-stop" onClick={stop}><StopCircle size={18} aria-hidden="true"/> STOP TRACKING</button>}
+     {!active?<button className="gc-live-start" type="button" disabled={!mapReady} onClick={start}><Navigation size={18} aria-hidden="true"/> USE MY CURRENT LOCATION →</button>:<button type="button" className="gc-live-stop" onClick={stop}><StopCircle size={18} aria-hidden="true"/> STOP TRACKING</button>}
    </div>
    {active&&<div className="gc-live-reading" role="status" aria-live="polite">
-     <div className="gc-live-state"><span className="gc-live-pulse"/><strong>{finding?'LOCATING YOUR PHONE…':'LIVE LOCATION ACTIVE'}</strong></div>
+     <div className="gc-live-state"><span className="gc-live-pulse"/><strong>{finding?'LOCATING YOUR PHONE…':'LIVE GUIDANCE ACTIVE'}</strong></div>
      {guide&&<><div className="gc-live-stats"><div><Clock3 size={19} aria-hidden="true"/><small>TIME REMAINING</small><strong>{timeText(guide.duration)}</strong></div><div><Footprints size={19} aria-hidden="true"/><small>DISTANCE LEFT</small><strong>{distanceText(guide.distance)}</strong></div></div>
-       <div className="gc-live-next"><span>NEXT ROUTE INSTRUCTION</span><strong>{guide.instruction}</strong>{Number.isFinite(guide.nextDistance)&&guide.nextDistance>0&&<small>Approx. {distanceText(guide.nextDistance)} for this section</small>}</div>
+       <div className="gc-live-next"><span>FOLLOW THIS DIRECTION</span><strong>{guide.instruction}</strong>{Number.isFinite(guide.nextDistance)&&guide.nextDistance>0&&<small>Approx. {distanceText(guide.nextDistance)} for this section</small>}</div>
        <p className="gc-live-arrival"><MapPin size={16} aria-hidden="true"/> Estimated arrival: <strong>{guide.arrival} WAT</strong></p></>}
      {reading&&<small className="gc-live-accuracy">Location updated {reading.updatedAt} · Approximate accuracy ±{reading.accuracy} m</small>}
      {notice&&<p className="gc-live-note">{notice}</p>}
    </div>}
    {error&&<p className="gc-live-error" role="alert">{error}</p>}
-   <p className="gc-live-privacy"><ShieldCheck size={15} aria-hidden="true"/> Your location is requested only when you tap Start and is not saved to conference registration records. Keep this page open and your screen active; phones may pause browser tracking in the background.</p>
+   <p className="gc-live-privacy"><ShieldCheck size={15} aria-hidden="true"/> Your location is requested only after you press the button and is not saved to conference registration records. Keep this page open and your screen active; phones may pause browser tracking in the background.</p>
    <a className="gc-live-fallback" href={venueDirectionsUrl} target="_blank" rel="noopener noreferrer">Need full voice navigation or background guidance? Open Google Maps ↗</a>
  </section>
 }
