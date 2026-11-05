@@ -9,7 +9,22 @@ function kmBetween([lon1,lat1],[lon2,lat2]){
   const a=Math.sin(deltaLat/2)**2+Math.cos(lat1*rad)*Math.cos(lat2*rad)*Math.sin(deltaLon/2)**2
   return 12742*Math.asin(Math.min(1,Math.sqrt(a)))
 }
-function hasNsukka(query){return words(query).includes('nsukka')}
+const explicitCities=['nsukka','enugu','lagos','abuja','onitsha','awka','aba','owerri','ibadan','benin','warri','asaba','calabar','uyo','kaduna','kano','jos','makurdi']
+function requestedCities(query){
+  const input=' '+normalize(query)+' '
+  return explicitCities.filter(city=>input.includes(' '+city+' '))
+}
+function isInRequestedCity(feature,query){
+  const cities=requestedCities(query)
+  if(!cities.length)return true
+  const label=normalize(labelFor(feature))
+  const loc=normalize([feature.properties?.locality,feature.properties?.localadmin,feature.properties?.county,feature.properties?.region].filter(Boolean).join(' '))
+  // Nsukka can also be checked by close geographical proximity even when
+  // the geocoder omits the small-town name from the place label.
+  return cities.every(city=>label.split(' ').includes(city)||loc.split(' ').includes(city)||
+    (city==='nsukka'&&kmBetween(feature.geometry.coordinates,[site.lon,site.lat])<=25))
+}
+function hasNsukka(query){return requestedCities(query).includes('nsukka')}
 function validCoords(feature){
   const c=feature?.geometry?.coordinates
   return Array.isArray(c)&&c.length===2&&Number.isFinite(c[0])&&Number.isFinite(c[1])
@@ -33,6 +48,7 @@ export function candidateLocations(features,query){
     return {feature,label:labelFor(feature),score:rankedScore(feature,query),distance}
   }).filter(item=>{
     if(nsukka&&item.distance>25)return false
+    if(!isInRequestedCity(item.feature,query))return false
     // Never accept a result that matches only a generic type ("hotel")
     // or just the state/country portion of a name.
     const q=words(query).filter(x=>!common.has(x)&&x!=='nsukka')
