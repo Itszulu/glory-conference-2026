@@ -40,7 +40,7 @@ exports.createStaffAccount=onCall({region:'us-central1',maxInstances:3},async re
  // Admin SDK generates a one-use setup link; it is returned only to the
  // authenticated admin and is never saved to Firestore or console logs.
  try{
-   const setupLink=await auth.generatePasswordResetLink(address,{url:'https://gloryconf.org/admin'})
+   const setupLink=await auth.generatePasswordResetLink(address)
    return {uid:account.uid,email:address,role:staffRole,setupLink}
  }catch(err){
    return {uid:account.uid,email:address,role:staffRole,setupLink:null,
