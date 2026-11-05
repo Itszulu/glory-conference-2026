@@ -7,7 +7,7 @@ import { VenueDirections } from './VenueDirections'
 import { conferenceVenue } from './conferenceVenue'
 import './glory-connect.css'
 
-const titles = ['Mr','Mrs','Miss','Ms','Dr','Pastor','Reverend','Prophet','Prophetess','Bishop','Apostle','Minister','Evangelist']
+const titles = ['Pastor','Reverend','Prophet','Bishop','Apostle','Minister','Evangelist']
 const days = ['Nov 12', 'Nov 13', 'Nov 14']
 const frequencies = [
   { value: 'First time', label: 'This is my first Glory Conference' },
@@ -35,8 +35,8 @@ export default function GloryConnectRegistration() {
   })
   const set = (name,value) => { setForm(f=>({...f,[name]:value})); setError('') }
   const checkFirstStep = () => {
-    if(!form.title || form.fullName.trim().length < 2 || digitCount(form.phone) < 10 || digitCount(form.phone) > 15 || !form.cityState) {
-      setError('Select your title and enter your full name, a valid phone/WhatsApp number and your state of residence.')
+    if(form.fullName.trim().length < 2 || digitCount(form.phone) < 10 || digitCount(form.phone) > 15 || !form.cityState) {
+      setError('Enter your full name, a valid phone/WhatsApp number and your state of residence.')
       return false
     }
     if(form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
@@ -143,7 +143,7 @@ export default function GloryConnectRegistration() {
         <h2>MAKE ROOM FOR<br/>THE OUTPOURING.</h2>
         <p className="reg-intro">Complete the form below to register for Glory Conference 2026. Fields marked with <span className="required">*</span> are required.</p>
         <form className="reg-grid" onSubmit={submit}>
-          <label>TITLE *<select required name="title" value={form.title} onChange={e=>set('title',e.target.value)}><option value="">Select your title</option>{titles.map(title=><option key={title} value={title}>{title}</option>)}</select></label>
+          <label>MINISTRY TITLE (OPTIONAL)<select name="title" value={form.title} onChange={e=>set('title',e.target.value)}><option value="">No title</option>{titles.map(title=><option key={title} value={title}>{title}</option>)}</select></label>
           <label>FULL NAME *<input required autoComplete="name" minLength={2} maxLength={120} name="fullName" value={form.fullName} onChange={e=>set('fullName',e.target.value)} placeholder="Your full name"/></label>
           <label>WHATSAPP / PHONE *<input required type="tel" autoComplete="tel" inputMode="tel" maxLength={30} name="phone" value={form.phone} onChange={e=>set('phone',e.target.value)} placeholder="08012345678"/></label>
           <label>EMAIL (OPTIONAL)<input type="email" autoComplete="email" maxLength={254} name="email" value={form.email} onChange={e=>set('email',e.target.value)} placeholder="Your email address"/></label>
