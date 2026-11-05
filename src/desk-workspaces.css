@@ -65,3 +65,8 @@
 .gc-staff-setup-link button{justify-self:start;border:0;border-radius:8px;padding:12px 15px;color:#fff;background:#126f52;font-weight:900;font-size:11px;cursor:pointer}
 @media(max-width:1000px){.gc-desk-columns{grid-template-columns:1fr}}
 @media(max-width:650px){.gc-desk-header{align-items:flex-start;flex-direction:column}.gc-desk-head-count{display:flex;align-items:center;gap:9px}.gc-desk-head-count strong{font-size:25px}.gc-desk-form,.gc-attendance-search{grid-template-columns:1fr}.gc-attendance-stats{gap:7px}.gc-attendance-stats article{padding:13px}.gc-attendance-stats strong{font-size:25px}.gc-attendance-person{align-items:flex-start;flex-wrap:wrap}.gc-attendance-actions{width:100%;display:flex;justify-content:flex-end;align-items:center}.gc-attendance-actions button{min-height:43px}}
+
+.gc-attendance-admin-actions{display:flex;align-items:center;flex-wrap:wrap;gap:13px;padding:14px 18px;border:1px solid #d7e7ec;border-radius:13px;background:#f1f8fa}
+.gc-attendance-admin-actions button{border:1px solid #a1cbdc;border-radius:9px;background:#fff;padding:11px 14px;color:#0b5574;font-size:11px;font-weight:900;cursor:pointer}
+.gc-attendance-admin-actions small{font-size:11px;color:#597d90;line-height:1.5}
+.gc-attendance-actions button.gc-attendance-undo{color:#914752;background:#fff6f6;border:1px solid #efc6c6}
