@@ -11,7 +11,7 @@ const metresBetween=(a,b)=>{
   return 12742000*Math.asin(Math.min(1,Math.sqrt(value)))
 }
 const distanceText=m=>Number.isFinite(m)?m>=1000?(m/1000).toFixed(1)+' km':Math.round(m)+' m':'—'
-const timeText=ms=>Number.isFinite(ms)?Math.max(1,Math.round(ms/60000))+' min':'—'
+const timeText=ms=>!Number.isFinite(ms)?'—':ms===0?'Arrived':Math.max(1,Math.round(ms/60000))+' min'
 const errorText=err=>{
   if(err?.code===1)return 'Location permission was denied. Allow location in your browser settings, then try again.'
   if(err?.code===2)return 'Your phone could not determine its location. Turn on Location Services and check your internet connection.'
@@ -62,6 +62,8 @@ export default function LiveVenueNavigation({mapReady,getMap,onStart,onStop}){
  const refreshRoute=async(position)=>{
    if(!trackingRef.current||routeBusyRef.current||!mapRef.current)return
    routeBusyRef.current=true
+   // Throttle requests even when Google returns an error, preventing excessive API calls.
+   lastRouteRef.current={position,at:Date.now()}
    const serial=++routeSerialRef.current
    try{
      const {Route}=await window.google.maps.importLibrary('routes')
@@ -75,7 +77,6 @@ export default function LiveVenueNavigation({mapReady,getMap,onStart,onStop}){
      routeLinesRef.current.forEach(line=>line.setMap(null))
      routeLinesRef.current=route.createPolylines()
      routeLinesRef.current.forEach(line=>line.setMap(mapRef.current))
-     lastRouteRef.current={position,at:Date.now()}
      const step=route.legs?.[0]?.steps?.find(s=>s.instructions)
      setGuide({
        distance:route.distanceMeters,
