@@ -108,3 +108,62 @@
 .nav-links .gc-desktop-venue-link{color:#a5edff;font-weight:800;white-space:nowrap}
 .nav-links .gc-desktop-venue-link:hover,.nav-links .gc-desktop-venue-link:focus-visible{color:#fff}
 .hero .actions .gc-hero-directions{display:inline-flex;align-items:center;justify-content:center;margin-top:0;text-decoration:none;font-size:inherit;letter-spacing:inherit;color:inherit}
+
+/* Refined /directions journey planner — scoped, does not affect the site hero/navigation. */
+.gc-venue .gc-venue-layout{gap:clamp(30px,4vw,64px);align-items:start}
+.gc-venue .gc-venue-map-card{border-radius:24px;background:#052746;border-color:rgba(162,224,251,.34);box-shadow:0 28px 70px rgba(0,10,31,.28);overflow:hidden;margin-top:clamp(4px,7vw,92px)}
+.gc-route-panel{width:100%;max-width:580px;box-sizing:border-box;border:1px solid rgba(149,216,244,.31);border-radius:22px;background:linear-gradient(155deg,rgba(18,81,119,.62),rgba(3,31,59,.68));padding:clamp(18px,2.8vw,26px);box-shadow:0 22px 55px rgba(0,13,37,.2)}
+.gc-route-panel-head{display:flex;align-items:center;gap:12px;padding-bottom:20px;margin-bottom:22px;border-bottom:1px solid rgba(188,232,250,.16)}
+.gc-route-panel-icon{width:43px;height:43px;flex:none;display:grid;place-items:center;color:#052941;border-radius:13px;background:#9de9ff}
+.gc-route-panel-head>div{display:grid;gap:5px;min-width:0;flex:1}
+.gc-route-panel-head strong{color:#fff;font-size:17px;font-weight:850;line-height:1.2}
+.gc-route-panel-head small{color:#c2dbea;font-size:12px;line-height:1.4}
+.gc-route-panel-step{color:#9ce5f8;font-size:10px;font-weight:900;letter-spacing:.13em;white-space:nowrap}
+.gc-route-panel .gc-journey-form{margin:0;max-width:none;gap:12px;min-width:0}
+.gc-route-panel .gc-journey-form>label,.gc-route-panel .gc-journey-modes legend{color:#aeeeff;font-size:10px;letter-spacing:.14em;font-weight:900}
+.gc-route-panel .gc-google-origin{width:100%;max-width:none;min-height:55px;box-sizing:border-box;background:#fff;border-radius:13px;border:2px solid transparent;transition:border-color .2s,box-shadow .2s;box-shadow:0 3px 12px rgba(0,20,44,.15)}
+.gc-route-panel .gc-google-origin:focus-within{border-color:#8adfff;box-shadow:0 0 0 4px rgba(154,232,255,.15)}
+.gc-route-panel .gc-google-origin gmp-place-autocomplete{display:block;width:100%;min-height:50px;border-radius:12px;overflow:visible;--gmpx-font-family:inherit}
+.gc-route-panel .gc-google-places-widget{min-height:50px;border-radius:12px}
+.gc-route-panel .gc-google-hint{font-size:11px;line-height:1.5;color:#b7d2e3;margin:-3px 0 5px}
+.gc-route-panel .gc-google-loading{font-size:12px;color:#b6eaff;margin:0}
+.gc-route-destination{display:flex;gap:11px;align-items:center;background:rgba(8,33,61,.72);border:1px solid rgba(144,209,239,.28);border-radius:13px;padding:14px 13px;margin:5px 0 10px;min-width:0}
+.gc-route-destination-pin{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:rgba(156,232,255,.15);color:#a2ebff}
+.gc-route-destination>div{min-width:0;flex:1;display:grid;gap:3px}
+.gc-route-destination small{color:#9bdcf4;font-size:9px;letter-spacing:.12em;font-weight:900}
+.gc-route-destination strong{color:#fff;font-weight:800;font-size:12px;line-height:1.4}
+.gc-route-destination>div>span{color:#bcd6e6;font-size:11px}
+.gc-route-destination>svg{flex:none;color:#98eacb}
+.gc-route-panel .gc-location-selected{margin:0 0 5px;padding:12px;background:rgba(58,174,152,.13);border-color:rgba(148,232,204,.42)}
+.gc-route-panel .gc-location-selected svg{color:#9af1ca}
+.gc-route-panel .gc-journey-modes{margin:2px 0 6px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gc-route-panel .gc-journey-modes legend{grid-column:1/-1;margin-bottom:10px}
+.gc-route-panel .gc-journey-modes button{display:flex;align-items:center;justify-content:center;gap:9px;min-height:49px;padding:10px 12px;font-size:12px;font-weight:850;border-radius:12px;border:1px solid rgba(190,230,249,.32);background:rgba(255,255,255,.045);color:#d0e9f4;transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+.gc-route-panel .gc-journey-modes button:hover{background:rgba(156,232,255,.16);border-color:#9be9ff}
+.gc-route-panel .gc-journey-modes button.selected{background:#e7faff;border-color:#e7faff;color:#052e50;box-shadow:0 5px 15px rgba(0,14,37,.17)}
+.gc-route-panel .gc-journey-modes button:focus-visible,.gc-route-panel .gc-journey-submit:focus-visible{outline:3px solid #9be9ff;outline-offset:3px}
+.gc-route-panel .gc-journey-submit{margin-top:5px;min-height:55px;border-radius:13px;box-shadow:0 9px 24px rgba(0,12,30,.2);font-size:12px;letter-spacing:.075em;background:linear-gradient(115deg,#a9edff,#7ddaff);color:#062c4c;transition:transform .2s,box-shadow .2s,opacity .2s}
+.gc-route-panel .gc-journey-submit:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 12px 29px rgba(0,15,40,.33)}
+.gc-route-panel .gc-journey-submit:disabled{opacity:.85;cursor:not-allowed;background:#bad9e5;color:#43627a;box-shadow:none}
+.gc-venue .gc-venue-map-heading{min-height:64px;box-sizing:border-box;padding:18px 22px;background:linear-gradient(90deg,#042a4a,#073756)}
+.gc-venue .gc-venue-map-heading span{font-size:11px;letter-spacing:.12em;color:#d9f7ff}
+.gc-venue .gc-map-provider{font-size:10px;color:#aacfe2}
+.gc-venue .gc-venue-map-bottom{display:flex;align-items:center;gap:12px;padding:17px 20px;background:#062c4e}
+.gc-map-destination-icon{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:12px;background:rgba(151,232,255,.12);color:#9de9ff}
+.gc-venue .gc-venue-map-bottom>div{display:grid;gap:4px;min-width:0}
+.gc-venue .gc-venue-map-bottom small{color:#9bd8ed;font-size:9px;letter-spacing:.12em;font-weight:900}
+.gc-venue .gc-venue-map-bottom strong{color:#fff;font-size:12px;line-height:1.4}
+.gc-venue .gc-venue-map-bottom>div>span{color:#b5d1e0;font-size:11px}
+.gc-venue .gc-journey-report{margin-top:20px}
+@media(max-width:820px){.gc-venue .gc-venue-map-card{margin-top:8px}}
+@media(max-width:560px){
+  .gc-route-panel{padding:17px;border-radius:17px}
+  .gc-route-panel-head{margin-bottom:17px;padding-bottom:17px}
+  .gc-route-panel-head strong{font-size:15px}
+  .gc-route-panel-head small{font-size:11px}
+  .gc-route-panel .gc-journey-modes button{font-size:12px;padding:10px 6px}
+  .gc-venue .gc-venue-map-card{border-radius:17px}
+  .gc-venue .gc-venue-map-heading{padding:15px}
+  .gc-venue .gc-map-provider{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.gc-route-panel .gc-journey-submit,.gc-route-panel .gc-journey-modes button{transition:none}}
