@@ -193,13 +193,15 @@ export function VenueDirections({compact=false}){
         <h2 id="gc-venue-title">YOUR JOURNEY<br/><span>TO THE OUTPOURING.</span></h2>
         <p className="gc-venue-intro">Don't know your current address? Use Live Walking Guide to follow your phone's location as you move. Or search a shop, street, hotel, landmark or town anywhere in Nigeria to plan a route.</p>
         <div className="gc-venue-address"><span>OFFICIAL CONFERENCE ADDRESS</span><strong>{conferenceVenue.addressLine1}</strong><strong>{conferenceVenue.addressLine2}</strong><strong>{conferenceVenue.city}</strong></div>
+        <div className="gc-location-choice"><span>01 · RECOMMENDED</span><strong>Let your phone find you</strong><p>No street name or starting address needed. Allow location once, and the map guides you as you move.</p></div>
+        <LiveVenueNavigation mapReady={!loading&&!!mapsKey} getMap={()=>mapRef.current} onStart={()=>{++routeSerialRef.current;routeLinesRef.current.forEach(line=>line.setMap(null));routeLinesRef.current=[];setRouteInfo(null);setPending(false);setLiveActive(true)}} onStop={()=>setLiveActive(false)}/>
         <div className="gc-route-panel">
-          <div className="gc-route-panel-head"><span className="gc-route-panel-icon"><Navigation size={19} aria-hidden="true"/></span><div><strong>Plan your journey</strong><small>Get a personalised route to the conference</small></div><span className="gc-route-panel-step">01 / 02</span></div>
+          <div className="gc-route-panel-head"><span className="gc-route-panel-icon"><Navigation size={19} aria-hidden="true"/></span><div><strong>Or plan from an address</strong><small>For journeys planned ahead or if location permission is unavailable</small></div><span className="gc-route-panel-step">02 / 02</span></div>
           <form className="gc-journey-form" onSubmit={plan}>
-            <label id="gc-google-origin-label">YOUR STARTING LOCATION</label>
+            <label id="gc-google-origin-label">OPTIONAL: SEARCH A STARTING LOCATION</label>
             <div ref={placeWidgetHost} className="gc-google-origin" aria-labelledby="gc-google-origin-label"/>
             {loading&&<p className="gc-google-loading" role="status">Loading Google place search…</p>}
-            <p className="gc-google-hint">Type a street, hotel or landmark, then choose a Google suggestion.</p>
+            <p className="gc-google-hint">Use this only if you prefer a manually chosen starting point. Live guidance above needs no typing.</p>
             {origin&&<div className="gc-location-selected"><CheckCircle2 size={17} aria-hidden="true"/><span>Starting from <strong>{origin.name}</strong>{origin.address&&<small>{origin.address}</small>}</span></div>}
             <div className="gc-route-destination"><span className="gc-route-destination-pin"><MapPin size={16} aria-hidden="true"/></span><div><small>YOUR DESTINATION</small><strong>Divine Intervention Soul Rescue Ministry</strong><span>Uwani Ugwu Street, Nsukka</span></div><CheckCircle2 size={17} aria-label="Destination set"/></div>
             <fieldset className="gc-journey-modes"><legend>CHOOSE YOUR TRAVEL MODE</legend>
@@ -209,7 +211,6 @@ export function VenueDirections({compact=false}){
             <button type="submit" className="gc-journey-submit" disabled={pending||loading||!origin||liveActive}>{pending?'CALCULATING YOUR ROUTE…':'GET MY DIRECTIONS'} <ArrowRight size={18} aria-hidden="true"/></button>
           </form>
         </div>
-        <LiveVenueNavigation mapReady={!loading&&!!mapsKey} getMap={()=>mapRef.current} onStart={()=>{++routeSerialRef.current;routeLinesRef.current.forEach(line=>line.setMap(null));routeLinesRef.current=[];setRouteInfo(null);setPending(false);setLiveActive(true)}} onStop={()=>setLiveActive(false)}/>
         {error&&<p className="gc-journey-error" role="alert">{error}</p>}
         {routeInfo&&<div className="gc-journey-report" role="status" aria-live="polite">
           <div><Clock3 size={20} aria-hidden="true"/><span>ESTIMATED TRAVEL TIME</span><strong>{routeInfo.duration}</strong></div>
