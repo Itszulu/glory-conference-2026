@@ -1,0 +1,37 @@
+/* On-site live route guidance. Location use requires explicit visitor action. */
+.gc-live-guide{margin:20px 0 0;background:linear-gradient(155deg,#103f67,#062d50);border:1px solid #a5dcf35c;border-radius:20px;padding:clamp(18px,2.5vw,27px);box-shadow:0 12px 35px #00172c25;color:#fff}
+.gc-live-guide-head{display:flex;align-items:center;gap:11px;padding-bottom:13px;border-bottom:1px solid #ffffff23}
+.gc-live-guide-icon{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:12px;background:#d6f6ff;color:#075176}
+.gc-live-guide-head>div{flex:1;display:grid;gap:4px;min-width:0}
+.gc-live-guide-head strong{font-size:12px;letter-spacing:.11em;color:#fff;font-weight:900}
+.gc-live-guide-head small{font-size:11px;color:#b1d7e9;line-height:1.4}
+.gc-live-guide-tag{padding:7px 9px;background:#b7f2ff20;border:1px solid #b7f2ff57;border-radius:40px;font-size:9px;white-space:nowrap;letter-spacing:.08em;font-weight:900;color:#b8e9f7}
+.gc-live-guide-description{color:#d4eaf4;font-size:12px;line-height:1.75;margin:16px 0}
+.gc-live-guide-controls button{display:inline-flex;justify-content:center;align-items:center;gap:10px;min-height:49px;padding:13px 19px;border:0;border-radius:11px;font-size:11px;font-weight:900;letter-spacing:.07em;cursor:pointer}
+.gc-live-start{background:#a5edff;color:#053455}
+.gc-live-start:disabled{opacity:.5;cursor:not-allowed}
+.gc-live-stop{background:#ffe6e0;color:#6f2d2b}
+.gc-live-guide button:focus-visible,.gc-live-fallback:focus-visible{outline:3px solid #abf1ff;outline-offset:3px}
+.gc-live-reading{display:grid;gap:14px;background:#042744;border:1px solid #b7e4f22e;border-radius:14px;padding:15px;margin:16px 0}
+.gc-live-state{display:flex;align-items:center;gap:9px;color:#a4f7cf;font-size:10px;letter-spacing:.09em}
+.gc-live-pulse{display:inline-block;width:9px;height:9px;flex:none;border-radius:50%;background:#65f5ae;box-shadow:0 0 0 5px #65f5ae25}
+.gc-live-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gc-live-stats>div{min-width:0;background:#ffffff0f;border:1px solid #ffffff26;border-radius:12px;padding:15px;display:grid;gap:6px}
+.gc-live-stats svg{color:#a2e5fa}
+.gc-live-stats small{font-size:9px;letter-spacing:.09em;font-weight:800;color:#a6c9d9}
+.gc-live-stats strong{font-size:clamp(24px,3vw,32px);color:#fff;line-height:1.15}
+.gc-live-next{display:grid;gap:7px;border-left:3px solid #9de9ff;padding:10px 13px;background:#ffffff0a}
+.gc-live-next span{font-size:9px;letter-spacing:.12em;font-weight:900;color:#a9e9f8}
+.gc-live-next strong{font-size:14px;line-height:1.55;color:white;font-weight:750}
+.gc-live-next small{font-size:11px;color:#c3dce9}
+.gc-live-arrival{display:flex;align-items:center;gap:6px;color:#c7e4f0;font-size:12px;margin:0;flex-wrap:wrap}
+.gc-live-arrival strong{color:#fff}
+.gc-live-accuracy{font-size:10px;color:#8eb9cd;line-height:1.6}
+.gc-live-note,.gc-live-error{padding:11px 13px;border-radius:9px;margin:0;font-size:12px;line-height:1.65}
+.gc-live-note{background:#2b65822d;color:#b9edff}
+.gc-live-error{background:#fff0e8;border:1px solid #f0bba7;color:#833a28;margin-top:12px}
+.gc-live-privacy{display:flex;align-items:flex-start;gap:9px;font-size:11px;line-height:1.6;color:#bad6e5;margin:17px 0 9px}
+.gc-live-privacy svg{flex:none;margin-top:1px;color:#a7e6fa}
+.gc-live-fallback{display:inline-block;font-size:11px;text-decoration:underline;text-underline-offset:4px;color:#aceaff;font-weight:750;line-height:1.6}
+@media(max-width:580px){.gc-live-guide-head{flex-wrap:wrap}.gc-live-guide-tag{margin-left:51px}.gc-live-guide-controls button{width:100%}}
+@media(prefers-reduced-motion:reduce){.gc-live-pulse{animation:none}}
