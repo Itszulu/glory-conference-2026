@@ -4,7 +4,7 @@ import { conferenceVenue, venueDirectionsUrl, venueEmbedUrl } from './conference
 import './venue.css'
 
 const mapsKey=(import.meta.env.VITE_GOOGLE_MAPS_API_KEY||'').trim()
-const destination={lat:conferenceVenue.landmarkLatitude,lng:conferenceVenue.landmarkLongitude}
+const destination={lat:conferenceVenue.latitude,lng:conferenceVenue.longitude}
 let googleMapsPromise
 
 function loadGoogleMaps(){
@@ -81,8 +81,8 @@ export function VenueDirections({compact=false}){
           fullscreenControl:true,gestureHandling:'cooperative'
         })
         mapRef.current=map
-        // A Circle marks the approximate landmark without using deprecated google.maps.Marker.
-        marker=new maps.Circle({center:destination,radius:45,map,strokeColor:'#067ba6',strokeWeight:3,strokeOpacity:1,fillColor:'#0d9ccb',fillOpacity:.85})
+        // Mark the exact point supplied by the site owner without using deprecated google.maps.Marker.
+        marker=new maps.Circle({center:destination,radius:15,map,strokeColor:'#067ba6',strokeWeight:3,strokeOpacity:1,fillColor:'#0d9ccb',fillOpacity:.85})
         markersRef.current.push(marker)
 
         widget=new PlaceAutocompleteElement()
@@ -179,7 +179,7 @@ export function VenueDirections({compact=false}){
   }
 
   if(compact)return <div className="gc-venue-compact">
-    <div className="gc-venue-compact-info"><MapPin size={20} aria-hidden="true"/><div><strong>Find your way to The Outpouring</strong><span>{conferenceVenue.addressLine1}, {conferenceVenue.city}</span><small>Ikenga Hotel is a navigation landmark, not the entrance</small></div></div>
+    <div className="gc-venue-compact-info"><MapPin size={20} aria-hidden="true"/><div><strong>Find your way to The Outpouring</strong><span>{conferenceVenue.addressLine1}, {conferenceVenue.city}</span><small>Route to the church's map pin, supplied by the conference team</small></div></div>
     <a className="gc-venue-link" href="/directions"><Navigation size={16} aria-hidden="true"/> VIEW VENUE & DIRECTIONS</a>
   </div>
 
@@ -209,16 +209,16 @@ export function VenueDirections({compact=false}){
           <p>{routeInfo.trafficAware?'Google driving estimate considers available traffic conditions.':'Google walking estimate; actual travel time may vary.'}</p>
           {routeInfo.warnings.map((warning,i)=><p className="gc-journey-warning" key={i}>{warning}</p>)}
         </div>}
-        <p className="gc-venue-caveat"><Info size={15} aria-hidden="true"/> Routes end at <strong>Ikenga Hotel</strong>, an approximate navigation landmark, not a verified conference entrance. Use the official address above for the final approach.</p>
+        <p className="gc-venue-caveat"><Info size={15} aria-hidden="true"/> Routes end at the <strong>Divine Intervention Soul Rescue Ministry</strong> map pin supplied by the conference team. Confirm the entrance when you arrive.</p>
         <div className="gc-venue-cta-row"><a className="gc-venue-secondary" href={venueDirectionsUrl} target="_blank" rel="noopener noreferrer"><Navigation size={17} aria-hidden="true"/> OPEN FULL GOOGLE MAPS <ExternalLink size={15} aria-hidden="true"/></a></div>
       </div>
       <div className="gc-venue-map-card">
         <div className="gc-venue-map-heading"><span><Navigation size={18} aria-hidden="true"/> GOOGLE JOURNEY MAP</span><small>Google Maps Platform</small></div>
         <div className="gc-journey-map-stage">
-          <div ref={mapHost} className="gc-journey-map-canvas" style={{display:mapsKey?'block':'none'}} aria-label="Google interactive map with route to Ikenga Hotel in Nsukka"/>
-          {!mapsKey&&<iframe className="gc-venue-embedded-map" title="Ikenga Hotel landmark in Nsukka" src={venueEmbedUrl} loading="lazy"/>}
+          <div ref={mapHost} className="gc-journey-map-canvas" style={{display:mapsKey?'block':'none'}} aria-label="Google interactive map with route to Divine Intervention Soul Rescue Ministry in Nsukka"/>
+          {!mapsKey&&<iframe className="gc-venue-embedded-map" title="Divine Intervention Soul Rescue Ministry in Nsukka" src={venueEmbedUrl} loading="lazy"/>}
         </div>
-        <div className="gc-venue-map-bottom"><MapPin size={16} aria-hidden="true"/><span>Landmark: Ikenga Hotel · Nsukka</span></div>
+        <div className="gc-venue-map-bottom"><MapPin size={16} aria-hidden="true"/><span>Destination: Divine Intervention Soul Rescue Ministry · Nsukka</span></div>
       </div>
     </div>
   </section>
