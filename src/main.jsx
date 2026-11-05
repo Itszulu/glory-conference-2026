@@ -30,8 +30,8 @@ document.title=pageTitle
 const descriptionTag=document.querySelector('meta[name="description"]')
 if(descriptionTag)descriptionTag.setAttribute('content',pageDescription)
 for(const [selector,attribute,value] of [
-  ['link[rel="canonical"]','href','https://gloryconf.org'+currentPath],
-  ['meta[property="og:url"]','content','https://gloryconf.org'+currentPath],
+  ['link[rel="canonical"]','href','https://gloryconf.web.app'+currentPath],
+  ['meta[property="og:url"]','content','https://gloryconf.web.app'+currentPath],
   ['meta[property="og:title"]','content',pageTitle],
   ['meta[property="og:description"]','content',pageDescription],
   ['meta[name="twitter:title"]','content',pageTitle],
