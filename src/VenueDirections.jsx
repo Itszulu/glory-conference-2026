@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowRight, CheckCircle2, Clock3, ExternalLink, Info, MapPin, Navigation, Route as RouteIcon } from 'lucide-react'
+import { ArrowRight, CarFront, CheckCircle2, Clock3, ExternalLink, Footprints, Info, MapPin, Navigation, Route as RouteIcon } from 'lucide-react'
 import { conferenceVenue, venueDirectionsUrl, venueEmbedUrl } from './conferenceVenue'
 import './venue.css'
 
@@ -190,17 +190,22 @@ export function VenueDirections({compact=false}){
         <h2 id="gc-venue-title">YOUR JOURNEY<br/><span>TO THE OUTPOURING.</span></h2>
         <p className="gc-venue-intro">Use Google Maps to find a shop, street, hotel, landmark or town anywhere in Nigeria. Select a suggestion and see your route, distance and estimated travel time below.</p>
         <div className="gc-venue-address"><span>OFFICIAL CONFERENCE ADDRESS</span><strong>{conferenceVenue.addressLine1}</strong><strong>{conferenceVenue.addressLine2}</strong><strong>{conferenceVenue.city}</strong></div>
-        <form className="gc-journey-form" onSubmit={plan}>
-          <label id="gc-google-origin-label">WHERE ARE YOU COMING FROM?</label>
-          <div ref={placeWidgetHost} className="gc-google-origin" aria-labelledby="gc-google-origin-label"/>
-          {loading&&<p className="gc-google-loading" role="status">Loading Google place search…</p>}
-          {origin&&<div className="gc-location-selected"><CheckCircle2 size={17} aria-hidden="true"/><span>Selected starting point: <strong>{origin.name}</strong>{origin.address&&<small>{origin.address}</small>}</span></div>}
-          <fieldset className="gc-journey-modes"><legend>HOW WILL YOU TRAVEL?</legend>
-            <button type="button" className={mode==='DRIVING'?'selected':''} onClick={()=>changeMode('DRIVING')} aria-pressed={mode==='DRIVING'}>By car</button>
-            <button type="button" className={mode==='WALKING'?'selected':''} onClick={()=>changeMode('WALKING')} aria-pressed={mode==='WALKING'}>Walking</button>
-          </fieldset>
-          <button type="submit" className="gc-journey-submit" disabled={pending||loading||!origin}>{pending?'CALCULATING GOOGLE ROUTE…':'SHOW MY ROUTE & ARRIVAL TIME'} <ArrowRight size={18} aria-hidden="true"/></button>
-        </form>
+        <div className="gc-route-panel">
+          <div className="gc-route-panel-head"><span className="gc-route-panel-icon"><Navigation size={19} aria-hidden="true"/></span><div><strong>Plan your journey</strong><small>Get a personalised route to the conference</small></div><span className="gc-route-panel-step">01 / 02</span></div>
+          <form className="gc-journey-form" onSubmit={plan}>
+            <label id="gc-google-origin-label">YOUR STARTING LOCATION</label>
+            <div ref={placeWidgetHost} className="gc-google-origin" aria-labelledby="gc-google-origin-label"/>
+            {loading&&<p className="gc-google-loading" role="status">Loading Google place search…</p>}
+            <p className="gc-google-hint">Type a street, hotel or landmark, then choose a Google suggestion.</p>
+            {origin&&<div className="gc-location-selected"><CheckCircle2 size={17} aria-hidden="true"/><span>Starting from <strong>{origin.name}</strong>{origin.address&&<small>{origin.address}</small>}</span></div>}
+            <div className="gc-route-destination"><span className="gc-route-destination-pin"><MapPin size={16} aria-hidden="true"/></span><div><small>YOUR DESTINATION</small><strong>Divine Intervention Soul Rescue Ministry</strong><span>Uwani Ugwu Street, Nsukka</span></div><CheckCircle2 size={17} aria-label="Destination set"/></div>
+            <fieldset className="gc-journey-modes"><legend>CHOOSE YOUR TRAVEL MODE</legend>
+              <button type="button" className={mode==='DRIVING'?'selected':''} onClick={()=>changeMode('DRIVING')} aria-pressed={mode==='DRIVING'}><CarFront size={18} aria-hidden="true"/> Driving</button>
+              <button type="button" className={mode==='WALKING'?'selected':''} onClick={()=>changeMode('WALKING')} aria-pressed={mode==='WALKING'}><Footprints size={18} aria-hidden="true"/> Walking</button>
+            </fieldset>
+            <button type="submit" className="gc-journey-submit" disabled={pending||loading||!origin}>{pending?'CALCULATING YOUR ROUTE…':'GET MY DIRECTIONS'} <ArrowRight size={18} aria-hidden="true"/></button>
+          </form>
+        </div>
         {error&&<p className="gc-journey-error" role="alert">{error}</p>}
         {routeInfo&&<div className="gc-journey-report" role="status" aria-live="polite">
           <div><Clock3 size={20} aria-hidden="true"/><span>ESTIMATED TRAVEL TIME</span><strong>{routeInfo.duration}</strong></div>
@@ -213,12 +218,12 @@ export function VenueDirections({compact=false}){
         <div className="gc-venue-cta-row"><a className="gc-venue-secondary" href={venueDirectionsUrl} target="_blank" rel="noopener noreferrer"><Navigation size={17} aria-hidden="true"/> OPEN FULL GOOGLE MAPS <ExternalLink size={15} aria-hidden="true"/></a></div>
       </div>
       <div className="gc-venue-map-card">
-        <div className="gc-venue-map-heading"><span><Navigation size={18} aria-hidden="true"/> GOOGLE JOURNEY MAP</span><small>Google Maps Platform</small></div>
+        <div className="gc-venue-map-heading"><span><Navigation size={18} aria-hidden="true"/> LIVE ROUTE PREVIEW</span><small className="gc-map-provider">Powered by Google Maps</small></div>
         <div className="gc-journey-map-stage">
           <div ref={mapHost} className="gc-journey-map-canvas" style={{display:mapsKey?'block':'none'}} aria-label="Google interactive map with route to Divine Intervention Soul Rescue Ministry in Nsukka"/>
           {!mapsKey&&<iframe className="gc-venue-embedded-map" title="Divine Intervention Soul Rescue Ministry in Nsukka" src={venueEmbedUrl} loading="lazy"/>}
         </div>
-        <div className="gc-venue-map-bottom"><MapPin size={16} aria-hidden="true"/><span>Destination: Divine Intervention Soul Rescue Ministry · Nsukka</span></div>
+        <div className="gc-venue-map-bottom"><span className="gc-map-destination-icon"><MapPin size={18} aria-hidden="true"/></span><div><small>CONFERENCE DESTINATION</small><strong>Divine Intervention Soul Rescue Ministry</strong><span>Nsukka, Enugu State</span></div></div>
       </div>
     </div>
   </section>
