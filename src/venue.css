@@ -72,3 +72,8 @@
 .gc-venue-map-card{min-width:0}
 @media(max-width:820px){.gc-venue-layout{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:560px){.gc-journey-map-canvas,.gc-journey-map-stage,.gc-journey-map-stage .gc-venue-map-placeholder{height:310px;min-height:310px}.gc-journey-report>div{padding:14px}.gc-journey-report>div strong{font-size:23px}.gc-journey-form{gap:12px}.gc-journey-origin input{font-size:16px}}
+
+.gc-journey-report>.gc-journey-arrival{grid-column:1/-1;background:rgba(156,232,255,.15);border-color:rgba(156,232,255,.42);padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.gc-journey-report>.gc-journey-arrival span{font-size:10px;letter-spacing:.08em;font-weight:850;color:#c5e8f8}
+.gc-journey-report>.gc-journey-arrival strong{font-size:18px;color:#fff}
+@media(max-width:560px){.gc-journey-report>.gc-journey-arrival{align-items:flex-start;flex-direction:column;gap:5px}}
