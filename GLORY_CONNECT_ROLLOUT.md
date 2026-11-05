@@ -128,3 +128,17 @@ This client-only Firebase Hosting deployment embeds its `VITE_ORS_API_KEY` into 
 - End point is Ikenga Hotel (`6.8366763,7.3675346`), a **landmark**, not a confirmed conference entrance. Always show the actual published street address.
 
 Official sources: https://api.heigit.org/ ; https://ask.openrouteservice.org/t/deprecating-api-openrouteservice-org-in-favour-of-api-heigit-org/7912 ; https://operations.osmfoundation.org/policies/tiles/
+
+## FINAL MAP DECISION — GOOGLE MAPS FREE EMBED ONLY (November 5, 2026)
+
+This section **supersedes all previous Google API, OpenRouteService, HeiGIT, and on-site route-calculator instructions above**. Do not configure or use the old `VITE_ORS_API_KEY` or `VITE_GOOGLE_MAPS_API_KEY`. No key, billing account, or credit card is required.
+
+- The original homepage hero and its CSS layout are unchanged. Only a small `FIND THE VENUE` link was added beneath existing hero buttons. There is no map component on the homepage.
+- The existing hamburger drawer includes `DIRECTIONS & VENUE` using its existing link styling; Schedule and registration confirmation also link to `/directions`.
+- `/directions` uses `VenueDirections.jsx` to show a Google Maps no-key iframe (landmark overview), the full officially published venue address, and a Google Maps directions link.
+- Google Maps itself handles searches for streets, stores, local businesses, walking/driving options and ETA after clicking through to its website/app. Custom in-page search, automatic geocoding, and route ETAs are intentionally removed because they were unreliable without an appropriate licensed provider.
+- An iframe from a Google Maps shared embed is free and requires no developer key. The current iframe uses the legacy `maps.google.com/maps?q=...&output=embed` URL; confirm its actual browser behavior before release. Prefer replacing it with the official `Share → Embed a map → Copy HTML` iframe if available for the precise landmark.
+- **Ikenga Hotel is a navigation landmark, not a verified conference entrance.** The correct published venue is No. 4 Uwani Ugwu Street, off Ikenga Junction, Nsukka, Enugu State, Nigeria. Do not claim the map marker is the entrance.
+- Verify the iframe and external directions link in mobile and desktop browsers before deployment. Existing Firestore registration/check-in access checks remain mandatory.
+
+Nothing in this change automatically deploys the Firebase Hosting website.
