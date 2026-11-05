@@ -3,12 +3,17 @@ import assert from 'node:assert/strict'
 import {readFileSync} from 'node:fs'
 const app=readFileSync(new URL('../src/App.jsx',import.meta.url),'utf8')
 const staff=readFileSync(new URL('../src/StaffManagement.jsx',import.meta.url),'utf8')
+const navigation=readFileSync(new URL('../src/AdminNavigation.jsx',import.meta.url),'utf8')
 const rules=readFileSync(new URL('../firestore.rules',import.meta.url),'utf8')
 test('main admin opens to task-first overview; staff see restricted workflows',()=>{
  assert.match(app,/setTab\(role==='admin'\?'overview':role==='followup'\?'follow-up':'reception'\)/)
  assert.match(app,/tab==='overview'/)
  assert.match(app,/tab==='staff'&&<StaffManagement user=\{user\}/)
- assert.match(app,/staffRole==='admin'\|\|\(staffRole==='checkin'&&id==='reception'\)/)
+ assert.match(app,/<AdminNavigation role=\{staffRole\} active=\{tab\} onNavigate=\{setTab\}/)
+ assert.match(navigation,/EVENT OPERATIONS/)
+ assert.match(navigation,/MINISTRY & TEAM/)
+ assert.match(navigation,/COMMERCE & CONTENT/)
+ assert.match(navigation,/checkin:\['reception'\]/)
  assert.match(app,/className="gc-admin-overview-cards"/)
 })
 test('operational roles are assigned by UID, never by client-created privileged credentials',()=>{
