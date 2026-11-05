@@ -43,7 +43,7 @@ test('staff creation and disable require server-side administrator verification'
  assert.match(backend,/auth\.createUser/)
  assert.match(backend,/auth\.generatePasswordResetLink/)
  assert.match(backend,/auth\.updateUser\(uid,\{disabled:true\}\)/)
- assert.match(backend,/role!=='admin'/) // no admin role in provisioner
+ assert.match(backend,/allowedRoles=\['registration','checkin','followup'\]/)
  assert.doesNotMatch(staff,/createUserWithEmailAndPassword|privateKey/)
 })
 test('Firestore separates registration and attendance writes and protects checkout',()=>{
