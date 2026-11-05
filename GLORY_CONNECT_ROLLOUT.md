@@ -100,3 +100,31 @@ Without a configured key, users can still read the venue address; trying to calc
 - Edit origin or travel mode; ensure stale routes clear. Try a nonexistent place and verify useful error text.
 - Verify usage quotas, restricted referrers and real Maps API failures.
 - Test Android and iOS layouts and browser back/forward behaviour.
+
+## CURRENT IMPLEMENTATION — NO-CARD IN-PAGE JOURNEY PLANNER (November 5, 2026)
+
+The earlier Google Maps billing/API-key setup above is **superseded**. The live feature-branch implementation now uses OpenStreetMap/Leaflet for the map and HeiGIT's **free openrouteservice Standard API** for forward geocoding and driving/walking directions, using `https://api.heigit.org`. Google Cloud, Maps JavaScript and Routes API billing are **not required** for this implementation.
+
+The original conference hero/header remains first. The journey planner appears after the giving sections, before the footer. Schedule and attendee confirmation link to `/#venue`.
+
+### Activate without a card
+
+1. Sign up for a free HeiGIT account at https://account.heigit.org/ (the Standard API key is free).
+2. From the account dashboard, use **Copy** to get the entire API key (don't copy the masked characters).
+3. In the local repo, create `.env.local` and add `VITE_ORS_API_KEY=YOUR_FULL_HEIGIT_KEY`.
+4. Run `npm run build` and test a real route locally. The new key is required at build time.
+5. Only deploy hosting after confirming routes, UI/mobile experience and the broader Firestore permissions tests on this same branch.
+
+This client-only Firebase Hosting deployment embeds its `VITE_ORS_API_KEY` into browser JavaScript. **A browser API token is not secret**. Check the provider's published API-key usage rules and free quotas before using this at scale; a protected Firebase Functions routing proxy would require a separate architecture and might introduce billing. Don't use any sensitive or paid key here. Avoid storing full home addresses as application logs.
+
+### Test checklist
+
+- Test a car route from `Enugu, Nigeria` and another from `UNN Main Gate, Nsukka`, plus an appropriate walking route around Nsukka.
+- The road line, route distance, duration and leave-now time should be calculated from the **actual API response**, not prefilled.
+- Confirm the matched starting-place label is accurate; if not, enter more detail.
+- Confirm the map displays **© OpenStreetMap contributors** attribution and tiles load only after asking for a route. The community tile service is best effort and is not designed for high-volume or bulk use.
+- Confirm error handling for no key, invalid key, quota/rate limits, unsupported origin and network failures.
+- HeiGIT's Standard plan has daily and per-minute usage limits. If attendee traffic grows, use a dedicated licensed map-tile provider and a back end with access controls.
+- End point is Ikenga Hotel (`6.8366763,7.3675346`), a **landmark**, not a confirmed conference entrance. Always show the actual published street address.
+
+Official sources: https://api.heigit.org/ ; https://ask.openrouteservice.org/t/deprecating-api-openrouteservice-org-in-favour-of-api-heigit-org/7912 ; https://operations.osmfoundation.org/policies/tiles/
