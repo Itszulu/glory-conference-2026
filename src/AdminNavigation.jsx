@@ -1,14 +1,14 @@
 import './admin-navigation.css'
 
 const groups=[
- {name:'EVENT OPERATIONS',items:[['overview','Overview'],['reception','Welcome desk'],['registrations','Attendee records'],['duplicates','Duplicate review']]},
+ {name:'EVENT OPERATIONS',items:[['overview','Overview'],['registration-desk','Registration desk'],['attendance','Attendance desk'],['registrations','Attendee records'],['duplicates','Duplicate review']]},
  {name:'MINISTRY & TEAM',items:[['follow-up','Glory Connect'],['staff','Staff access']]},
  {name:'COMMERCE & CONTENT',items:[['orders','Merch orders'],['products','Merchandise'],['site-media','Website media'],['prayer-designs','Prayer designs']]}
 ]
 const allowedByRole={
- admin:['overview','reception','registrations','duplicates','follow-up','staff','orders','products','site-media','prayer-designs'],
- registration:['reception'],
- checkin:['reception'],
+ admin:['overview','registration-desk','attendance','registrations','duplicates','follow-up','staff','orders','products','site-media','prayer-designs'],
+ registration:['registration-desk'],
+ checkin:['attendance'],
  followup:['follow-up']
 }
 export default function AdminNavigation({role,active,onNavigate,registrations=0,orders=0}){
