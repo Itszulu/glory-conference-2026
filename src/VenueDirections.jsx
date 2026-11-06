@@ -198,7 +198,7 @@ export function VenueDirections({compact=false}){
       <div className="gc-venue-copy">
         <p className="gc-venue-eyebrow"><MapPin size={16} aria-hidden="true"/> PLAN YOUR VISIT · NSUKKA</p>
         <h2 id="gc-venue-title">YOUR JOURNEY<br/><span>TO THE OUTPOURING.</span></h2>
-        <p className="gc-venue-intro">Don't know your current address? Use Live Walking Guide to follow your phone's location as you move. Or search a shop, street, hotel, landmark or town anywhere in Nigeria to plan a route.</p>
+        <p className="gc-venue-intro">Don't know your current address? Use Live Navigation to follow your phone's location while driving or walking. Or search a shop, street, hotel, landmark or town anywhere in Nigeria to plan a route.</p>
         <div className="gc-venue-address"><span>OFFICIAL CONFERENCE ADDRESS</span><strong>{conferenceVenue.addressLine1}</strong><strong>{conferenceVenue.addressLine2}</strong><strong>{conferenceVenue.city}</strong></div>
         <div className="gc-location-choice"><span>01 · RECOMMENDED</span><strong>Let your phone find you</strong><p>No street name or starting address needed. Allow location once, and the map guides you as you move.</p></div>
         <LiveVenueNavigation mapReady={!loading&&!!mapsKey} getMap={()=>mapRef.current} onStart={()=>{++routeSerialRef.current;routeLinesRef.current.forEach(line=>line.setMap(null));routeLinesRef.current=[];setRouteInfo(null);setPending(false);setLiveActive(true)}} onStop={()=>setLiveActive(false)}/>
