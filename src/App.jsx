@@ -108,28 +108,20 @@ function Home(){const media=useSiteMedia();return <main><section className="hero
 function MinisterCards(){const media=useSiteMedia();return <div className="minister-grid">{ministers.map(([role,name,image],i)=><article className="minister-card" key={name}><div className={'portrait portrait-'+(i+1)}><img loading="lazy" decoding="async" src={(media[["host","chinyere","chris"][i]]||image)} alt={name}/></div><div className="minister-info"><span>{role}</span><h3>{name}</h3></div></article>)}</div>}
 function About(){const works=[['01','ENCOUNTER','A gathering set apart to seek God deeply and respond to the work of the Holy Spirit.'],['02','THE WORD','Scripture is taught with the expectation that truth will bring clarity, conviction and transformation.'],['03','WORSHIP & PRAYER','Extended moments of worship and prayer create room for surrender, consecration and spiritual renewal.'],['04','EQUIPPING','The conference calls believers beyond a moment in a meeting into a life that carries the reality of God into everyday purpose.']];return <main className="about-page"><Header/><section className="about-intro"><div className="rain"/><div className="about-host-copy"><p className="eyebrow">HOST · GLORY CONFERENCE</p><h1>PROPHET<br/>JOSHUA<br/>OHANYE</h1><p className="about-role">CONVENER · GLORY CONFERENCE</p></div><div className="about-host-photo"><img loading="lazy" decoding="async" src="/assets/ministers/joshua-ohanye.webp" alt="Prophet Joshua Ohanye"/></div><span className="about-vertical">GLORY CONFERENCE · NSUKKA · NIGERIA</span></section><section className="about-vision"><div className="about-vision-title"><p className="eyebrow dark">THE HEART OF THE GATHERING</p><h2>THE VISION OF<br/><span>GLORY CONFERENCE</span></h2></div><div className="about-vision-copy"><p className="lead">Glory Conference is a gathering centered on the presence of God, the Word, worship, prayer and the transforming work of the Holy Spirit.</p><p>It is a call to step away from the noise, turn our hearts toward God and make room for genuine encounter. Across the days of the conference, believers gather with one desire: to know God more deeply and to leave strengthened to live out His purpose.</p><p>In 2026, we gather under the theme <strong>The Outpouring</strong>, anchored in Joel 2:28 — with expectation for a fresh work of the Spirit across generations.</p><blockquote>“And it shall come to pass afterward, that I will pour out my spirit upon all flesh...”<b>JOEL 2:28</b></blockquote></div></section><section className="about-expect"><div className="about-expect-head"><p className="eyebrow">THE EXPERIENCE</p><h2>WHAT TO EXPECT<br/><span>FROM THE MEETING</span></h2><p>Not simply an event to attend, but days intentionally set apart for God.</p></div><div className="expect-grid">{works.map(([n,title,text])=><article className="expect-card" key={title}><span>{n}</span><div><h3>{title}</h3><p>{text}</p></div></article>)}</div></section><section className="about-2026"><div><p className="eyebrow">GLORY CONFERENCE 2026</p><ThemeArtwork className="about-theme"/><p>November 12 — 14, 2026 · Nsukka, Nigeria</p></div><a className="button primary" href="/register">REGISTER NOW →</a></section><Footer/></main>}
 function Ministers(){return <Shell eyebrow="VOICES OF THE CONFERENCE" title="PASTORS & MINISTERS"><section className="page-dark"><MinisterCards/></section></Shell>}
-function Volunteer(){return <Shell eyebrow="JOIN THE OUTPOURING TEAM" title="VOLUNTEER">
-  <section className="gc-volunteer-landing">
-    <div className="gc-volunteer-inner">
-      <div className="gc-volunteer-story">
-        <span className="gc-volunteer-kicker">GLORY CONFERENCE 2026 · CALL FOR VOLUNTEERS</span>
-        <h2>THE OUTPOURING IS COMING. <span>BE PART OF IT.</span></h2>
-        <p className="gc-volunteer-lead">Do you live in Nsukka, Enugu or the surrounding areas? Are you passionate about serving God, impacting lives and making a difference?</p>
-        <p><strong>Glory Conference 2026 is calling for willing hearts and helping hands.</strong></p>
-        <p>Beyond volunteering, this is an opportunity to express your gifts, serve with excellence, and help create an atmosphere where lives are transformed and God's glory is revealed.</p>
-        <p>Whether in media, protocol, hospitality, organisation or other areas of service, there's a place for you.</p>
-        <div className="gc-volunteer-roles" aria-label="Volunteer opportunities"><span>MEDIA</span><span>PROTOCOL</span><span>HOSPITALITY</span><span>ORGANISATION</span><span>MORE TEAMS</span></div>
-        <a className="gc-volunteer-apply" href="https://bit.ly/4xZX1dT" target="_blank" rel="noopener noreferrer">APPLY TO VOLUNTEER <span aria-hidden="true">↗</span></a>
-        <p className="gc-volunteer-apply-note">Apply using the form linked above, or scan the QR code on the flyer.</p>
-        <p className="gc-volunteer-closing">Don't just anticipate the Outpouring. <strong>Be part of the hands that make room for it!</strong></p>
-      </div>
-      <figure className="gc-volunteer-flyer">
-        <img src="/assets/volunteers/glory-volunteers-2026.webp" alt="Glory Conference 2026 call for volunteers flyer, featuring the volunteer team and QR code to apply" loading="eager" decoding="async"/>
-        <figcaption>THE OUTPOURING · NOVEMBER 12–14, 2026 · NSUKKA</figcaption>
-      </figure>
-    </div>
-  </section>
-</Shell>}
+function Volunteer(){return <Shell eyebrow="JOIN THE SERVING TEAM" title="VOLUNTEER"><section className="page-dark gc-volunteer-page"><div className="gc-volunteer-layout">
+  <div className="gc-volunteer-copy">
+    <p className="eyebrow">GLORY CONFERENCE 2026 · NSUKKA</p>
+    <h2>THE OUTPOURING IS COMING.<br/><span>BE PART OF IT.</span></h2>
+    <p className="gc-volunteer-lead">Do you live in Nsukka, Enugu or the surrounding areas? Are you passionate about serving God, impacting lives and making a difference?</p>
+    <p><strong>GLORY CONFERENCE 2026 is calling for willing hearts and helping hands!</strong></p>
+    <p>Beyond volunteering, this is an opportunity to express your gifts, serve with excellence, and help create an atmosphere where lives are transformed and God's glory is revealed.</p>
+    <p>Whether in media, protocol, hospitality, organization or other areas of service, there's a place for you.</p>
+    <div className="gc-volunteer-teams" aria-label="Volunteer service areas"><span>MEDIA</span><span>PROTOCOL</span><span>HOSPITALITY</span><span>ORGANIZATION</span><span>AND MORE</span></div>
+    <div className="gc-volunteer-cta"><a className="button primary" href="https://bit.ly/4xZX1dT" target="_blank" rel="noopener noreferrer">REGISTER TO VOLUNTEER ↗</a><p>Apply through the official volunteer form. You can also scan the QR code on the flyer.</p></div>
+    <p className="gc-volunteer-closing">Don't just anticipate the Outpouring. Be part of the hands that make room for it!</p>
+  </div>
+  <figure className="gc-volunteer-flyer"><img src="/assets/volunteers/glory-conference-volunteer-2026.webp" alt="Glory Conference 2026 call for volunteers flyer with the volunteer team and registration QR code" loading="eager" decoding="async"/><figcaption>GLORY CONFERENCE 2026 · OFFICIAL VOLUNTEER CALL</figcaption></figure>
+</div></section></Shell>}
 function PrayerGuide(){return <PrayerGuidePage/>}
 function Directions(){return <Shell eyebrow="PLAN YOUR ARRIVAL" title="JOURNEY PLANNER"><VenueDirections/></Shell>}
 function Schedule(){return <Shell eyebrow="NOVEMBER 12 — 14, 2026" title="SCHEDULE"><section className="page-dark schedule-page"><div><h2>NSUKKA</h2><p>{conferenceVenue.addressLine1.toUpperCase()}<br/>{conferenceVenue.addressLine2.toUpperCase()}, NSUKKA.</p></div><div className="session-list">{[['THU · NOV 12','CONFERENCE SESSION','4:00 PM'],['FRI · NOV 13','CONFERENCE SESSION','4:00 PM'],['SAT · NOV 14','CONFERENCE SESSION','9:00 AM']].map(([day,title,time])=><article className="session" key={day}><div><span>{day}</span><h3>{title}</h3></div><strong>{time}</strong></article>)}</div></section><section className="gc-schedule-venue"><VenueDirections compact/></section></Shell>}
