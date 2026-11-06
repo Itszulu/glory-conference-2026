@@ -44,3 +44,9 @@
 .gc-venue-copy>.gc-live-guide{margin:12px 0 27px;border-color:#83e6fd95;box-shadow:0 12px 40px #00172c35}
 .gc-venue-copy>.gc-live-guide .gc-live-start{width:100%;min-height:57px;font-size:12px}
 .gc-venue-copy>.gc-route-panel{margin-top:10px}
+
+/* Clear travel-mode selection and stable tracking state on all screen sizes. */
+.gc-live-modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:16px 0}
+.gc-live-modes button{min-height:48px;display:flex;align-items:center;justify-content:center;gap:9px;border-radius:11px;border:1px solid #8fbcd45e;background:#092f50;color:#d6eaf5;font-size:12px;font-weight:800;cursor:pointer}
+.gc-live-modes button.selected{background:#b8efff;border-color:#b8efff;color:#073656}
+.gc-live-modes button:focus-visible{outline:3px solid #b8efff;outline-offset:2px}
