@@ -17,3 +17,28 @@ main:not(:has(>.hero))>.nav{position:fixed!important}
 .gc-volunteer-content .button{display:inline-flex;align-items:center;justify-content:center;min-height:50px}
 .gc-volunteer-content .gc-volunteer-help{font-size:12px;margin-top:22px}
 @media(min-width:1200px){.nav{width:min(1380px,97%);padding-inline:20px;gap:12px}.nav-links{gap:clamp(8px,1vw,15px);font-size:clamp(8px,.65vw,10px);letter-spacing:.035em;white-space:nowrap}.brand{width:clamp(145px,13vw,190px);flex-shrink:0}.nav-cta{flex-shrink:0}}
+
+/* Volunteer recruitment landing page — editorial split layout with the official flyer. */
+.gc-volunteer-landing{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 87% 18%,#105e7d 0%,#062f4f 36%,#031a35 76%);color:#f6fbff;padding:clamp(50px,7vw,100px) max(22px,5vw) clamp(70px,8vw,120px)}
+.gc-volunteer-landing:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.25;background:repeating-linear-gradient(104deg,transparent 0,transparent 85px,#76d9f21a 86px,#76d9f21a 87px,transparent 88px,transparent 160px)}
+.gc-volunteer-inner{width:min(1240px,100%);margin:auto;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.85fr);align-items:center;gap:clamp(28px,5vw,85px)}
+.gc-volunteer-story{min-width:0}
+.gc-volunteer-kicker{display:inline-block;font-size:11px;font-weight:850;letter-spacing:.18em;color:#8fe7ff;margin-bottom:18px}
+.gc-volunteer-story h2{font-size:clamp(38px,5vw,75px);line-height:.99;letter-spacing:-.055em;font-weight:950;margin:0 0 26px;max-width:800px}
+.gc-volunteer-story h2 span{color:#8ceeff}
+.gc-volunteer-story p{font-size:clamp(14px,1.15vw,17px);line-height:1.8;color:#c9e0ed;max-width:650px;margin:0 0 17px}
+.gc-volunteer-story p strong{color:#fff}
+.gc-volunteer-story .gc-volunteer-lead{font-size:clamp(17px,1.6vw,21px);font-weight:600;color:#f4fbff;line-height:1.6}
+.gc-volunteer-roles{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 29px}
+.gc-volunteer-roles span{font-size:10px;letter-spacing:.08em;font-weight:850;padding:10px 13px;border:1px solid #9fe9ff55;border-radius:99px;background:#8ceeff12;color:#d8f7ff}
+.gc-volunteer-apply{display:inline-flex;align-items:center;justify-content:space-between;gap:26px;min-height:59px;padding:15px 25px;border-radius:11px;background:#9beaff;color:#052941!important;font-size:13px;font-weight:950;letter-spacing:.05em;text-decoration:none;box-shadow:0 12px 30px #0004;transition:background .18s,transform .18s}
+.gc-volunteer-apply:hover{background:#fff;transform:translateY(-2px)}
+.gc-volunteer-apply:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.gc-volunteer-story .gc-volunteer-apply-note{font-size:12px;color:#b2d2e4;margin:13px 0 25px}
+.gc-volunteer-story .gc-volunteer-closing{font-size:clamp(16px,1.5vw,20px);line-height:1.6;border-left:3px solid #8ceeff;padding-left:17px;margin:27px 0 0}
+.gc-volunteer-flyer{margin:0;min-width:0;width:100%;max-width:510px;justify-self:center}
+.gc-volunteer-flyer img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:contain;border:1px solid #a6ecff44;border-radius:10px;box-shadow:0 25px 65px #001126a8;background:#031b30}
+.gc-volunteer-flyer figcaption{text-align:center;color:#a9d6e8;font-size:10px;font-weight:800;letter-spacing:.12em;margin-top:15px}
+@media(max-width:900px){.gc-volunteer-inner{grid-template-columns:1fr}.gc-volunteer-story{max-width:730px}.gc-volunteer-flyer{max-width:540px}.gc-volunteer-landing{padding-top:50px}}
+@media(max-width:540px){.gc-volunteer-landing{padding-inline:20px}.gc-volunteer-story h2{font-size:clamp(36px,10vw,52px)}.gc-volunteer-apply{width:100%;font-size:12px}.gc-volunteer-flyer figcaption{font-size:9px;line-height:1.6}.gc-volunteer-roles span{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.gc-volunteer-apply{transition:none}.gc-volunteer-apply:hover{transform:none}}
