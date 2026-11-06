@@ -167,3 +167,75 @@
   .gc-venue .gc-map-provider{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){.gc-route-panel .gc-journey-submit,.gc-route-panel .gc-journey-modes button{transition:none}}
+
+/* Mobile compositor and autocomplete stability. Isolate Google-owned form control,
+   avoid nested gradient/hover transforms and 1px reflow on touch devices. */
+.gc-route-panel .gc-google-origin,
+.gc-route-panel .gc-google-places-widget,
+.gc-route-panel gmp-place-autocomplete{
+  min-width:0;
+  max-width:100%;
+  box-sizing:border-box;
+}
+.gc-route-panel .gc-google-origin{position:relative;isolation:isolate;overflow:visible}
+.gc-route-panel .gc-journey-form{min-width:0}
+.gc-route-panel .gc-journey-submit{white-space:normal;line-height:1.45;text-align:center}
+@media(max-width:700px){
+  .gc-route-panel{
+    max-width:100%;
+    background:#0b395a;
+    box-shadow:none;
+    border:1px solid rgba(169,226,246,.35);
+    overflow:visible;
+    transform:none!important;
+    filter:none!important;
+  }
+  .gc-route-panel .gc-google-origin{
+    background:#fff;
+    border:1px solid #b8d0dd;
+    box-shadow:none;
+    transition:none;
+    min-height:58px;
+  }
+  .gc-route-panel .gc-google-origin:focus-within{
+    box-shadow:0 0 0 2px rgba(134,223,251,.24);
+  }
+  .gc-route-panel gmp-place-autocomplete{
+    display:block;
+    width:100%;
+    min-height:56px;
+    font-size:16px;
+    line-height:1.35;
+    transform:none!important;
+    filter:none!important;
+    backface-visibility:visible;
+  }
+  .gc-route-panel .gc-journey-modes button,
+  .gc-route-panel .gc-journey-submit,
+  .gc-route-panel .gc-journey-submit:not(:disabled):hover{
+    transform:none!important;
+    transition:none!important;
+    box-shadow:none!important;
+  }
+  .gc-route-panel .gc-journey-submit{
+    background:#b5ecff;
+    border:1px solid #b5ecff;
+    min-height:54px;
+    border-radius:11px;
+    opacity:1;
+  }
+  .gc-route-panel .gc-journey-submit:disabled{
+    background:#a8c8d8;
+    color:#314d61;
+    border-color:#a8c8d8;
+    opacity:1;
+    cursor:not-allowed;
+  }
+  .gc-route-panel .gc-route-panel-head{
+    min-width:0;
+  }
+  .gc-route-panel .gc-route-panel-head>div{
+    min-width:0;
+    overflow-wrap:anywhere;
+  }
+}
