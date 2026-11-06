@@ -73,9 +73,7 @@ export function VenueDirections({compact=false}){
       if(!mapsKey){setLoading(false);setError('Google Maps key is missing. Add VITE_GOOGLE_MAPS_API_KEY to .env.local and restart your server.');return}
       try{
         const maps=await loadGoogleMaps()
-        const [{Map},{PlaceAutocompleteElement}]=await Promise.all([
-          maps.importLibrary('maps'),maps.importLibrary('places')
-        ])
+        const {Map}=await maps.importLibrary('maps')
         if(disposed||!activeRef.current)return
         if(!mapHost.current||!placeWidgetHost.current)throw new Error('Map container unavailable.')
         const map=new Map(mapHost.current,{
@@ -87,36 +85,45 @@ export function VenueDirections({compact=false}){
         marker=new maps.Circle({center:destination,radius:15,map,strokeColor:'#067ba6',strokeWeight:3,strokeOpacity:1,fillColor:'#0d9ccb',fillOpacity:.85})
         markersRef.current.push(marker)
 
-        widget=new PlaceAutocompleteElement()
-        widget.placeholder='Search for a hotel, shop, street, town or landmark'
-        widget.includedRegionCodes=['ng']
-        // Prefer nearby Nsukka businesses when the query is vague,
-        // but never exclude origins elsewhere in Nigeria.
-        widget.locationBias={center:destination,radius:25000}
-        widget.style.width='100%'
-        widget.classList.add('gc-google-places-widget')
-        // Google owns only this empty mount element; React never renders children inside it.
-        placeWidgetHost.current.appendChild(widget)
-        placeWidgetRef.current=widget
-        handler=async event=>{
-          const serial=++routeSerialRef.current
-          setOrigin(null);setRouteInfo(null);setError('')
-          routeLinesRef.current.forEach(line=>line.setMap(null))
-          routeLinesRef.current=[]
-          setPending(false)
-          try{
-            const place=event.placePrediction?.toPlace?.()
-            if(!place)throw new Error('Please select one of the suggestions from Google Maps.')
-            await place.fetchFields({fields:['displayName','formattedAddress','location']})
-            if(disposed||!activeRef.current||serial!==routeSerialRef.current)return
-            if(!place.location)throw new Error('Google did not return a mapped location. Please choose another result.')
-            setOrigin({location:place.location,name:place.displayName||place.formattedAddress||'Selected location',address:place.formattedAddress||''})
-          }catch(err){
-            if(!disposed&&activeRef.current&&serial===routeSerialRef.current)setError(err?.message||'Could not load the selected location.')
-          }
-        }
-        widget.addEventListener('gmp-select',handler)
+        // The map and location button are available immediately: Places loads
+        // separately so mobile users are not blocked waiting for autocomplete.
         setLoading(false)
+        try{
+          const {PlaceAutocompleteElement}=await maps.importLibrary('places')
+          if(disposed||!activeRef.current)return
+          widget=new PlaceAutocompleteElement()
+          widget.placeholder='Search a street, hotel, town or landmark'
+          widget.includedRegionCodes=['ng']
+          // Prefer nearby Nsukka businesses when the query is vague,
+          // but never exclude origins elsewhere in Nigeria.
+          widget.locationBias={center:destination,radius:25000}
+          widget.style.width='100%'
+          widget.classList.add('gc-google-places-widget')
+          // Google owns only this empty mount element; React never renders children inside it.
+          placeWidgetHost.current.appendChild(widget)
+          placeWidgetRef.current=widget
+          handler=async event=>{
+            const serial=++routeSerialRef.current
+            setOrigin(null);setRouteInfo(null);setError('')
+            routeLinesRef.current.forEach(line=>line.setMap(null))
+            routeLinesRef.current=[]
+            setPending(false)
+            try{
+              const place=event.placePrediction?.toPlace?.()
+              if(!place)throw new Error('Please select one of the suggestions from Google Maps.')
+              await place.fetchFields({fields:['displayName','location']})
+              if(disposed||!activeRef.current||serial!==routeSerialRef.current)return
+              if(!place.location)throw new Error('Google did not return a mapped location. Please choose another result.')
+              setOrigin({location:place.location,name:place.displayName||'Selected location',address:''})
+            }catch(err){
+              if(!disposed&&activeRef.current&&serial===routeSerialRef.current)setError(err?.message||'Could not load the selected location.')
+            }
+          }
+          widget.addEventListener('gmp-select',handler)
+  
+        }catch(placeError){
+          if(!disposed&&activeRef.current)setError('Location search is temporarily unavailable. Live GPS guidance still works.')
+        }
       }catch(err){
         if(!disposed&&activeRef.current){setLoading(false);setError(err?.message||'The map could not load.')}
       }
