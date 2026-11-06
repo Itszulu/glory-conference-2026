@@ -1,0 +1,233 @@
+/* Registration intentionally inherits the original register.css form styles,
+   including labels, select menus, grid spacing, date buttons, and submit button. */
+.register-page .reg-grid .gc-registration-consent{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:flex-start;
+  gap:12px;
+  font-size:12px!important;
+  line-height:1.6;
+  letter-spacing:normal!important;
+  color:#c1d8e9!important;
+}
+.register-page .reg-grid .gc-registration-consent input[type="checkbox"]{
+  appearance:auto!important;
+  display:block!important;
+  margin:2px 0 0!important;
+  padding:0!important;
+  width:20px!important;
+  height:20px!important;
+  min-height:20px!important;
+  flex:0 0 20px;
+  accent-color:#9be9ff;
+}
+.register-page .gc-registration-privacy{
+  grid-column:1/-1;
+  color:#c1d8e9;
+  font-size:12px;
+  line-height:1.65;
+  margin:0;
+}
+.gc-connect-admin{display:grid;gap:18px;color:#092b4e}
+.gc-connect-admin-head h3{font-size:clamp(26px,3vw,42px);margin:4px 0;color:#082a4c}
+.gc-connect-admin-head p{color:#556f82;line-height:1.6;margin:0}
+.gc-connect-admin-head .gc-connect-kicker{font-size:11px;font-weight:900;letter-spacing:.17em;color:#1682a5}
+.gc-connect-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.gc-connect-metrics article{background:#fff;border:1px solid #dae5ec;border-radius:14px;padding:20px;display:grid;gap:12px}
+.gc-connect-metrics span{font-size:11px;color:#57748a;font-weight:800}
+.gc-connect-metrics strong{font-size:32px;color:#092b4e}
+.gc-connect-toolbar{display:grid;grid-template-columns:minmax(0,2fr) minmax(170px,1fr);gap:16px}
+.gc-connect-toolbar label,.gc-connect-followup-form label{display:grid;gap:8px;font-size:12px;color:#32536d;font-weight:800}
+.gc-connect-toolbar input,.gc-connect-toolbar select,.gc-connect-followup-form input,.gc-connect-followup-form select,.gc-connect-followup-form textarea{box-sizing:border-box;width:100%;min-width:0;padding:12px;border-radius:10px;border:1px solid #bbd0db;background:#fff;color:#072b4c;font:inherit;font-size:15px}
+.gc-connect-summary{color:#57748a;font-size:13px}
+.gc-connect-people{display:grid;gap:9px}
+.gc-connect-person{display:flex;align-items:center;gap:14px;padding:16px;background:#fff;border:1px solid #d6e4ec;border-radius:14px;min-width:0}
+.gc-connect-avatar{display:grid;place-items:center;flex:0 0 45px;width:45px;height:45px;border-radius:50%;background:#e5f1f8;color:#0d527c;font-weight:900}
+.gc-connect-person>div:nth-child(2){flex:1;min-width:0}
+.gc-connect-person h4{margin:0 0 4px;color:#082a4c;font-size:16px}
+.gc-connect-person p{margin:0 0 3px;color:#4a6b80;font-size:12px;overflow-wrap:anywhere}
+.gc-connect-person small{color:#377d95;font-weight:750}
+.gc-connect-person button,.gc-connect-followup-form button[type=submit]{background:#073e67;border:0;color:#fff;border-radius:9px;padding:13px 15px;font-size:11px;font-weight:800;cursor:pointer}
+.gc-connect-dialog-backdrop{position:fixed;inset:0;z-index:22000;display:grid;place-items:center;padding:16px;background:#031429c9;overflow-y:auto}
+.gc-connect-dialog{width:min(740px,100%);max-height:calc(100dvh - 32px);overflow-y:auto;background:#f8fbfd;border-radius:18px;padding:clamp(18px,4vw,32px);box-sizing:border-box}
+.gc-connect-dialog-top{display:flex;justify-content:space-between;gap:12px}
+.gc-connect-dialog-top h3{font-size:28px;line-height:1.1;color:#092b4c;margin:8px 0}
+.gc-connect-dialog-top p,.gc-connect-dialog-top small{color:#57748a}
+.gc-connect-dialog-top button{flex:0 0 42px;width:42px;height:42px;border:0;border-radius:10px;background:#e3eff6;color:#0b3455;font-size:27px;cursor:pointer}
+.gc-connect-profile-facts{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0}
+.gc-connect-profile-facts span{background:#e9f2f7;color:#264e69;padding:8px 10px;border-radius:6px;font-size:12px;overflow-wrap:anywhere}
+.gc-connect-followup-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.gc-connect-followup-form .full,.gc-connect-private-note,.gc-connect-alert{grid-column:1/-1}
+.gc-connect-private-note{color:#587084;font-size:12px;line-height:1.5}
+.gc-connect-alert{padding:14px;border:1px solid #bcd5e1;border-radius:8px;color:#123c56;background:#eff7fb}
+.gc-connect-whatsapp{display:inline-flex;align-items:center;justify-content:center;border-radius:8px;background:#e8f6ec;color:#0e5230;font-weight:800;font-size:12px;padding:10px 14px;text-decoration:none}
+@media(max-width:700px){
+ .gc-connect-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .gc-connect-toolbar,.gc-connect-followup-form{grid-template-columns:1fr}
+ .gc-connect-person{align-items:flex-start;flex-wrap:wrap}
+ .gc-connect-person button{margin-left:59px}
+}
+@media print{.gc-connect-success .registration-success-actions{display:none}}
+
+/* Confirmation: deliberate mobile-first card using the existing Glory navy palette. */
+.register-page .registration-success.gc-confirmation{
+  box-sizing:border-box;
+  width:min(100%,660px);
+  max-width:660px;
+  margin:0 auto;
+  padding:clamp(24px,5vw,44px)!important;
+  text-align:left;
+  background:linear-gradient(150deg,#0d3a63 0%,#092d51 68%,#082747 100%)!important;
+  border:1px solid rgba(168,218,241,.32)!important;
+  border-radius:22px!important;
+  box-shadow:0 24px 70px rgba(0,7,27,.23);
+  overflow:hidden;
+}
+.gc-confirmation-topline{display:flex;align-items:center;gap:12px;padding-bottom:27px;border-bottom:1px solid rgba(188,230,248,.19)}
+.gc-confirmation-topline img{height:39px;width:39px;object-fit:contain;flex:none}
+.gc-confirmation-topline span{font-size:11px;letter-spacing:.17em;font-weight:800;color:#b5e3fa}
+.gc-confirmation-seal{width:62px;height:62px;margin:30px 0 18px;display:grid;place-items:center;border-radius:50%;background:#dff8ff;color:#073c5b;box-shadow:0 0 0 7px rgba(223,248,255,.09)}
+.register-page .gc-confirmation .gc-confirmation-overline{font-size:11px!important;letter-spacing:.16em;font-weight:900;color:#92e4fb!important;margin:0 0 10px!important}
+.register-page .gc-confirmation h2{font-size:clamp(37px,6vw,58px)!important;line-height:1.05!important;letter-spacing:-.06em!important;margin:0 0 12px!important;color:white!important}
+.register-page .gc-confirmation .gc-confirmation-lead{font-size:16px;line-height:1.65;margin:0 0 25px;color:#d5e9f6!important}
+.register-page .gc-confirmation .gc-confirmation-lead strong{display:inline;font-size:inherit;color:white;font-weight:700}
+.gc-confirmation-details{display:grid;gap:0;border-top:1px solid rgba(188,230,248,.19);border-bottom:1px solid rgba(188,230,248,.19);margin-bottom:22px}
+.gc-confirmation-details>div{display:flex;justify-content:space-between;align-items:baseline;gap:18px;padding:15px 0;border-bottom:1px solid rgba(188,230,248,.11)}
+.gc-confirmation-details>div:last-child{border-bottom:0}
+.gc-confirmation-details span,.gc-confirmation-reference-text span{font-size:10px;letter-spacing:.12em;font-weight:800;color:#9fc9dd}
+.register-page .gc-confirmation-details strong{font-size:14px!important;line-height:1.4;font-weight:800;color:#fff!important;text-align:right;overflow-wrap:anywhere}
+.gc-confirmation-reference{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;background:rgba(224,245,255,.09);border:1px solid rgba(168,218,241,.28);border-radius:14px}
+.gc-confirmation-reference-text{display:grid;gap:6px;min-width:0;flex:1}
+.register-page .gc-confirmation-reference-text strong{display:block;color:#fff!important;font-size:clamp(13px,3.2vw,17px)!important;line-height:1.4;font-weight:850;letter-spacing:.035em;overflow-wrap:anywhere}
+.gc-confirmation-copy{flex:none;min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid rgba(190,230,245,.48);border-radius:10px;background:rgba(255,255,255,.1);color:white;padding:9px 11px;cursor:pointer}
+.gc-confirmation-copy span{font-size:11px;font-weight:750}
+.gc-confirmation-copy:focus-visible,.gc-confirmation-print:focus-visible{outline:3px solid #a0e6f8;outline-offset:3px}
+.register-page .gc-confirmation .gc-confirmation-arrival{margin:22px 0 18px!important;font-size:13px;line-height:1.65;color:#cee2ef!important}
+.gc-confirmation-print{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;min-height:54px;border:0;border-radius:10px;background:#e9faff;color:#062b4a;font-weight:900;font-size:12px;letter-spacing:.055em;padding:12px;cursor:pointer}
+.register-page .gc-confirmation .gc-confirmation-fine{margin:12px 0 0!important;font-size:11px;text-align:center;color:#a4c1d5!important}
+.gc-confirmation-paper{display:none}
+@media(max-width:600px){
+ .register-page.page-light:has(.gc-confirmation){padding:28px 14px 45px!important}
+ .register-page .registration-success.gc-confirmation{padding:22px 19px!important;border-radius:17px!important}
+ .gc-confirmation-topline{padding-bottom:20px}
+ .gc-confirmation-topline img{height:33px;width:33px}
+ .gc-confirmation-topline span{font-size:9px;letter-spacing:.12em}
+ .gc-confirmation-seal{height:52px;width:52px;margin:25px 0 16px}
+ .gc-confirmation-details>div{display:grid;gap:5px;padding:13px 0}
+ .register-page .gc-confirmation-details strong{text-align:left}
+ .gc-confirmation-reference{padding:12px}
+ .gc-confirmation-copy{width:42px;padding:9px}
+ .gc-confirmation-copy span{display:none}
+}
+
+/* Only the dedicated confirmation is printed, on one A4 page.
+   The browser/printer still controls whether the user selects A4 paper. */
+@page{size:A4 portrait;margin:0}
+@media print{
+ html,body,#root{background:#fff!important;margin:0!important;padding:0!important;width:210mm!important;height:297mm!important;min-height:0!important;overflow:hidden!important}
+ #root > main > :not(.register-page){display:none!important}
+ #root > main,.register-page.page-light,.register-page .registration-form{
+   display:block!important;
+   width:210mm!important;height:297mm!important;min-height:0!important;
+   max-width:none!important;
+   box-sizing:border-box!important;
+   margin:0!important;padding:0!important;
+   overflow:hidden!important;
+   background:#fff!important;border:0!important;
+ }
+ .register-page .registration-form > :not(.gc-confirmation-paper){display:none!important}
+ body *{visibility:hidden!important}
+ .gc-confirmation-paper,.gc-confirmation-paper *{visibility:visible!important}
+ .gc-confirmation-paper{
+   display:flex!important;flex-direction:column!important;
+   position:absolute!important;top:0!important;left:0!important;
+   width:210mm!important;height:297mm!important;max-height:297mm!important;
+   box-sizing:border-box!important;padding:0!important;margin:0!important;
+   background:#fff!important;color:#0b2d4c!important;
+   border:0!important;box-shadow:none!important;overflow:hidden!important;
+   break-inside:avoid!important;page-break-inside:avoid!important;
+   font-family:Arial,Helvetica,sans-serif!important;
+   -webkit-print-color-adjust:exact;print-color-adjust:exact;
+ }
+ .gc-paper-header{height:45mm;flex:none;box-sizing:border-box;background:#072e50!important;color:#fff!important;padding:13mm 17mm;display:flex;align-items:center;gap:8mm}
+ .gc-paper-header img{width:25mm;height:25mm;object-fit:contain}
+ .gc-paper-header div{display:grid;gap:3mm}
+ .gc-paper-header span{font-size:10pt;font-weight:750;letter-spacing:1.5pt;color:#c9e9fa!important}
+ .gc-paper-header strong{font-size:19pt;letter-spacing:.6pt;color:#fff!important}
+ .gc-paper-main{padding:17mm 18mm 0;flex:1;box-sizing:border-box}
+ .gc-paper-kicker{color:#14698e!important;font-size:9pt!important;font-weight:800!important;letter-spacing:1.3pt!important;margin:0 0 6mm!important}
+ .gc-paper-main h1{font-size:29pt!important;line-height:1.12!important;letter-spacing:-1pt!important;color:#082b4b!important;margin:0 0 4mm!important;font-weight:800!important}
+ .gc-paper-subtitle{font-size:11pt!important;color:#516c82!important;line-height:1.5!important;margin:0!important}
+ .gc-paper-divider{height:1px;background:#d9e4ea!important;margin:13mm 0 9mm}
+ .gc-paper-record{display:grid;gap:7mm}
+ .gc-paper-record>div{display:grid;grid-template-columns:53mm 1fr;gap:5mm;align-items:baseline}
+ .gc-paper-record span{font-size:8pt;color:#54748a!important;font-weight:800!important;letter-spacing:.6pt}
+ .gc-paper-record strong{font-size:11pt;color:#082b4b!important;font-weight:700!important;line-height:1.4!important;overflow-wrap:anywhere}
+ .gc-paper-record .gc-paper-code{font-size:12pt!important;letter-spacing:.35pt!important}
+ .gc-paper-note{margin-top:14mm;padding:8mm 9mm;background:#eaf5f9!important;border-left:1.3mm solid #1680a2!important}
+ .gc-paper-note strong{font-size:9pt;color:#07385b!important;letter-spacing:.5pt}
+ .gc-paper-note p{font-size:10pt!important;line-height:1.55!important;color:#31576a!important;margin:3mm 0 0!important}
+ .gc-paper-footer{height:24mm;flex:none;box-sizing:border-box;padding:3mm 18mm;display:flex;align-items:center;justify-content:space-between;gap:10mm;border-top:1px solid #d7e5ec;background:#eff7fa!important;font-size:9pt;color:#41657b!important;font-weight:700}
+ .gc-paper-footer span{display:grid;gap:2mm;max-width:95mm;letter-spacing:.35pt;color:#28536d!important}
+ .gc-paper-footer small{font-size:7pt;color:#6a8ca1!important;font-weight:600}
+ .gc-paper-footer img{display:block!important;width:57mm!important;height:19mm!important;object-fit:contain!important;object-position:right center!important;max-width:57mm!important}
+}
+
+/* Unified premium conference operations dashboard. Scoped to admin route. */
+.admin-page{max-width:1320px}
+.admin-page .admin-toolbar{background:linear-gradient(128deg,#06284d 0%,#075479 68%,#0b769b 100%);border-radius:24px;padding:clamp(23px,4vw,45px);color:#fff;box-shadow:0 24px 48px rgba(6,35,64,.13)}
+.admin-page .admin-toolbar h2{color:#fff;font-size:clamp(2.7rem,6vw,5rem);letter-spacing:-.065em;line-height:.95;margin:12px 0 18px;max-width:660px}
+.admin-page .admin-toolbar .eyebrow{color:#a4eaff!important}
+.admin-page .admin-toolbar .admin-dashboard-subtitle{color:#cae6f2;max-width:550px;line-height:1.65}
+.admin-page .admin-toolbar>.button{background:#eaf9ff;color:#07395e;border-radius:40px;font-size:12px;font-weight:900;white-space:nowrap}
+.admin-page .admin-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:20px 0 25px}
+.admin-page .admin-metrics>div{background:#fff;border:1px solid #d8e8ee;border-radius:16px;padding:22px 20px;box-shadow:0 5px 20px rgba(7,47,79,.035);min-width:0}
+.admin-page .admin-metrics>div span{font-size:10px;letter-spacing:.095em;font-weight:850;color:#4b7087;line-height:1.5}
+.admin-page .admin-metrics>div strong{color:#0a3557;font-size:clamp(27px,3vw,42px)}
+.admin-page .admin-tabs{background:#f0f6f9;padding:9px;border-radius:14px;gap:6px;display:flex;flex-wrap:wrap;margin-bottom:22px}
+.admin-page .admin-tabs button{border:1px solid transparent;border-radius:10px;font-size:11px;line-height:1.3;letter-spacing:.035em;padding:13px 15px;color:#345c74;background:transparent;transition:background .15s ease,color .15s ease}
+.admin-page .admin-tabs button:hover{background:#e0edf3}
+.admin-page .admin-tabs button.active{background:#083b63;color:#fff;box-shadow:0 3px 12px #06284829}
+.admin-page .gc-reception-heading,.admin-page .gc-records-header{align-items:center}
+.admin-page .gc-reception-card{border-radius:16px;box-shadow:0 6px 22px rgba(7,47,79,.035)}
+.admin-page .gc-reception-result{border-radius:12px;transition:border-color .15s ease}
+.admin-page .gc-checkin-button{min-height:44px;border-radius:10px}
+.admin-page .gc-checkin-done{cursor:default;opacity:.75;border-radius:10px}
+@media(max-width:800px){
+ .admin-page .admin-toolbar{border-radius:16px;align-items:flex-start;flex-direction:column;gap:17px}
+ .admin-page .admin-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .admin-page .admin-metrics>div{padding:15px}
+ .admin-page .admin-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+ .admin-page .admin-tabs button{flex:0 0 auto}
+}
+@media(max-width:480px){
+ .admin-page .admin-toolbar h2{font-size:2.65rem}
+ .admin-page .admin-toolbar{padding:23px 19px}
+ .admin-page .admin-metrics>div strong{font-size:28px}
+}
+
+/* Data-quality review, aligned with the existing navy admin interface. */
+.gc-duplicate-review{display:grid;gap:20px;color:#0a3150}
+.gc-duplicate-review>header{background:linear-gradient(130deg,#082c4e,#0b5c81);border-radius:17px;padding:clamp(22px,4vw,35px);color:white}
+.gc-duplicate-review>header h3{margin:6px 0 10px;font-size:clamp(27px,4vw,40px);letter-spacing:-.04em;color:white}
+.gc-duplicate-review>header p{color:#d2eaf4;line-height:1.7;max-width:770px}
+.gc-duplicate-summary{display:flex;align-items:center;gap:18px;background:#eaf4f9;border:1px solid #cbdee8;padding:18px 22px;border-radius:13px;font-weight:800}
+.gc-duplicate-summary>strong{font-size:39px;color:#0a4769}
+.gc-duplicate-summary span{display:block;font-size:12px;margin-top:6px;font-weight:500;color:#57748a}
+.gc-duplicate-review>label{display:grid;gap:9px;font-size:11px;font-weight:850;letter-spacing:.07em;color:#38627a}
+.gc-duplicate-review>label input{width:100%;border:1px solid #c6d9e2;border-radius:10px;padding:14px;font-size:15px;color:#103954;background:#fff}
+.gc-duplicate-groups{display:grid;gap:15px}
+.gc-duplicate-groups>article{background:white;border-radius:14px;border:1px solid #d6e4ec;padding:clamp(16px,3vw,25px)}
+.gc-duplicate-groups h4{font-size:20px;color:#092e50;margin:0 0 4px}
+.gc-duplicate-groups article>p{color:#54748a;margin:0 0 16px;font-size:13px}
+.gc-duplicate-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid #e3edf2}
+.gc-duplicate-row>div{display:grid;gap:6px;min-width:0}
+.gc-duplicate-row strong{overflow-wrap:anywhere;font-size:13px;color:#0a3455}
+.gc-duplicate-row span,.gc-duplicate-row small{font-size:12px;color:#4b7188}
+.gc-duplicate-warning{border-left:3px solid #1783aa;background:#ecf7fa;border-radius:0 9px 9px 0;padding:14px 17px;color:#36617b;font-size:13px;line-height:1.65}
+.gc-duplicate-empty{background:#fff;border:1px solid #d6e4ec;padding:25px;border-radius:12px;color:#3b6279}
+@media(max-width:600px){.gc-duplicate-row{align-items:flex-start;flex-direction:column;gap:6px}}
+
+/* Welcome-desk opt-in: checkbox stays aligned rather than inheriting input styling. */
+.admin-page .gc-walkin-form .gc-walkin-consent{display:flex;align-items:flex-start;gap:11px;font-size:12px;font-weight:600;line-height:1.65;letter-spacing:0;color:#40647a}
+.admin-page .gc-walkin-form .gc-walkin-consent input[type=checkbox]{appearance:auto!important;flex:none;width:19px;height:19px;min-height:19px;margin:2px 0 0;padding:0;accent-color:#0b7193}

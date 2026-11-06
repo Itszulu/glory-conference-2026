@@ -18,6 +18,7 @@ const pageMeta={
   '/ministers':['Ministers — Glory Conference 2026','Meet the ministers for Glory Conference 2026 in Nsukka.'],
   '/prayer-guide':['Prayer Guide — Glory Conference 2026','Prepare in prayer for The Outpouring at Glory Conference 2026.'],
   '/schedule':['Schedule — Glory Conference 2026','View the November 12–14 schedule and venue for Glory Conference 2026.'],
+  '/directions':['Directions — Glory Conference 2026','Plan your journey to Glory Conference 2026 with an embedded map, route and estimated travel time.'],
   '/testimonies':['Testimonies — Glory Conference 2026','Explore stories and reflections from the Glory Conference community.'],
   '/merch':['Official Merchandise — Glory Conference 2026','Shop The Outpouring collection for Glory Conference 2026.'],
   '/giving':['Giving — Glory Conference 2026','Support Glory Conference 2026 through official giving channels.'],
@@ -30,8 +31,8 @@ document.title=pageTitle
 const descriptionTag=document.querySelector('meta[name="description"]')
 if(descriptionTag)descriptionTag.setAttribute('content',pageDescription)
 for(const [selector,attribute,value] of [
-  ['link[rel="canonical"]','href','https://gloryconf.org'+currentPath],
-  ['meta[property="og:url"]','content','https://gloryconf.org'+currentPath],
+  ['link[rel="canonical"]','href','https://gloryconf.web.app'+currentPath],
+  ['meta[property="og:url"]','content','https://gloryconf.web.app'+currentPath],
   ['meta[property="og:title"]','content',pageTitle],
   ['meta[property="og:description"]','content',pageDescription],
   ['meta[name="twitter:title"]','content',pageTitle],
