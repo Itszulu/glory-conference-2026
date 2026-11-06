@@ -18,22 +18,28 @@ test('location only starts after explicit click and can be stopped',()=>{
  assert.match(guide,/onClick=\{stop\}/)
  assert.match(guide,/window.isSecureContext/)
 })
-test('walking route is refreshed from live phone coordinates and retains exact venue pin',()=>{
- assert.match(guide,/origin:position,destination,travelMode:'WALKING'/)
- assert.match(guide,/distanceMeters/)
- assert.match(guide,/durationMillis/)
+test('live driving and walking routes share the exact venue pin',()=>{
+ assert.match(guide,/travelMode:modeRef.current/)
+ assert.match(guide,/routingPreference:'TRAFFIC_AWARE'/)
+ assert.match(guide,/mode==='DRIVING'/)
+ assert.match(guide,/mode==='WALKING'/)
  assert.match(guide,/route.legs\?\.\[0\]\?\.steps/)
  assert.match(guide,/mapRef.current.panTo\(position\)/)
- assert.match(guide,/elapsed>=45000/)
- assert.match(guide,/maximumAge:30000,timeout:6500/)
  assert.match(guide,/watchRef.current=navigator.geolocation.watchPosition/)
  assert.match(venue,/latitude:6.836262173294491/)
  assert.match(venue,/longitude:7.370666488580394/)
 })
+test('unreliable readings are filtered and temporary failures keep tracking',()=>{
+ assert.match(guide,/uncertainty>120/)
+ assert.match(guide,/stationary/)
+ assert.match(guide,/last more accurate position/)
+ assert.match(guide,/recoveryRef.current=setInterval/)
+ assert.match(guide,/if\(err\?\.code===1\)\{stop\(\)/)
+})
 test('no location is saved to attendee or conference database',()=>{
  assert.doesNotMatch(guide,/firebase|firestore|setDoc|addDoc|localStorage|sessionStorage/)
  assert.match(guide,/location is requested only after you press the button/)
- assert.match(guide,/phones may pause browser tracking in the background/i)
+ assert.match(guide,/Browser navigation may pause in the background/i)
 })
 
 test('current GPS location is first and typing a starting location is optional',()=>{
