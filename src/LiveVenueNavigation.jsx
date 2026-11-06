@@ -99,7 +99,7 @@ export default function LiveVenueNavigation({mapReady,getMap,onStart,onStop}){
      setError('')
    }catch(err){
      if(trackingRef.current&&serial===routeSerialRef.current)setError(err?.message||'Unable to refresh the route. Keep the map open or use Google Maps.')
-   }finally{routeBusyRef.current=false}
+   }finally{if(serial===routeSerialRef.current)routeBusyRef.current=false}
  }
 
  const start=()=>{
@@ -138,7 +138,7 @@ export default function LiveVenueNavigation({mapReady,getMap,onStart,onStop}){
        lastGoodAtRef.current=now
        setNotice(uncertainty>60?'Location is approximate; holding your last stable position.':'Location stable. Live tracking continues.')
        const lastRoute=lastRouteRef.current
-       if(lastRoute&&now-lastRoute.at>60000)refreshRoute(previous.position)
+       if(!lastRoute||now-lastRoute.at>60000)refreshRoute(previous.position)
        return
      }
      // Do not replace a substantially better fix with a noisy new one.
@@ -208,7 +208,7 @@ export default function LiveVenueNavigation({mapReady,getMap,onStart,onStop}){
    <header className="gc-live-guide-head"><span className="gc-live-guide-icon"><Crosshair size={20} aria-hidden="true"/></span><div><strong id="gc-live-guide-title">LIVE NAVIGATION</strong><small>Your phone finds your location automatically</small></div><span className="gc-live-guide-tag">ON THIS SITE</span></header>
    <p className="gc-live-guide-description">You don't need to know where you are. Tap below, choose Allow when your phone asks for location, and follow your moving position towards DISRM. Choose walking or driving. Your position, route and estimated arrival update as reliable location readings arrive.</p>
    <div className="gc-live-modes" role="group" aria-label="Live navigation travel mode">
-     <button type="button" aria-pressed={mode==='DRIVING'} className={mode==='DRIVING'?'selected':''} onClick={()=>{if(mode==='DRIVING')return;modeRef.current='DRIVING';setMode('DRIVING');lastRouteRef.current=null;setGuide(null);if(acceptedFixRef.current)refreshRoute(acceptedFixRef.current.position)}}><CarFront size={17} aria-hidden="true"/> Driving</button>
+     <button type="button" aria-pressed={mode==='DRIVING'} className={mode==='DRIVING'?'selected':''} onClick={()=>{if(mode==='DRIVING')return;modeRef.current='DRIVING';setMode('DRIVING');lastRouteRef.current=null;setGuide(null);if(acceptedFixRef.current){routeSerialRef.current++;routeBusyRef.current=false;refreshRoute(acceptedFixRef.current.position)}}}><CarFront size={17} aria-hidden="true"/> Driving</button>
      <button type="button" aria-pressed={mode==='WALKING'} className={mode==='WALKING'?'selected':''} onClick={()=>{if(mode==='WALKING')return;modeRef.current='WALKING';setMode('WALKING');lastRouteRef.current=null;setGuide(null);if(acceptedFixRef.current)refreshRoute(acceptedFixRef.current.position)}}><Footprints size={17} aria-hidden="true"/> Walking</button>
    </div>
    <div className="gc-live-guide-controls">
