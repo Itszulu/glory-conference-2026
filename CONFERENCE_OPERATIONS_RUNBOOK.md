@@ -1,6 +1,6 @@
-# Glory Conference 2026 — Spark Plan Operations
+# Glory Conference 2026 — Administration & Staff Operations
 
-**Billing:** Firebase Spark (no Blaze upgrade). The project uses Firebase Hosting, Firestore and Email/Password Authentication. Staff login accounts are created manually in the Firebase Console, and their role assignments are managed in the protected website dashboard. This implementation does not deploy Cloud Functions.
+The main administrator can create operational staff logins directly from the protected Staff Access page. The system uses a separate temporary Firebase Authentication session so creating a staff account does not sign out the main administrator. Staff roles are restricted by Firestore rules.
 
 ## Account privileges
 
@@ -13,7 +13,7 @@
 
 The public `/register` includes an optional **ministry title**: Pastor, Reverend, Prophet, Bishop, Apostle, Minister or Evangelist. A selected title is stored in Firestore and displayed on confirmation.
 
-## Deployment commands — no Functions
+## Deployment commands
 
 In Windows CMD, from `glory-conference-2026`:
 
@@ -24,24 +24,25 @@ firebase deploy --only firestore:rules --project gloryconf
 firebase deploy --only hosting --project gloryconf
 ```
 
-If `firebase deploy` fails with "Failed to make request" for the Hosting API, investigate the connection or API response using `firebase deploy --only hosting --project gloryconf --debug`. Do not assume it is a billing error. Check the Firebase Hosting quota and connection separately. Do not deploy `functions`; Spark does not support deploying the Cloud Functions backend used in the prior draft.
+If Firebase Hosting fails with a network/API error, run `firebase deploy --only hosting --project gloryconf --debug` for details. Deploy the website and Firestore rules; no backend functions are needed for this client-side account creation workflow.
 
 The Firestore rules must be deployed successfully before deploying the new registration/attendance interfaces.
 
-## How the main admin creates a staff login
+## Creating a staff account in the admin dashboard
 
-1. Sign in to [Firebase Console → Authentication → Users](https://console.firebase.google.com/project/gloryconf/authentication/users) with the Firebase project owner account.
-2. Choose **Add user**, create the staff member using their email and a temporary strong password, and copy the exact **User UID** from the Auth Users list.
-3. Sign in at `https://gloryconf.org/admin` as the main admin whose Firestore `admins/{uid}` document has `role: "admin"`.
-4. Open **Staff access**. Paste the Firebase Authentication UID, enter their name and login email, and assign exactly one operational role.
-5. Save **Assign staff access**. The staff member now signs in at `/admin` with the credentials from Firebase Authentication.
-6. Ask staff to use **Forgot Password** to set their own password; do not send passwords in public/group chats. They will see only the assigned workspace.
+1. Sign in to `https://gloryconf.org/admin` as the main administrator, then open **Staff Access**.
+2. Choose **Create New Login**.
+3. Enter the staff member's full name, email, a temporary password (at least 12 characters), and the appropriate role.
+4. Click **Create Staff Account**. A separate Firebase Authentication instance creates the login. The existing main administrator session stays signed in.
+5. The main administrator's Firestore permissions determine whether the new account receives an operational role. A newly created staff account cannot grant itself privileged database access.
+6. Share the temporary password through a secure private channel. Ask the staff member to sign in and use **Forgot Password** to set a personal password. Do not reuse staff passwords or post them in groups.
+7. For an account that already exists, **Link Existing Login** assigns a role using its UID.
 
-**Role changes**: Main admin → Staff access → Change role. The staff member signs out and signs back in to refresh their dashboard. The security rules apply role restrictions even if a browser briefly displays an old view.
+**Changing roles:** Use **Staff Access → Change Role**. Staff should sign out and back in to refresh the displayed workspace. Database rules enforce permissions independently of the interface.
 
-**Revocation**: Main admin → Staff access → Revoke access removes the Firestore permission document. The account may still authenticate but cannot access protected dashboard data. For complete login lockout, additionally **disable the user in Firebase Authentication → Users**. The Spark plan cannot automatically disable Authentication accounts from ordinary browser code.
+**Revoking access:** **Revoke access** removes the staff role, immediately blocking protected Firestore operations. The Firebase Authentication login itself remains active and must be disabled separately in Firebase Console if a complete login lockout is necessary.
 
-**Important:** Staff Access assigns a role to the UID you provide. Confirm the UID and email belong to the intended user. The UI cannot independently validate the Auth identity from Firestore.
+**Security boundary:** Creating an email/password Auth login is a Firebase client SDK operation, not a protected server-side administrator API. Other people may also be able to create ordinary Auth accounts if the project's signup endpoint is enabled. Only an authenticated main admin can grant operational role records under the Firestore security rules. Do not treat an Auth account without an assigned role as an authorized staff account. A fully administrator-exclusive, server-verified account-provisioning endpoint requires a privileged backend.
 
 ## Registration and attendance workflows
 
