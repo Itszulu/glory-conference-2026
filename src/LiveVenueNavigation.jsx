@@ -35,6 +35,7 @@ export default function LiveVenueNavigation({mapReady,getMap,onStart,onStop}){
  const accuracyRef=useRef(null)
  const routeLinesRef=useRef([])
  const mapRef=useRef(null)
+ const lastFixRef=useRef(null)
  const callbacksRef=useRef({onStart,onStop,getMap})
  callbacksRef.current={onStart,onStop,getMap}
 
@@ -52,6 +53,7 @@ export default function LiveVenueNavigation({mapReady,getMap,onStart,onStop}){
    if(watchRef.current!==null&&navigator.geolocation){navigator.geolocation.clearWatch(watchRef.current);watchRef.current=null}
    routeBusyRef.current=false
    lastRouteRef.current=null
+   lastFixRef.current=null
    clearVisuals()
    mapRef.current=null
    setActive(false);setFinding(false);setGuide(null);setReading(null);setNotice('Live guidance stopped.')
@@ -99,8 +101,7 @@ export default function LiveVenueNavigation({mapReady,getMap,onStart,onStop}){
    if(!mapReady||!map){setError('Wait for the Google map to load before starting live guidance.');return}
    trackingRef.current=true;mapRef.current=map;setActive(true);setFinding(true)
    callbacksRef.current.onStart?.()
-   watchRef.current=navigator.geolocation.watchPosition(
-     update=>{
+   const onPosition=update=>{
        if(!trackingRef.current||!mapRef.current)return
        const {latitude,longitude,accuracy}=update.coords
        if(!Number.isFinite(latitude)||!Number.isFinite(longitude))return
@@ -122,7 +123,11 @@ export default function LiveVenueNavigation({mapReady,getMap,onStart,onStop}){
          accuracyRef.current?.setCenter(position)
          accuracyRef.current?.setRadius(Math.min(accuracy||30,300))
        }
-       mapRef.current.panTo(position)
+       const lastFix=lastFixRef.current
+       if(!lastFix||metresBetween(position,lastFix)>6){
+         mapRef.current.panTo(position)
+         lastFixRef.current=position
+       }
        if(metresBetween(position,destination)<35&&accuracy<=65){
          setGuide({distance:0,duration:0,instruction:'You are near the DISRM venue pin. Look for the entrance and confirm with the welcome team.',nextDistance:0,arrival:'Now'})
          setNotice('Near the destination — confirm the entrance on site.')
@@ -136,15 +141,21 @@ export default function LiveVenueNavigation({mapReady,getMap,onStart,onStop}){
        const previous=lastRouteRef.current
        const moved=previous?metresBetween(position,previous.position):Infinity
        const elapsed=previous?Date.now()-previous.at:Infinity
-       if(!previous||(moved>=25&&elapsed>=20000)||elapsed>=60000)refreshRoute(position)
-     },
-     err=>{
-       if(!trackingRef.current)return
-       setError(errorText(err))
-       if(err?.code===1){stop();setError(errorText(err))}
-       else setFinding(false)
-     },
-     {enableHighAccuracy:true,maximumAge:3000,timeout:20000}
+       if(!previous||(moved>=20&&elapsed>=12000)||elapsed>=45000)refreshRoute(position)
+     }
+   const onGeoError=err=>{
+     if(!trackingRef.current)return
+     setError(errorText(err))
+     if(err?.code===1){stop();setError(errorText(err))}
+     else setFinding(false)
+   }
+   // A cached fix can appear quickly; the high-accuracy watch then refines it.
+   navigator.geolocation.getCurrentPosition(onPosition,err=>{
+     if(err?.code===1)onGeoError(err)
+   },{enableHighAccuracy:false,maximumAge:30000,timeout:6500})
+   watchRef.current=navigator.geolocation.watchPosition(
+     onPosition,onGeoError,
+     {enableHighAccuracy:true,maximumAge:5000,timeout:15000}
    )
  }
 
