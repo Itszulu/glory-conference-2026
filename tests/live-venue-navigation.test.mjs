@@ -24,7 +24,9 @@ test('walking route is refreshed from live phone coordinates and retains exact v
  assert.match(guide,/durationMillis/)
  assert.match(guide,/route.legs\?\.\[0\]\?\.steps/)
  assert.match(guide,/mapRef.current.panTo\(position\)/)
- assert.match(guide,/elapsed>=60000/)
+ assert.match(guide,/elapsed>=45000/)
+ assert.match(guide,/maximumAge:30000,timeout:6500/)
+ assert.match(guide,/watchRef.current=navigator.geolocation.watchPosition/)
  assert.match(venue,/latitude:6.836262173294491/)
  assert.match(venue,/longitude:7.370666488580394/)
 })
@@ -41,4 +43,10 @@ test('current GPS location is first and typing a starting location is optional',
  assert.match(guide,/USE MY CURRENT LOCATION/)
  assert.match(parent,/OPTIONAL: SEARCH A STARTING LOCATION/)
  assert.match(parent,/02 \/ 02/)
+})
+
+test('map becomes available independently of Places suggestion loading',()=>{
+ assert.match(parent,/const \{Map\}=await maps.importLibrary\('maps'\)/)
+ assert.match(parent,/setLoading\(false\)[\s\S]*?maps.importLibrary\('places'\)/)
+ assert.doesNotMatch(parent,/Promise.all\(\[\s*maps.importLibrary\('maps'\),maps.importLibrary\('places'\)/)
 })
