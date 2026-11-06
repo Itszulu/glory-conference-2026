@@ -1,6 +1,8 @@
 import {useEffect,useState} from 'react'
 import {collection,deleteDoc,doc,onSnapshot,serverTimestamp,setDoc,updateDoc} from 'firebase/firestore'
-import {db} from './firebase'
+import {initializeApp,deleteApp} from 'firebase/app'
+import {createUserWithEmailAndPassword,deleteUser,getAuth,inMemoryPersistence,setPersistence,signOut,updateProfile} from 'firebase/auth'
+import {app,db} from './firebase'
 import './staff-management.css'
 
 const roles=[
@@ -8,13 +10,14 @@ const roles=[
  {value:'checkin',name:'Attendance desk',description:'Find existing attendees and record check-in and check-out.'},
  {value:'followup',name:'Glory Connect',description:'Manage permitted attendee follow-up information.'}
 ]
-const empty={uid:'',name:'',email:'',role:'registration'}
+const empty={uid:'',name:'',email:'',password:'',role:'registration'}
 export default function StaffManagement({user}){
  const [staff,setStaff]=useState([])
  const [draft,setDraft]=useState(empty)
  const [busy,setBusy]=useState('')
  const [notice,setNotice]=useState('')
  const [search,setSearch]=useState('')
+ const [accountMode,setAccountMode]=useState('create')
  useEffect(()=>{
    const unsubscribe=onSnapshot(collection(db,'admins'),snapshot=>{
      setStaff(snapshot.docs.map(d=>({uid:d.id,...d.data()})).sort((a,b)=>String(a.name||a.email||a.uid).localeCompare(String(b.name||b.email||b.uid))))
@@ -25,17 +28,59 @@ export default function StaffManagement({user}){
    e.preventDefault()
    if(busy)return
    const uid=draft.uid.trim(),name=draft.name.trim(),email=draft.email.trim().toLowerCase()
-   if(!/^[A-Za-z0-9]{10,128}$/.test(uid)){setNotice('Enter the exact User UID copied from Firebase Authentication → Users.');return}
-   if(name.length<2||!/^\S+@\S+\.\S+$/.test(email)||!roles.some(r=>r.value===draft.role)){setNotice('Enter a staff name, valid login email and operational role.');return}
-   if(staff.some(s=>s.uid===uid)){setNotice('This UID already has a role. Change it in the staff list instead.');return}
-   if(staff.some(s=>String(s.email||'').toLowerCase()===email)){setNotice('That email already has a staff role. Review the staff list.');return}
-   setBusy(uid);setNotice('')
+   if(name.length<2||name.length>100||!/^\S+@\S+\.\S+$/.test(email)||!roles.some(r=>r.value===draft.role)){setNotice('Enter a valid name, email address and staff role.');return}
+   if(staff.some(s=>String(s.email||'').toLowerCase()===email)){setNotice('This email already has a staff role. Review the list first.');return}
+   if(accountMode==='link'&&!/^[A-Za-z0-9]{10,128}$/.test(uid)){setNotice('Enter the exact UID for the existing account.');return}
+   if(accountMode==='create'&&(draft.password.length<12||draft.password.length>128)){setNotice('Temporary password must be between 12 and 128 characters.');return}
+   setBusy('create');setNotice('')
+   let secondaryApp,secondaryAuth,createdUser
    try{
-     await setDoc(doc(db,'admins',uid),{uid,name,email,role:draft.role,createdBy:user.uid,createdAt:serverTimestamp(),updatedAt:serverTimestamp()})
+     let assignedUid=uid
+     if(accountMode==='create'){
+       // Completely separate short-lived Auth instance: the main admin remains signed in.
+       secondaryApp=initializeApp(app.options,'staff-provision-'+Date.now())
+       secondaryAuth=getAuth(secondaryApp)
+       await setPersistence(secondaryAuth,inMemoryPersistence)
+       const result=await createUserWithEmailAndPassword(secondaryAuth,email,draft.password)
+       createdUser=result.user
+       assignedUid=createdUser.uid
+       // Profile data is optional; role assignment remains the security boundary.
+       await updateProfile(createdUser,{displayName:name}).catch(()=>{})
+     }else if(staff.some(member=>member.uid===uid)){
+       throw new Error('This login already has staff access. Change its role in the list instead.')
+     }
+     try{
+       await setDoc(doc(db,'admins',assignedUid),{
+         uid:assignedUid,name,email,role:draft.role,createdBy:user.uid,
+         createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+       })
+     }catch(roleError){
+       if(createdUser){
+         try{await deleteUser(createdUser)}
+         catch{
+           throw new Error('Login created but role assignment failed. The account has no staff access; please delete or disable the unassigned login in Firebase Authentication.')
+         }
+       }
+       throw roleError
+     }
      setDraft(empty)
-     setNotice('Staff role assigned. The staff member can now log in using the Firebase Authentication account you created.')
-   }catch(err){setNotice('Could not assign role: '+(err?.message||'Verify the UID and Firestore permissions.'))}
-   finally{setBusy('')}
+     setNotice(accountMode==='create'
+       ?'Staff account created and role assigned. Share the temporary password securely and ask the staff member to reset it after their first sign-in.'
+       :'Staff role assigned to the existing account.')
+   }catch(err){
+     const code=err?.code
+     setNotice(code==='auth/email-already-in-use'
+       ?'This email already has a login. Choose Link Existing Login or use another email.'
+       :code==='auth/operation-not-allowed'
+       ?'Email/password account creation is currently disabled in Authentication settings.'
+       :code==='auth/weak-password'
+       ?'Choose a stronger temporary password.'
+       :err?.message||'Could not create the staff account.')
+   }finally{
+     if(secondaryAuth)await signOut(secondaryAuth).catch(()=>{})
+     if(secondaryApp)await deleteApp(secondaryApp).catch(()=>{})
+     setBusy('')
+   }
  }
  const changeRole=async(member,role)=>{
    if(busy||member.role==='admin'||!roles.some(r=>r.value===role)||member.role===role)return
@@ -57,24 +102,25 @@ export default function StaffManagement({user}){
  }
  const matches=staff.filter(m=>[m.uid,m.name,m.email,m.role].some(v=>String(v||'').toLowerCase().includes(search.trim().toLowerCase())))
  return <section className="gc-staff-manager" aria-labelledby="gc-staff-title">
-   <header className="gc-staff-heading"><div><p className="gc-staff-eyebrow">SPARK PLAN · ROLE-BASED ACCESS</p><h3 id="gc-staff-title">Your conference team</h3><p>Create individual staff logins in Firebase Authentication and assign the correct workspace here. No Blaze upgrade required.</p></div><span className="gc-staff-count">{staff.length} STAFF ACCOUNTS</span></header>
+   <header className="gc-staff-heading"><div><p className="gc-staff-eyebrow">STAFF & PERMISSIONS</p><h3 id="gc-staff-title">Your conference team</h3><p>Create and manage individual team accounts, with access limited to their assigned responsibilities.</p></div><span className="gc-staff-count">{staff.length} STAFF ACCOUNTS</span></header>
    <div className="gc-staff-grid">
      <section className="gc-staff-panel">
-       <div className="gc-staff-panel-heading"><span>01</span><div><h4>Assign a staff member</h4><p>First create their email/password login in Firebase Authentication. Then connect that login to exactly one role.</p></div></div>
-       <ol className="gc-staff-steps">
-         <li>Open <a href="https://console.firebase.google.com/project/gloryconf/authentication/users" target="_blank" rel="noreferrer">Firebase Authentication → Users</a> and select <strong>Add user</strong>.</li>
-         <li>Enter the staff email and a secure temporary password. Copy the new <strong>User UID</strong> from the Users list.</li>
-         <li>Enter their UID, name, email, and role below. Share login credentials privately, and ask them to reset their password.</li>
-       </ol>
+       <div className="gc-staff-panel-heading"><span>01</span><div><h4>Create staff account</h4><p>Set up individual login details and a restricted workspace in one place.</p></div></div>
+       <div className="gc-staff-modes" role="group" aria-label="Account setup method">
+         <button type="button" aria-pressed={accountMode==='create'} className={accountMode==='create'?'active':''} onClick={()=>{setAccountMode('create');setNotice('')}}>CREATE NEW LOGIN</button>
+         <button type="button" aria-pressed={accountMode==='link'} className={accountMode==='link'?'active':''} onClick={()=>{setAccountMode('link');setNotice('')}}>LINK EXISTING LOGIN</button>
+       </div>
+       <p className="gc-staff-setup-note">{accountMode==='create'?'Enter the staff member’s name, email, temporary password and role. Your own administrator login will stay active.':'Link an existing account by its UID only when the login has already been created.'}</p>
        <form onSubmit={add} className="gc-staff-form">
-         <label>FIREBASE AUTH USER UID *<input required spellCheck="false" autoComplete="off" placeholder="Paste exact UID from Firebase" value={draft.uid} onChange={e=>setDraft(v=>({...v,uid:e.target.value}))}/></label>
+         {accountMode==='link'&&<label>EXISTING USER UID *<input required spellCheck="false" autoComplete="off" placeholder="Paste UID of existing login" value={draft.uid} onChange={e=>setDraft(v=>({...v,uid:e.target.value}))}/></label>}
          <label>STAFF MEMBER'S NAME *<input required maxLength={100} placeholder="Full name" value={draft.name} onChange={e=>setDraft(v=>({...v,name:e.target.value}))}/></label>
          <label>LOGIN EMAIL *<input required type="email" maxLength={254} placeholder="staff@example.com" value={draft.email} onChange={e=>setDraft(v=>({...v,email:e.target.value}))}/></label>
+         {accountMode==='create'&&<label>TEMPORARY PASSWORD *<input required type="password" autoComplete="new-password" minLength={12} maxLength={128} placeholder="At least 12 characters" value={draft.password} onChange={e=>setDraft(v=>({...v,password:e.target.value}))}/></label>}
          <label>ASSIGNED WORKSPACE *<select value={draft.role} onChange={e=>setDraft(v=>({...v,role:e.target.value}))}>{roles.map(r=><option value={r.value} key={r.value}>{r.name}</option>)}</select></label>
          <p className="gc-staff-role-desc">{roles.find(r=>r.value===draft.role)?.description}</p>
-         <button type="submit" disabled={!!busy}>{busy?'ASSIGNING ROLE…':'ASSIGN STAFF ACCESS →'}</button>
+         <button type="submit" disabled={!!busy}>{busy?'CREATING ACCOUNT…':accountMode==='create'?'CREATE STAFF ACCOUNT →':'ASSIGN EXISTING LOGIN →'}</button>
        </form>
-       <p className="gc-staff-security">Only the main admin can assign operational roles. This screen never handles passwords or creates administrator accounts. Role removal blocks protected data access, but the Firebase Auth account must be disabled separately if needed.</p>
+       <p className="gc-staff-security">Only the main admin can assign staff permissions. Creating a login here uses a separate temporary sign-in session and cannot grant administrator status. Revoking dashboard access does not disable an underlying login.</p>
      </section>
      <section className="gc-staff-panel gc-staff-list-panel">
        <div className="gc-staff-panel-heading"><span>02</span><div><h4>People & permissions</h4><p>Review, change roles, or revoke access.</p></div></div>
