@@ -36,12 +36,18 @@ test('attendance desk checks in and out registered guests with actor timestamps'
  assert.match(attendance,/runTransaction/)
  assert.doesNotMatch(attendance,/setDoc\(doc\(db,'registrations'/)
 })
-test('Spark staff role assignment uses Firestore only',()=>{
- assert.match(staff,/setDoc\(doc\(db,'admins',uid\)/)
+test('admin can create email/password staff accounts without losing their session',()=>{
+ assert.match(staff,/initializeApp\(app.options,'staff-provision-'/)
+ assert.match(staff,/setPersistence\(secondaryAuth,inMemoryPersistence\)/)
+ assert.match(staff,/createUserWithEmailAndPassword\(secondaryAuth,email,draft.password\)/)
+ assert.match(staff,/setDoc\(doc\(db,'admins',assignedUid\)/)
+ assert.match(staff,/deleteUser\(createdUser\)/)
+ assert.match(staff,/signOut\(secondaryAuth\)/)
+ assert.match(staff,/deleteApp\(secondaryApp\)/)
  assert.match(staff,/updateDoc\(doc\(db,'admins',member.uid\)/)
  assert.match(staff,/deleteDoc\(doc\(db,'admins',member.uid\)/)
- assert.match(staff,/Firebase Authentication/)
- assert.doesNotMatch(staff,/httpsCallable|getFunctions|createStaffAccount|revokeStaffAccount|createUserWithEmailAndPassword/)
+ assert.doesNotMatch(staff,/SPARK PLAN|Blaze|No Blaze upgrade|required API billing/i)
+ assert.doesNotMatch(staff,/httpsCallable|getFunctions|revokeStaffAccount/)
  assert.equal('functions' in config,false)
 })
 test('Firestore separates registration and attendance writes and protects checkout',()=>{
