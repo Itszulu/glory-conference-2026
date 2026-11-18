@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { collection, doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore'
+import { collection, doc, onSnapshot, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
 import { db } from './firebase'
 import './glory-connect.css'
 
@@ -20,7 +20,7 @@ const contactRows=people=>people.map(r=>({Name:r.fullName||'',Phone:r.phone||'',
 const uniqueContacts=people=>{const seen=new Set();return contactRows(people).filter(r=>{if(!r.NormalizedPhone||seen.has(r.NormalizedPhone))return false;seen.add(r.NormalizedPhone);return true})}
 
 
-export default function GloryConnectFollowUp({registrations,checkIns,user}) {
+export default function GloryConnectFollowUp({registrations,checkIns,user,isAdmin=false}) {
   const [followUps,setFollowUps]=useState({})
   const [search,setSearch]=useState('')
   const [segment,setSegment]=useState('All')
@@ -33,6 +33,7 @@ export default function GloryConnectFollowUp({registrations,checkIns,user}) {
   const [selectedId,setSelectedId]=useState('')
   const [draft,setDraft]=useState(null)
   const [saving,setSaving]=useState(false)
+  const [classificationSaving,setClassificationSaving]=useState('')
   const [message,setMessage]=useState('')
   const [loadError,setLoadError]=useState('')
   useEffect(()=>{
@@ -43,6 +44,21 @@ export default function GloryConnectFollowUp({registrations,checkIns,user}) {
     return ()=>unsubscribe()
   },[])
   const person=registrations.find(x=>x.id===selectedId)
+  const correctClassification=async (r,firstTime)=>{
+    if(!isAdmin||classificationSaving)return
+    const destination=firstTime==='No'?'Returning Guests':'First-Time Guests'
+    if(!window.confirm('Move '+(r.fullName||'this attendee')+' to '+destination+'? Their registration and follow-up history will be preserved.'))return
+    setClassificationSaving(r.id);setMessage('')
+    try{
+      await updateDoc(doc(db,'registrations',r.id),{
+        firstTime,
+        attendanceFrequency:firstTime==='Yes'?'First time':(r.attendanceFrequency&&r.attendanceFrequency!=='First time'?r.attendanceFrequency:'Second time'),
+        updatedAt:serverTimestamp()
+      })
+      setMessage((r.fullName||'Attendee')+' moved to '+destination+'. Their registration remains saved.')
+    }catch(e){setMessage('Unable to update guest category: '+(e.message||'Unknown error'))}
+    finally{setClassificationSaving('')}
+  }
   const groups=useMemo(()=>[...new Set(registrations.flatMap(r=>groupValues(r,groupField)))].sort((a,b)=>a.localeCompare(b)).map(value=>({value,count:registrations.filter(r=>groupValues(r,groupField).includes(value)).length})),[registrations,groupField])
   const filtered=useMemo(()=>{
     const term=search.trim().toLowerCase()
@@ -150,7 +166,10 @@ export default function GloryConnectFollowUp({registrations,checkIns,user}) {
         return <article key={r.id} className="gc-connect-person">
           <div className="gc-connect-avatar">{(r.fullName||'?').trim().slice(0,1).toUpperCase()}</div>
           <div><h4>{r.fullName}</h4><p>{labelFor(r)} · {r.cityState||'Location unknown'} · {attended} day(s) checked in</p><small>{r.followUpConsent===true?'Opted in to updates':'No recorded update opt-in'} · {record.status||'Unassigned'}</small></div>
-          <button type="button" onClick={()=>open(r)}>MANAGE →</button>
+          <div className="gc-followup-person-actions">
+            {isAdmin&&typeFor(r)==='First time'&&<button type="button" disabled={!!classificationSaving} onClick={()=>correctClassification(r,'No')}>{classificationSaving===r.id?'MOVING…':'MOVE TO RETURNING'}</button>}
+            <button type="button" onClick={()=>open(r)}>MANAGE →</button>
+          </div>
         </article>
       })}
       {filtered.length===0&&<p>No attendees match this filter.</p>}
@@ -163,6 +182,7 @@ export default function GloryConnectFollowUp({registrations,checkIns,user}) {
           <span>{checkIns.filter(c=>c.registrationId===person.id).map(c=>c.day).join(', ')||'Not checked in'}</span>
           <span>{person.followUpConsent===true?'Communication consent: Yes':'Communication consent: Not recorded / No'}</span>
         </div>
+        {isAdmin&&<div className="gc-followup-classification"><span>GUEST CATEGORY: <strong>{labelFor(person)}</strong></span><button type="button" disabled={!!classificationSaving} onClick={()=>correctClassification(person,typeFor(person)==='First time'?'No':'Yes')}>{classificationSaving===person.id?'UPDATING…':typeFor(person)==='First time'?'MOVE TO RETURNING GUESTS':'MARK AS FIRST-TIME GUEST'}</button></div>}
         <form className="gc-connect-followup-form" onSubmit={save}>
           <label>FOLLOW-UP STATUS<select value={draft.status} onChange={e=>setDraft(d=>({...d,status:e.target.value}))}>{statuses.map(s=><option key={s}>{s}</option>)}</select></label>
           <label>ASSIGNED TEAM MEMBER<input maxLength={120} value={draft.owner} onChange={e=>setDraft(d=>({...d,owner:e.target.value}))} placeholder="Person responsible"/></label>
