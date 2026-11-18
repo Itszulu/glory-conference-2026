@@ -1,0 +1,69 @@
+/* Conference team administration — isolated to the protected admin route. */
+.gc-admin-workspace{background:#fff;border:1px solid #dce8ee;border-radius:20px;padding:17px;margin:16px 0 24px;box-shadow:0 5px 20px rgba(5,42,73,.035)}
+.gc-admin-workspace-label{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 6px 14px}
+.gc-admin-workspace-label span{font-weight:900;font-size:11px;letter-spacing:.14em;color:#0a4162}
+.gc-admin-workspace-label small{font-weight:800;font-size:10px;letter-spacing:.08em;color:#5b8295}
+.admin-page .gc-admin-workspace .admin-tabs{margin:0;padding:6px;background:#f1f6f9;border-radius:12px}
+.admin-page .gc-admin-workspace .admin-tabs button{font-weight:800;white-space:nowrap}
+.admin-page .gc-admin-workspace .admin-tabs button[aria-current="page"]{background:#063e65;color:#fff}
+.gc-admin-overview{display:grid;gap:22px}
+.gc-admin-overview-intro{background:linear-gradient(116deg,#062f52,#096b8b);padding:clamp(24px,4vw,36px);border-radius:20px;color:white}
+.gc-admin-overview-intro p{font-size:10px;font-weight:900;letter-spacing:.16em;color:#a3eafb;margin:0 0 10px}
+.gc-admin-overview-intro h3{font-size:clamp(29px,4.2vw,44px);letter-spacing:-.04em;color:white;margin:0 0 12px}
+.gc-admin-overview-intro span{font-size:14px;color:#d5ebf5}
+.gc-admin-overview-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.gc-admin-task{text-align:left;display:flex;flex-direction:column;gap:12px;padding:24px;background:#fff;border:1px solid #d5e5ed;border-radius:18px;min-width:0;cursor:pointer;box-shadow:0 8px 30px #072c4909;transition:transform .18s,border-color .18s,box-shadow .18s}
+.gc-admin-task:hover{transform:translateY(-3px);border-color:#55afcf;box-shadow:0 18px 36px #062f5116}
+.gc-admin-task:focus-visible{outline:3px solid #0b7c9f;outline-offset:3px}
+.gc-admin-task-number{font-size:11px;font-weight:900;color:#117da0}
+.gc-admin-task strong{font-size:17px;color:#072f4e;letter-spacing:-.01em;line-height:1.3}
+.gc-admin-task small{color:#507287;font-size:12px;line-height:1.65;flex:1}
+.gc-admin-task em{font-style:normal;font-size:10px;letter-spacing:.07em;font-weight:900;color:#0b7294}
+.gc-admin-overview-support{padding:20px 24px;border-left:4px solid #0d86a7;background:#e9f5fa;border-radius:0 12px 12px 0;display:grid;gap:7px}
+.gc-admin-overview-support strong{font-size:14px;color:#0b3e5f}
+.gc-admin-overview-support span{font-size:12px;line-height:1.7;color:#476b80}
+.gc-staff-manager{display:grid;gap:20px;color:#082f50}
+.gc-staff-heading{padding:30px;border-radius:20px;background:linear-gradient(125deg,#062e52,#096b8d);display:flex;justify-content:space-between;align-items:center;gap:20px}
+.gc-staff-heading h3{font-size:clamp(27px,4vw,40px);margin:8px 0 10px;color:#fff;letter-spacing:-.04em}
+.gc-staff-heading p{color:#d1eaf6;font-size:13px;line-height:1.7;max-width:600px;margin:0}
+.gc-staff-heading .gc-staff-eyebrow{font-size:10px;letter-spacing:.15em;font-weight:900;color:#9beaff}
+.gc-staff-count{flex:none;border:1px solid #b4e6fa77;padding:12px 16px;border-radius:30px;color:#d9f5ff;font-weight:900;font-size:10px;letter-spacing:.09em}
+.gc-staff-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px;align-items:start}
+.gc-staff-panel{background:#fff;border:1px solid #d5e3ec;border-radius:18px;padding:clamp(17px,2.5vw,27px);min-width:0;box-shadow:0 10px 28px #0632540b}
+.gc-staff-panel-heading{display:flex;align-items:flex-start;gap:14px}
+.gc-staff-panel-heading>span{width:36px;height:36px;flex:none;border-radius:11px;background:#e7f5fa;color:#0b6485;display:grid;place-items:center;font-size:12px;font-weight:900}
+.gc-staff-panel-heading h4{font-size:19px;color:#0a3557;margin:0 0 8px}
+.gc-staff-panel-heading p{font-size:12px;line-height:1.7;color:#617d8d;margin:0}
+.gc-staff-steps{padding:17px 17px 17px 37px;margin:20px 0;background:#eef7fb;border-radius:11px;color:#365b72;font-size:12px;line-height:1.7}
+.gc-staff-steps li+li{margin-top:9px}
+.gc-staff-steps a{font-weight:850;color:#0a6f91;text-underline-offset:3px}
+.gc-staff-form{display:grid;gap:14px}
+.gc-staff-form label,.gc-staff-search,.gc-staff-actions label{display:grid;gap:7px;font-size:10px;letter-spacing:.07em;font-weight:900;color:#335b74}
+.gc-staff-form input,.gc-staff-form select,.gc-staff-search input,.gc-staff-actions select{font-family:inherit;box-sizing:border-box;width:100%;max-width:100%;min-width:0;border:1px solid #c7dbe5;border-radius:10px;padding:12px 13px;font-size:14px;font-weight:500;background:#fff;color:#073455;outline:none}
+.gc-staff-form input:focus,.gc-staff-form select:focus,.gc-staff-search input:focus,.gc-staff-actions select:focus{border-color:#0a86ae;box-shadow:0 0 0 3px #0a86ae22}
+.gc-staff-role-desc{margin:-6px 0 2px;color:#55798b;font-size:12px;line-height:1.5}
+.gc-staff-form button{width:100%;min-height:50px;border-radius:11px;border:0;background:#083f65;color:#fff;font-weight:900;font-size:11px;letter-spacing:.07em;cursor:pointer}
+.gc-staff-form button:disabled,.gc-staff-actions button:disabled{opacity:.55;cursor:wait}
+.gc-staff-security{font-size:11px;line-height:1.7;color:#567488;margin:18px 0 0}
+.gc-staff-search{margin:20px 0 13px}
+.gc-staff-people{display:grid;gap:11px;max-height:750px;overflow:auto}
+.gc-staff-person{padding:15px;border:1px solid #dce9ef;border-radius:13px;display:flex;align-items:flex-start;gap:12px;min-width:0;background:#fbfdfe}
+.gc-staff-avatar{width:41px;height:41px;flex:none;border-radius:13px;background:#e7f3f8;display:grid;place-items:center;font-size:15px;font-weight:900;color:#0d5a7a}
+.gc-staff-person-body{display:grid;gap:4px;flex:1;min-width:0}
+.gc-staff-person-body strong{font-size:13px;color:#093756;overflow-wrap:anywhere}
+.gc-staff-person-body>span:not(.gc-staff-role){font-size:12px;color:#577689;overflow-wrap:anywhere}
+.gc-staff-person-body small{font-size:10px;color:#7b96a5;overflow-wrap:anywhere}
+.gc-staff-role{margin-top:5px;justify-self:start;padding:5px 9px;border-radius:20px;background:#e1f1f7;font-size:9px;font-weight:900;letter-spacing:.06em;color:#0a5e7b}
+.gc-staff-role-admin{background:#073e65;color:#fff}
+.gc-staff-actions{display:grid;gap:10px;width:152px;flex:none}
+.gc-staff-actions select{font-size:11px;padding:10px 7px}
+.gc-staff-actions button{border:1px solid #e5c1c1;color:#97424b;background:#fff5f5;border-radius:9px;padding:10px;font-size:11px;font-weight:800;cursor:pointer}
+.gc-staff-empty{padding:25px;text-align:center;color:#678398;font-size:12px}
+.gc-staff-notice{border-left:4px solid #0c779b;padding:14px 18px;background:#e8f4f9;border-radius:0 10px 10px 0;font-size:13px;color:#174965;line-height:1.7}
+.gc-staff-launch{background:#e9f5f9;border-radius:14px;padding:22px;display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.gc-staff-launch strong{color:#073755;font-size:14px}
+.gc-staff-launch p{flex:1 1 440px;margin:0;color:#4a6d82;line-height:1.7;font-size:12px}
+.gc-staff-launch a{font-size:11px;font-weight:900;color:#086b90;text-decoration:underline;text-underline-offset:4px}
+@media(max-width:1050px){.gc-admin-overview-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.gc-staff-grid{grid-template-columns:1fr}}
+@media(max-width:640px){.gc-admin-overview-cards{grid-template-columns:1fr}.gc-staff-heading{flex-direction:column;align-items:flex-start;padding:22px}.gc-staff-count{align-self:flex-start}.gc-staff-person{flex-wrap:wrap}.gc-staff-actions{width:100%;padding-left:53px;box-sizing:border-box}.gc-staff-panel{padding:17px}.gc-admin-workspace{padding:10px}.gc-admin-workspace-label{flex-wrap:wrap}.gc-admin-task{padding:20px}}
+@media(prefers-reduced-motion:reduce){.gc-admin-task{transition:none}}

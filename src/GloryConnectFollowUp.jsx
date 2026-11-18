@@ -1,0 +1,200 @@
+import { useEffect, useMemo, useState } from 'react'
+import { collection, doc, onSnapshot, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
+import { db } from './firebase'
+import './glory-connect.css'
+
+const statuses=['Unassigned','Awaiting contact','Contacted','Completed','Do not contact']
+const typeFor = person => person.attendanceFrequency || (person.firstTime==='Yes'?'First time':person.firstTime==='No'?'Returning (count unknown)':'Unknown')
+const labelFor = person => typeFor(person)==='First time'?'First-timer':typeFor(person)
+const normalPhone = phone => {
+  const digits=String(phone||'').replace(/\D/g,'')
+  if(digits.startsWith('234') && digits.length===13)return digits
+  if(digits.startsWith('0') && digits.length===11)return '234'+digits.slice(1)
+  return ''
+}
+const sortByName=(a,b)=>String(a.fullName||'').localeCompare(String(b.fullName||''))
+const groupFields=[['firstTime','First-time attendance'],['church','Church / ministry'],['cityState','City / state'],['accommodation','Accommodation'],['gender','Gender'],['ageRange','Age range'],['attendanceType','Registration type'],['heardFrom','Referral source'],['days','Attendance days']]
+const groupValues=(r,key)=>{const v=r[key];return (Array.isArray(v)?v:[v]).map(x=>String(x||'Not specified').trim()||'Not specified')}
+const downloadCsv=(filename,rows)=>{if(!rows.length)return;const keys=Object.keys(rows[0]);const esc=x=>'"'+String(x??'').replace(/"/g,'""')+'"';const csv=[keys.map(esc).join(','),...rows.map(r=>keys.map(k=>esc(r[k])).join(','))].join('\r\n');const url=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+const contactRows=people=>people.map(r=>({Name:r.fullName||'',Phone:r.phone||'',NormalizedPhone:normalPhone(r.phone),Church:r.church||'',Location:r.cityState||'',FirstTime:r.firstTime||'',Consent:r.followUpConsent===true?'Yes':'No'}))
+const uniqueContacts=people=>{const seen=new Set();return contactRows(people).filter(r=>{if(!r.NormalizedPhone||seen.has(r.NormalizedPhone))return false;seen.add(r.NormalizedPhone);return true})}
+
+
+export default function GloryConnectFollowUp({registrations,checkIns,user,isAdmin=false}) {
+  const [followUps,setFollowUps]=useState({})
+  const [search,setSearch]=useState('')
+  const [segment,setSegment]=useState('All')
+  const [groupField,setGroupField]=useState('firstTime')
+  const [groupValue,setGroupValue]=useState('All')
+  const [consentFilter,setConsentFilter]=useState('All')
+  const [statusFilter,setStatusFilter]=useState('All')
+  const [phoneFilter,setPhoneFilter]=useState('All')
+  const [sortKey,setSortKey]=useState('name-asc')
+  const [selectedId,setSelectedId]=useState('')
+  const [draft,setDraft]=useState(null)
+  const [saving,setSaving]=useState(false)
+  const [classificationSaving,setClassificationSaving]=useState('')
+  const [message,setMessage]=useState('')
+  const [loadError,setLoadError]=useState('')
+  useEffect(()=>{
+    const unsubscribe=onSnapshot(collection(db,'followUps'),snap=>{
+      setFollowUps(Object.fromEntries(snap.docs.map(x=>[x.id,x.data()])))
+      setLoadError('')
+    },()=>setLoadError('Could not load follow-up records. Check your admin permissions and deployed Firestore rules.'))
+    return ()=>unsubscribe()
+  },[])
+  const person=registrations.find(x=>x.id===selectedId)
+  const correctClassification=async (r,firstTime)=>{
+    if(!isAdmin||classificationSaving)return
+    const destination=firstTime==='No'?'Returning Guests':'First-Time Guests'
+    if(!window.confirm('Move '+(r.fullName||'this attendee')+' to '+destination+'? Their registration and follow-up history will be preserved.'))return
+    setClassificationSaving(r.id);setMessage('')
+    try{
+      await updateDoc(doc(db,'registrations',r.id),{
+        firstTime,
+        attendanceFrequency:firstTime==='Yes'?'First time':(r.attendanceFrequency&&r.attendanceFrequency!=='First time'?r.attendanceFrequency:'Second time'),
+        updatedAt:serverTimestamp()
+      })
+      setMessage((r.fullName||'Attendee')+' moved to '+destination+'. Their registration remains saved.')
+    }catch(e){setMessage('Unable to update guest category: '+(e.message||'Unknown error'))}
+    finally{setClassificationSaving('')}
+  }
+  const groups=useMemo(()=>[...new Set(registrations.flatMap(r=>groupValues(r,groupField)))].sort((a,b)=>a.localeCompare(b)).map(value=>({value,count:registrations.filter(r=>groupValues(r,groupField).includes(value)).length})),[registrations,groupField])
+  const filtered=useMemo(()=>{
+    const term=search.trim().toLowerCase()
+    return registrations.filter(r=>{
+      const record=followUps[r.id]||{}
+      const qualifies=segment==='All' ||
+        (segment==='First-timers'&&typeFor(r)==='First time') ||
+        (segment==='Returning'&&typeFor(r)!=='First time'&&typeFor(r)!=='Unknown') ||
+        (segment==='Needs follow-up'&&r.followUpConsent===true&&!['Completed','Do not contact'].includes(record.status||'Unassigned')) ||
+        (segment==='Checked in'&&checkIns.some(c=>c.registrationId===r.id)) ||
+        (segment==='Opted in'&&r.followUpConsent===true)
+      const phone=normalPhone(r.phone)
+      const rawDigits=String(r.phone||'').replace(/\D/g,'')
+      const phoneOk=phoneFilter==='All'||(phoneFilter==='Valid'&&!!phone)||(phoneFilter==='Invalid / missing'&&!phone)||(phoneFilter==='Missing'&&!rawDigits)
+      const groupOk=groupValue==='All'||groupValues(r,groupField).includes(groupValue)
+      const consentOk=consentFilter==='All'||(consentFilter==='Opted in'&&r.followUpConsent===true)||(consentFilter==='Not opted in'&&r.followUpConsent!==true)
+      const statusOk=statusFilter==='All'||(record.status||'Unassigned')===statusFilter
+      return qualifies && groupOk && consentOk && statusOk && phoneOk && (!term||[r.fullName,r.phone,r.registrationId,r.church,r.cityState,record.owner,record.status].some(v=>String(v||'').toLowerCase().includes(term)))
+    }).sort((a,b)=>{if(sortKey==='newest'||sortKey==='oldest'){const time=r=>r.createdAt?.seconds||r.createdAt?.toMillis?.()/1000||0;return sortKey==='newest'?time(b)-time(a):time(a)-time(b)}if(sortKey==='location')return String(a.cityState||'').localeCompare(String(b.cityState||''));if(sortKey==='church')return String(a.church||'').localeCompare(String(b.church||''));if(sortKey==='name-desc')return sortByName(b,a);return sortByName(a,b)})
+  },[registrations,followUps,checkIns,search,segment,groupField,groupValue,consentFilter,statusFilter,phoneFilter,sortKey])
+  const contacts=uniqueContacts(filtered)
+  const duplicateCount=filtered.filter(r=>normalPhone(r.phone)).length-contacts.length
+  const invalidCount=filtered.filter(r=>!normalPhone(r.phone)).length
+  const copyNumbers=async()=>{if(!contacts.length){setMessage('No valid phone numbers in this selection.');return}try{await navigator.clipboard.writeText(contacts.map(r=>'+'+r.NormalizedPhone).join('\n'));setMessage(contacts.length+' unique phone numbers copied.')}catch{setMessage('Clipboard access was blocked. Use Download numbers TXT instead.')}}
+  const downloadNumbers=()=>{if(!contacts.length){setMessage('No valid phone numbers in this selection.');return}const blob=new Blob([contacts.map(r=>'+'+r.NormalizedPhone).join('\n')],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='glory-followup-phone-numbers.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+  const firstTimers=registrations.filter(r=>typeFor(r)==='First time').length
+  const optedIn=registrations.filter(r=>r.followUpConsent===true).length
+  const pending=registrations.filter(r=>r.followUpConsent===true&&!['Completed','Do not contact'].includes(followUps[r.id]?.status||'Unassigned')).length
+  const done=registrations.filter(r=>followUps[r.id]?.status==='Completed').length
+  const open=r=>{
+    setSelectedId(r.id)
+    const current=followUps[r.id]||{}
+    setDraft({
+      status:current.status||'Unassigned',
+      owner:current.owner||'',
+      notes:current.notes||'',
+      nextAction:current.nextAction||'',
+      lastContactOutcome:current.lastContactOutcome||''
+    })
+    setMessage('')
+  }
+  const save=async e=>{
+    e.preventDefault()
+    if(!person||!draft||saving)return
+    const status=draft.status
+    if(!statuses.includes(status))return
+    if(person.followUpConsent!==true && ['Awaiting contact','Contacted'].includes(status)){
+      setMessage('This attendee has not opted in to follow-up messages. Record only operational attendance notes unless they give permission.')
+      return
+    }
+    setSaving(true);setMessage('')
+    try{
+      await setDoc(doc(db,'followUps',person.id),{
+        registrationId:person.id,
+        status,
+        owner:draft.owner.trim().slice(0,120),
+        notes:draft.notes.trim().slice(0,2000),
+        nextAction:draft.nextAction.trim().slice(0,240),
+        lastContactOutcome:draft.lastContactOutcome.trim().slice(0,240),
+        updatedBy:user?.uid||'',
+        updatedAt:serverTimestamp()
+      })
+      setMessage('Follow-up record saved.')
+    }catch(e){setMessage('Unable to save follow-up: '+(e.message||'Unknown error'))}
+    finally{setSaving(false)}
+  }
+  return <section className="gc-connect-admin">
+    <header className="gc-connect-admin-head"><div><p className="gc-connect-kicker">GLORY CONNECT</p><h3>People & Follow-Up</h3><p>Welcome every guest, recognize returning attendees and record each follow-up responsibility.</p></div></header>
+    {loadError&&<p className="gc-connect-alert" role="alert">{loadError}</p>}
+    <div className="gc-connect-metrics">
+      <article><span>First-time guests</span><strong>{firstTimers}</strong></article>
+      <article><span>Updates opted in</span><strong>{optedIn}</strong></article>
+      <article><span>Awaiting follow-up</span><strong>{pending}</strong></article>
+      <article><span>Completed</span><strong>{done}</strong></article>
+    </div>
+    <div className="gc-connect-toolbar">
+      <label>SEARCH PEOPLE<input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Name, phone, registration ID, owner…"/></label>
+      <label>VIEW<select value={segment} onChange={e=>setSegment(e.target.value)}>{['All','First-timers','Returning','Needs follow-up','Checked in','Opted in'].map(s=><option key={s}>{s}</option>)}</select></label>
+    </div>
+    <div className="gc-followup-explorer">
+      <div className="gc-followup-filters">
+        <label>GROUP BY<select value={groupField} onChange={e=>{setGroupField(e.target.value);setGroupValue('All')}}>{groupFields.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
+        <label>CONSENT<select value={consentFilter} onChange={e=>setConsentFilter(e.target.value)}>{['All','Opted in','Not opted in'].map(v=><option key={v}>{v}</option>)}</select></label>
+        <label>FOLLOW-UP STATUS<select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>{['All',...statuses].map(v=><option key={v}>{v}</option>)}</select></label>
+        <label>PHONE QUALITY<select value={phoneFilter} onChange={e=>setPhoneFilter(e.target.value)}>{['All','Valid','Invalid / missing','Missing'].map(v=><option key={v}>{v}</option>)}</select></label>
+        <label>SORT BY<select value={sortKey} onChange={e=>setSortKey(e.target.value)}><option value="name-asc">Name A–Z</option><option value="name-desc">Name Z–A</option><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="church">Church A–Z</option><option value="location">Location A–Z</option></select></label>
+      </div>
+      <div className="gc-followup-groups"><button type="button" className={groupValue==='All'?'active':''} onClick={()=>setGroupValue('All')}>All groups <strong>{registrations.length}</strong></button>{groups.map(g=><button key={g.value} type="button" className={groupValue===g.value?'active':''} onClick={()=>setGroupValue(g.value)}>{g.value}<strong>{g.count}</strong></button>)}</div>
+      <div className="gc-followup-actions">
+        <div><strong>{filtered.length} matching guests · {contacts.length} unique valid numbers</strong><small>{duplicateCount} repeated valid numbers · {invalidCount} invalid/missing numbers. Phone exports are deduplicated; full CSV retains all matching guests.</small></div>
+        <button type="button" onClick={copyNumbers}>COPY NUMBERS</button>
+        <button type="button" onClick={downloadNumbers}>NUMBERS TXT</button>
+        <button type="button" onClick={()=>downloadCsv('glory-followup-contacts.csv',contacts)}>CONTACTS CSV</button>
+        <button type="button" onClick={()=>downloadCsv('glory-followup-filtered-guests.csv',filtered.map(r=>({...contactRows([r])[0],RegistrationId:r.registrationId||r.id,FollowUpStatus:followUps[r.id]?.status||'Unassigned',Owner:followUps[r.id]?.owner||'',AttendanceDays:groupValues(r,'days').join('; ')})))}>FILTERED GUESTS CSV</button>
+        <button type="button" onClick={()=>{setSearch('');setSegment('All');setGroupField('firstTime');setGroupValue('All');setConsentFilter('All');setStatusFilter('All');setPhoneFilter('All');setSortKey('name-asc')}}>RESET FILTERS</button>
+      </div>
+      {message&&<p role="status" className="gc-connect-alert">{message}</p>}
+      <p className="gc-followup-privacy">Exported contacts are confidential. Only message guests who have opted in; select “Opted in” before preparing outreach lists.</p>
+    </div>
+    <p className="gc-connect-summary">{filtered.length} of {registrations.length} attendees · Returning classifications from older registrations may be less precise.</p>
+    <div className="gc-connect-people">
+      {filtered.map(r=>{
+        const record=followUps[r.id]||{}
+        const attended=checkIns.filter(c=>c.registrationId===r.id).length
+        return <article key={r.id} className="gc-connect-person">
+          <div className="gc-connect-avatar">{(r.fullName||'?').trim().slice(0,1).toUpperCase()}</div>
+          <div><h4>{r.fullName}</h4><p>{labelFor(r)} · {r.cityState||'Location unknown'} · {attended} day(s) checked in</p><small>{r.followUpConsent===true?'Opted in to updates':'No recorded update opt-in'} · {record.status||'Unassigned'}</small></div>
+          <div className="gc-followup-person-actions">
+            {isAdmin&&typeFor(r)==='First time'&&<button type="button" disabled={!!classificationSaving} onClick={()=>correctClassification(r,'No')}>{classificationSaving===r.id?'MOVING…':'MOVE TO RETURNING'}</button>}
+            <button type="button" onClick={()=>open(r)}>MANAGE →</button>
+          </div>
+        </article>
+      })}
+      {filtered.length===0&&<p>No attendees match this filter.</p>}
+    </div>
+    {person&&draft&&<div className="gc-connect-dialog-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setSelectedId('')}}>
+      <section className="gc-connect-dialog" role="dialog" aria-modal="true" aria-label="Follow-up profile">
+        <div className="gc-connect-dialog-top"><div><small>FOLLOW-UP PROFILE · {person.registrationId||person.id}</small><h3>{person.fullName}</h3><p>{labelFor(person)} · {person.affiliation||'Affiliation not recorded'}</p></div><button type="button" onClick={()=>setSelectedId('')} aria-label="Close">×</button></div>
+        <div className="gc-connect-profile-facts">
+          <span>{person.phone}</span><span>{person.church||'No church stated'}</span>
+          <span>{checkIns.filter(c=>c.registrationId===person.id).map(c=>c.day).join(', ')||'Not checked in'}</span>
+          <span>{person.followUpConsent===true?'Communication consent: Yes':'Communication consent: Not recorded / No'}</span>
+        </div>
+        {isAdmin&&<div className="gc-followup-classification"><span>GUEST CATEGORY: <strong>{labelFor(person)}</strong></span><button type="button" disabled={!!classificationSaving} onClick={()=>correctClassification(person,typeFor(person)==='First time'?'No':'Yes')}>{classificationSaving===person.id?'UPDATING…':typeFor(person)==='First time'?'MOVE TO RETURNING GUESTS':'MARK AS FIRST-TIME GUEST'}</button></div>}
+        <form className="gc-connect-followup-form" onSubmit={save}>
+          <label>FOLLOW-UP STATUS<select value={draft.status} onChange={e=>setDraft(d=>({...d,status:e.target.value}))}>{statuses.map(s=><option key={s}>{s}</option>)}</select></label>
+          <label>ASSIGNED TEAM MEMBER<input maxLength={120} value={draft.owner} onChange={e=>setDraft(d=>({...d,owner:e.target.value}))} placeholder="Person responsible"/></label>
+          <label>LAST CONTACT RESULT<input maxLength={240} value={draft.lastContactOutcome} onChange={e=>setDraft(d=>({...d,lastContactOutcome:e.target.value}))} placeholder="Reached, no answer, requested help…"/></label>
+          <label>NEXT ACTION<input maxLength={240} value={draft.nextAction} onChange={e=>setDraft(d=>({...d,nextAction:e.target.value}))} placeholder="Follow up after conference"/></label>
+          <label className="full">PRIVATE TEAM NOTES<textarea rows={4} maxLength={2000} value={draft.notes} onChange={e=>setDraft(d=>({...d,notes:e.target.value}))} placeholder="Record concise, factual follow-up details only"/></label>
+          {person.followUpConsent===true && normalPhone(person.phone)&&<a className="gc-connect-whatsapp" href={`https://wa.me/${normalPhone(person.phone)}`} target="_blank" rel="noreferrer">OPEN WHATSAPP CONTACT</a>}
+          <p className="gc-connect-private-note">Only contact opted-in attendees for optional messages. This workspace records activity; it does not automatically send messages.</p>
+          {message&&<p role="status" className="gc-connect-alert">{message}</p>}
+          <button type="submit" disabled={saving}>{saving?'SAVING…':'SAVE FOLLOW-UP'}</button>
+        </form>
+      </section>
+    </div>}
+  </section>
+}
