@@ -13,11 +13,23 @@ const normalPhone = phone => {
   return ''
 }
 const sortByName=(a,b)=>String(a.fullName||'').localeCompare(String(b.fullName||''))
+const groupFields=[['firstTime','First-time attendance'],['church','Church / ministry'],['cityState','City / state'],['accommodation','Accommodation'],['gender','Gender'],['ageRange','Age range'],['attendanceType','Registration type'],['heardFrom','Referral source'],['days','Attendance days']]
+const groupValues=(r,key)=>{const v=r[key];return (Array.isArray(v)?v:[v]).map(x=>String(x||'Not specified').trim()||'Not specified')}
+const downloadCsv=(filename,rows)=>{if(!rows.length)return;const keys=Object.keys(rows[0]);const esc=x=>'"'+String(x??'').replace(/"/g,'""')+'"';const csv=[keys.map(esc).join(','),...rows.map(r=>keys.map(k=>esc(r[k])).join(','))].join('\r\n');const url=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+const contactRows=people=>people.map(r=>({Name:r.fullName||'',Phone:r.phone||'',NormalizedPhone:normalPhone(r.phone),Church:r.church||'',Location:r.cityState||'',FirstTime:r.firstTime||'',Consent:r.followUpConsent===true?'Yes':'No'}))
+const uniqueContacts=people=>{const seen=new Set();return contactRows(people).filter(r=>{if(!r.NormalizedPhone||seen.has(r.NormalizedPhone))return false;seen.add(r.NormalizedPhone);return true})}
+
 
 export default function GloryConnectFollowUp({registrations,checkIns,user}) {
   const [followUps,setFollowUps]=useState({})
   const [search,setSearch]=useState('')
   const [segment,setSegment]=useState('All')
+  const [groupField,setGroupField]=useState('firstTime')
+  const [groupValue,setGroupValue]=useState('All')
+  const [consentFilter,setConsentFilter]=useState('All')
+  const [statusFilter,setStatusFilter]=useState('All')
+  const [phoneFilter,setPhoneFilter]=useState('All')
+  const [sortKey,setSortKey]=useState('name-asc')
   const [selectedId,setSelectedId]=useState('')
   const [draft,setDraft]=useState(null)
   const [saving,setSaving]=useState(false)
@@ -31,6 +43,7 @@ export default function GloryConnectFollowUp({registrations,checkIns,user}) {
     return ()=>unsubscribe()
   },[])
   const person=registrations.find(x=>x.id===selectedId)
+  const groups=useMemo(()=>[...new Set(registrations.flatMap(r=>groupValues(r,groupField)))].sort((a,b)=>a.localeCompare(b)).map(value=>({value,count:registrations.filter(r=>groupValues(r,groupField).includes(value)).length})),[registrations,groupField])
   const filtered=useMemo(()=>{
     const term=search.trim().toLowerCase()
     return registrations.filter(r=>{
@@ -41,9 +54,20 @@ export default function GloryConnectFollowUp({registrations,checkIns,user}) {
         (segment==='Needs follow-up'&&r.followUpConsent===true&&!['Completed','Do not contact'].includes(record.status||'Unassigned')) ||
         (segment==='Checked in'&&checkIns.some(c=>c.registrationId===r.id)) ||
         (segment==='Opted in'&&r.followUpConsent===true)
-      return qualifies && (!term||[r.fullName,r.phone,r.registrationId,r.church,r.cityState,record.owner,record.status].some(v=>String(v||'').toLowerCase().includes(term)))
-    }).sort(sortByName)
-  },[registrations,followUps,checkIns,search,segment])
+      const phone=normalPhone(r.phone)
+      const rawDigits=String(r.phone||'').replace(/\D/g,'')
+      const phoneOk=phoneFilter==='All'||(phoneFilter==='Valid'&&!!phone)||(phoneFilter==='Invalid / missing'&&!phone)||(phoneFilter==='Missing'&&!rawDigits)
+      const groupOk=groupValue==='All'||groupValues(r,groupField).includes(groupValue)
+      const consentOk=consentFilter==='All'||(consentFilter==='Opted in'&&r.followUpConsent===true)||(consentFilter==='Not opted in'&&r.followUpConsent!==true)
+      const statusOk=statusFilter==='All'||(record.status||'Unassigned')===statusFilter
+      return qualifies && groupOk && consentOk && statusOk && phoneOk && (!term||[r.fullName,r.phone,r.registrationId,r.church,r.cityState,record.owner,record.status].some(v=>String(v||'').toLowerCase().includes(term)))
+    }).sort((a,b)=>{if(sortKey==='newest'||sortKey==='oldest'){const time=r=>r.createdAt?.seconds||r.createdAt?.toMillis?.()/1000||0;return sortKey==='newest'?time(b)-time(a):time(a)-time(b)}if(sortKey==='location')return String(a.cityState||'').localeCompare(String(b.cityState||''));if(sortKey==='church')return String(a.church||'').localeCompare(String(b.church||''));if(sortKey==='name-desc')return sortByName(b,a);return sortByName(a,b)})
+  },[registrations,followUps,checkIns,search,segment,groupField,groupValue,consentFilter,statusFilter,phoneFilter,sortKey])
+  const contacts=uniqueContacts(filtered)
+  const duplicateCount=filtered.filter(r=>normalPhone(r.phone)).length-contacts.length
+  const invalidCount=filtered.filter(r=>!normalPhone(r.phone)).length
+  const copyNumbers=async()=>{if(!contacts.length){setMessage('No valid phone numbers in this selection.');return}try{await navigator.clipboard.writeText(contacts.map(r=>'+'+r.NormalizedPhone).join('\\n'));setMessage(contacts.length+' unique phone numbers copied.')}catch{setMessage('Clipboard access was blocked. Use Download numbers TXT instead.')}}
+  const downloadNumbers=()=>{if(!contacts.length){setMessage('No valid phone numbers in this selection.');return}const blob=new Blob([contacts.map(r=>'+'+r.NormalizedPhone).join('\\n')],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='glory-followup-phone-numbers.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
   const firstTimers=registrations.filter(r=>typeFor(r)==='First time').length
   const optedIn=registrations.filter(r=>r.followUpConsent===true).length
   const pending=registrations.filter(r=>r.followUpConsent===true&&!['Completed','Do not contact'].includes(followUps[r.id]?.status||'Unassigned')).length
@@ -97,6 +121,26 @@ export default function GloryConnectFollowUp({registrations,checkIns,user}) {
     <div className="gc-connect-toolbar">
       <label>SEARCH PEOPLE<input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Name, phone, registration ID, owner…"/></label>
       <label>VIEW<select value={segment} onChange={e=>setSegment(e.target.value)}>{['All','First-timers','Returning','Needs follow-up','Checked in','Opted in'].map(s=><option key={s}>{s}</option>)}</select></label>
+    </div>
+    <div className="gc-followup-explorer">
+      <div className="gc-followup-filters">
+        <label>GROUP BY<select value={groupField} onChange={e=>{setGroupField(e.target.value);setGroupValue('All')}}>{groupFields.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
+        <label>CONSENT<select value={consentFilter} onChange={e=>setConsentFilter(e.target.value)}>{['All','Opted in','Not opted in'].map(v=><option key={v}>{v}</option>)}</select></label>
+        <label>FOLLOW-UP STATUS<select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>{['All',...statuses].map(v=><option key={v}>{v}</option>)}</select></label>
+        <label>PHONE QUALITY<select value={phoneFilter} onChange={e=>setPhoneFilter(e.target.value)}>{['All','Valid','Invalid / missing','Missing'].map(v=><option key={v}>{v}</option>)}</select></label>
+        <label>SORT BY<select value={sortKey} onChange={e=>setSortKey(e.target.value)}><option value="name-asc">Name A–Z</option><option value="name-desc">Name Z–A</option><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="church">Church A–Z</option><option value="location">Location A–Z</option></select></label>
+      </div>
+      <div className="gc-followup-groups"><button type="button" className={groupValue==='All'?'active':''} onClick={()=>setGroupValue('All')}>All groups <strong>{registrations.length}</strong></button>{groups.map(g=><button key={g.value} type="button" className={groupValue===g.value?'active':''} onClick={()=>setGroupValue(g.value)}>{g.value}<strong>{g.count}</strong></button>)}</div>
+      <div className="gc-followup-actions">
+        <div><strong>{filtered.length} matching guests · {contacts.length} unique valid numbers</strong><small>{duplicateCount} repeated valid numbers · {invalidCount} invalid/missing numbers. Phone exports are deduplicated; full CSV retains all matching guests.</small></div>
+        <button type="button" onClick={copyNumbers}>COPY NUMBERS</button>
+        <button type="button" onClick={downloadNumbers}>NUMBERS TXT</button>
+        <button type="button" onClick={()=>downloadCsv('glory-followup-contacts.csv',contacts)}>CONTACTS CSV</button>
+        <button type="button" onClick={()=>downloadCsv('glory-followup-filtered-guests.csv',filtered.map(r=>({...contactRows([r])[0],RegistrationId:r.registrationId||r.id,FollowUpStatus:followUps[r.id]?.status||'Unassigned',Owner:followUps[r.id]?.owner||'',AttendanceDays:groupValues(r,'days').join('; ')})))}>FILTERED GUESTS CSV</button>
+        <button type="button" onClick={()=>{setSearch('');setSegment('All');setGroupField('firstTime');setGroupValue('All');setConsentFilter('All');setStatusFilter('All');setPhoneFilter('All');setSortKey('name-asc')}}>RESET FILTERS</button>
+      </div>
+      {message&&<p role="status" className="gc-connect-alert">{message}</p>}
+      <p className="gc-followup-privacy">Exported contacts are confidential. Only message guests who have opted in; select “Opted in” before preparing outreach lists.</p>
     </div>
     <p className="gc-connect-summary">{filtered.length} of {registrations.length} attendees · Returning classifications from older registrations may be less precise.</p>
     <div className="gc-connect-people">
