@@ -249,3 +249,11 @@
 .gc-followup-actions button:hover{filter:brightness(.93)}
 .gc-followup-privacy{font-size:12px;color:#527387;line-height:1.5;margin:0}
 @media(max-width:560px){.gc-followup-actions button{flex:1 1 42%}.gc-followup-filters{grid-template-columns:1fr 1fr}}
+
+/* Guest classification corrections: preserve registrations and follow-up records. */
+.gc-followup-person-actions{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end;align-items:center}
+.gc-connect-person .gc-followup-person-actions button{white-space:normal}
+.gc-connect-person .gc-followup-person-actions button:first-child:not(:last-child){background:#eef6fa;color:#0b5679;border:1px solid #b7d7e6}
+.gc-followup-classification{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;margin:12px 0;border:1px solid #c8dfe9;border-radius:11px;background:#eff7fa;color:#174b68;font-size:12px}
+.gc-followup-classification button{border:1px solid #0b5679;border-radius:8px;padding:10px 12px;background:#0b5679;color:white;font-size:11px;font-weight:800;cursor:pointer}
+.gc-followup-classification button:disabled,.gc-followup-person-actions button:disabled{opacity:.55;cursor:wait}
