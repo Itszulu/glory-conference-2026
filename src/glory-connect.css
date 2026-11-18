@@ -231,3 +231,21 @@
 /* Welcome-desk opt-in: checkbox stays aligned rather than inheriting input styling. */
 .admin-page .gc-walkin-form .gc-walkin-consent{display:flex;align-items:flex-start;gap:11px;font-size:12px;font-weight:600;line-height:1.65;letter-spacing:0;color:#40647a}
 .admin-page .gc-walkin-form .gc-walkin-consent input[type=checkbox]{appearance:auto!important;flex:none;width:19px;height:19px;min-height:19px;margin:2px 0 0;padding:0;accent-color:#0b7193}
+
+/* Admin-only follow-up explorer: combined filtering and contact exports */
+.gc-followup-explorer{display:grid;gap:15px;margin:20px 0;padding:clamp(16px,3vw,24px);border:1px solid #d4e5ed;border-radius:16px;background:#f6fafc;color:#113e5b}
+.gc-followup-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px}
+.gc-followup-filters label{display:grid;gap:7px;font-size:11px;letter-spacing:.05em;font-weight:800;color:#3b647c}
+.gc-followup-filters select{width:100%;min-width:0;border:1px solid #c5dbe6;border-radius:9px;padding:12px;background:white;color:#133b57;font-size:13px}
+.gc-followup-groups{display:flex;flex-wrap:wrap;gap:8px;max-height:225px;overflow:auto}
+.gc-followup-groups button{display:flex;align-items:center;gap:10px;padding:10px 13px;background:white;border:1px solid #cbdfe8;border-radius:10px;color:#184760;font-size:12px;cursor:pointer;text-align:left}
+.gc-followup-groups button.active{background:#0b4267;border-color:#0b4267;color:white}
+.gc-followup-groups strong{padding:2px 7px;border-radius:12px;background:#e6f2f7;color:#0a496c}
+.gc-followup-actions{display:flex;align-items:center;flex-wrap:wrap;gap:9px}
+.gc-followup-actions>div{flex:1 1 100%;display:grid;gap:5px}
+.gc-followup-actions small{font-size:12px;color:#54768a;line-height:1.5}
+.gc-followup-actions button{border:1px solid #0a567b;background:#0a567b;color:white;padding:11px 13px;border-radius:9px;font-size:11px;font-weight:800;cursor:pointer}
+.gc-followup-actions button:last-child{background:white;color:#0a567b}
+.gc-followup-actions button:hover{filter:brightness(.93)}
+.gc-followup-privacy{font-size:12px;color:#527387;line-height:1.5;margin:0}
+@media(max-width:560px){.gc-followup-actions button{flex:1 1 42%}.gc-followup-filters{grid-template-columns:1fr 1fr}}
