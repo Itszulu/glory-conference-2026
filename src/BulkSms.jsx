@@ -1,3 +1,4 @@
+import { measureSms } from '../sms-functions/measure.mjs'
 import { useState } from 'react'
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import { doc, serverTimestamp, updateDoc } from 'firebase/firestore'
@@ -26,9 +27,11 @@ export function BulkSms() {
   const [preview,setPreview] = useState(null)
   const [busy,setBusy] = useState(false)
   const [status,setStatus] = useState('')
+  const length = measureSms(body)
+  const overLimit = length.units > length.limit
   async function submit(event) {
     event.preventDefault()
-    if (busy) return
+    if (busy || overLimit) return
     setBusy(true)
     setStatus('')
     try {
@@ -50,8 +53,9 @@ export function BulkSms() {
     <h3>Bulk SMS</h3>
     <label>Your message<textarea required maxLength={1530} rows={4} value={body} disabled={busy}
       onChange={e=>{setBody(e.target.value);setPreview(null);setStatus('')}}/></label>
+    <p aria-live="polite">{length.units} / {length.limit} SMS units · {overLimit ? 'Shorten your text to fit one paid page.' : 'One-page limit per recipient.'}</p>
     {preview && <p>{preview.count} unique opted-in recipients · {preview.sandbox ? 'Sandbox simulation' : 'Live SMS, billed per page'}</p>}
-    <button disabled={busy || !body.trim() || preview?.count === 0}>{busy ? 'Working…' : !preview ? 'Preview recipients' : preview.sandbox ? 'Run simulation' : 'Send SMS'}</button>
+    <button disabled={busy || !body.trim() || overLimit || preview?.count === 0}>{busy ? 'Working…' : !preview ? 'Preview recipients' : preview.sandbox ? 'Run simulation' : 'Send SMS'}</button>
     {preview && <button type="button" disabled={busy} onClick={()=>setPreview(null)}>Reset preview</button>}
     <p role="status">{status}</p>
   </form>

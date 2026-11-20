@@ -24,6 +24,11 @@ exports.gloryBulkSms = onCall({ secrets: [token], timeoutSeconds: 90 }, async re
   if (!['preview', 'send'].includes(action) || typeof body !== 'string' || !body.trim() || body.length > 1530 || !/^[a-f0-9-]{36}$/.test(id || '')) {
     throw new HttpsError('invalid-argument', 'Check the message and try again.')
   }
+  const { measureSms } = await import('./measure.mjs')
+  const length = measureSms(body)
+  if (length.units > length.limit) {
+    throw new HttpsError('invalid-argument','Shorten the message to one SMS page.')
+  }
   const rows = await db.collection('registrations').select('phone','churchSmsConsent','churchSmsStopped').get()
   const allowed = new Set(), stopped = new Set()
   for (const row of rows.docs) {
@@ -54,7 +59,7 @@ exports.gloryBulkSms = onCall({ secrets: [token], timeoutSeconds: 90 }, async re
   const response = await fetch('https://www.bulksmsnigeria.com/' + endpoint, {
     method:'POST', signal:AbortSignal.timeout(30000),
     headers:{Authorization:'Bearer ' + token.value(),'Content-Type':'application/json',Accept:'application/json'},
-    body:JSON.stringify({from:sender.value(),to:numbers.join(','),body,unicode:true,gateway:'direct-refund'})
+    body:JSON.stringify({from:sender.value(),to:numbers.join(','),body,unicode:length.unicode,gateway:'direct-refund'})
   })
   const data = await response.json()
   if (!response.ok || data.status !== 'success' || !data.data?.message_id) {
