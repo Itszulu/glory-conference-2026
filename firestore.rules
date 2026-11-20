@@ -49,6 +49,14 @@ service cloud.firestore {
         && request.auth.uid != uid;
     }
 
+    match /directorySetup/nsukkaInitialAssignment {
+      allow get, create, update: if isAdmin();
+    }
+
+    match /churchMembers/{id} {
+      allow read, create, update: if isAdmin();
+    }
+
     match /registrations/{id} {
       allow create: if (isRegistrationStaff() || !signedIn()) && request.resource.data.keys().hasOnly(['registrationId','conferenceYear','title','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','attendanceFrequency','affiliation','followUpConsent','churchSmsConsent','consentRecordedAt','createdAt'])
                     && request.resource.data.keys().hasAll(['registrationId','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','createdAt'])

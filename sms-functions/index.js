@@ -10,18 +10,13 @@ const token = defineSecret('BULKSMS_NIGERIA_TOKEN')
 const sender = defineString('BULKSMS_NIGERIA_SENDER')
 const mode = defineString('BULKSMS_NIGERIA_MODE', { default: 'sandbox' })
 
-function mobile(value) {
-  const digits = String(value || '').replace(/[\s()+-]/g, '').replace(/^(?:00234|0)/, '234')
-  return /^234[789]\d{9}$/.test(digits) ? digits : ''
-}
-
 exports.gloryBulkSms = onCall({ secrets: [token], timeoutSeconds: 90 }, async request => {
   const uid = request.auth?.uid
   if (!uid || (await db.doc('admins/' + uid).get()).get('role') !== 'admin') {
     throw new HttpsError('permission-denied', 'Administrator access required.')
   }
-  const { action, body, id, maxPages = 1 } = request.data || {}
-  if (!['preview', 'send'].includes(action) || typeof body !== 'string' || !body.trim() || body.length > 1530 || !/^[a-f0-9-]{36}$/.test(id || '')) {
+  const { branch, action, body, id, maxPages = 1 } = request.data || {}
+  if (!['Nsukka','Enugu'].includes(branch) || !['preview', 'send'].includes(action) || typeof body !== 'string' || !body.trim() || body.length > 1530 || !/^[a-f0-9-]{36}$/.test(id || '')) {
     throw new HttpsError('invalid-argument', 'Check the message and try again.')
   }
   const { measureSms, estimatedKobo } = await import('./measure.mjs')
@@ -29,21 +24,20 @@ exports.gloryBulkSms = onCall({ secrets: [token], timeoutSeconds: 90 }, async re
   if (![1, 2].includes(maxPages) || length.pages > maxPages) {
     throw new HttpsError('invalid-argument','This message exceeds the selected page limit.')
   }
-  const rows = await db.collection('registrations').select('phone','churchSmsConsent','churchSmsStopped').get()
-  const allowed = new Set(), stopped = new Set()
-  for (const row of rows.docs) {
-    const number = mobile(row.get('phone'))
-    if (!number) continue
-    if (row.get('churchSmsStopped') === true) stopped.add(number)
-    if (row.get('churchSmsConsent') === true) allowed.add(number)
-  }
-  const numbers = [...allowed].filter(number => !stopped.has(number)).sort()
+  const fields = ['phone','memberBranch','churchSmsConsent','churchSmsStopped']
+  const [legacy, members, exclusions] = await Promise.all([
+    db.collection('registrations').select(...fields).get(),
+    db.collection('churchMembers').select(...fields).get(),
+    db.collection('followUps').where('status','==','Do not contact').select('registrationId').get()
+  ])
+  const { recipientNumbers } = await import('./audience.mjs')
+  const numbers = recipientNumbers(legacy, members, exclusions, branch)
   const sandbox = mode.value() !== 'live'
   const totalKobo = estimatedKobo(numbers.length, length.pages)
-  const digest = createHash('sha256').update(JSON.stringify([uid, body, numbers, sandbox, maxPages, totalKobo])).digest('hex')
+  const digest = createHash('sha256').update(JSON.stringify([uid, branch, body, numbers, sandbox, maxPages, totalKobo])).digest('hex')
   const campaign = db.collection('smsCampaigns').doc(id)
   if (action === 'preview') {
-    await campaign.create({ uid, digest, state: 'preview', createdAt: FieldValue.serverTimestamp() })
+    await campaign.create({ uid, branch, digest, state: 'preview', createdAt: FieldValue.serverTimestamp() })
     return { count: numbers.length, sandbox, pages:length.pages, totalKobo }
   }
   let previous = await db.runTransaction(async tx => {

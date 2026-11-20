@@ -1,4 +1,4 @@
-import { BulkSms, SmsPermission } from './BulkSms'
+import { SmsPermission } from './BulkSms'
 import { useEffect, useMemo, useState } from 'react'
 import { collection, doc, onSnapshot, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
 import { db } from './firebase'
@@ -127,7 +127,6 @@ export default function GloryConnectFollowUp({registrations,checkIns,user,isAdmi
     finally{setSaving(false)}
   }
   return <section className="gc-connect-admin">
-    {isAdmin && <BulkSms/>}
     <header className="gc-connect-admin-head"><div><p className="gc-connect-kicker">GLORY CONNECT</p><h3>People & Follow-Up</h3><p>Welcome every guest, recognize returning attendees and record each follow-up responsibility.</p></div></header>
     {loadError&&<p className="gc-connect-alert" role="alert">{loadError}</p>}
     <div className="gc-connect-metrics">

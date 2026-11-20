@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:disrm": "vite build --config disrm/vite.config.js",
+    "dev:disrm": "vite --config disrm/vite.config.js"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
