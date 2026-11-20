@@ -1,3 +1,4 @@
+import { BulkSms, SmsPermission } from './BulkSms'
 import { useEffect, useMemo, useState } from 'react'
 import { collection, doc, onSnapshot, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
 import { db } from './firebase'
@@ -126,6 +127,7 @@ export default function GloryConnectFollowUp({registrations,checkIns,user,isAdmi
     finally{setSaving(false)}
   }
   return <section className="gc-connect-admin">
+    {isAdmin && <BulkSms/>}
     <header className="gc-connect-admin-head"><div><p className="gc-connect-kicker">GLORY CONNECT</p><h3>People & Follow-Up</h3><p>Welcome every guest, recognize returning attendees and record each follow-up responsibility.</p></div></header>
     {loadError&&<p className="gc-connect-alert" role="alert">{loadError}</p>}
     <div className="gc-connect-metrics">
@@ -180,6 +182,7 @@ export default function GloryConnectFollowUp({registrations,checkIns,user,isAdmi
         <div className="gc-connect-profile-facts">
           <span>{person.phone}</span><span>{person.church||'No church stated'}</span>
           <span>{checkIns.filter(c=>c.registrationId===person.id).map(c=>c.day).join(', ')||'Not checked in'}</span>
+          {isAdmin && <SmsPermission key={person.id} person={person}/>}
           <span>{person.followUpConsent===true?'Communication consent: Yes':'Communication consent: Not recorded / No'}</span>
         </div>
         {isAdmin&&<div className="gc-followup-classification"><span>GUEST CATEGORY: <strong>{labelFor(person)}</strong></span><button type="button" disabled={!!classificationSaving} onClick={()=>correctClassification(person,typeFor(person)==='First time'?'No':'Yes')}>{classificationSaving===person.id?'UPDATING…':typeFor(person)==='First time'?'MOVE TO RETURNING GUESTS':'MARK AS FIRST-TIME GUEST'}</button></div>}

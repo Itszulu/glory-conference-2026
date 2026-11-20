@@ -1,0 +1,93 @@
+import './bulk-sms.css'
+import { measureSms } from '../sms-functions/measure.mjs'
+import { useState } from 'react'
+import { getFunctions, httpsCallable } from 'firebase/functions'
+import { doc, serverTimestamp, updateDoc } from 'firebase/firestore'
+import { db } from './firebase'
+
+export function SmsPermission({ person }) {
+  const [status,setStatus] = useState('')
+  async function record(consent) {
+    try {
+      await updateDoc(doc(db,'registrations',person.id),{
+        churchSmsConsent:consent, churchSmsStopped:!consent, churchSmsUpdatedAt:serverTimestamp()
+      })
+      setStatus(consent ? 'SMS permission recorded.' : 'SMS stopped for this number.')
+    } catch { setStatus('Could not update SMS permission.') }
+  }
+  return <div>
+    <p>General church SMS permission: {person.churchSmsConsent ? 'Yes' : 'No'}</p>
+    <button type="button" onClick={()=>record(false)}>Record SMS opt-out</button>
+    {!person.churchSmsConsent && <button type="button" onClick={()=>{if(window.confirm('Has this person explicitly agreed to receive general church texts?')) record(true)}}>Record SMS opt-in</button>}
+    <p role="status">{status}</p>
+  </div>
+}
+
+export function BulkSms() {
+  const [body,setBody] = useState('')
+  const [preview,setPreview] = useState(null)
+  const [busy,setBusy] = useState(false)
+  const [status,setStatus] = useState('')
+  const [maxPages,setMaxPages] = useState(1)
+  const length = measureSms(body,maxPages)
+  const overLimit = length.pages > maxPages
+  const money = new Intl.NumberFormat('en-NG',{style:'currency',currency:'NGN'})
+  function edit(change) {
+    change()
+    setPreview(null)
+    setStatus('')
+  }
+  async function submit(event) {
+    event.preventDefault()
+    if (busy || overLimit) return
+    setBusy(true)
+    setStatus('')
+    try {
+      const id = preview?.id || crypto.randomUUID()
+      const send = httpsCallable(getFunctions(db.app),'gloryBulkSms',{timeout:90000})
+      const {data} = await send({ id, body, maxPages, action:preview ? 'send' : 'preview' })
+      if (preview) {
+        setStatus((data.sandbox ? 'Simulation accepted' : 'Accepted for sending') + ' for ' + data.count + ' recipients. Reference: ' + data.reference)
+        setPreview(null)
+        setBody('')
+        setMaxPages(1)
+      } else {
+        setPreview({...data,id})
+      }
+    } catch (err) {
+      setStatus(err.code === 'functions/internal' || err.code === 'functions/unavailable' ? 'SMS service unavailable. If you already pressed Send, check the provider dashboard before retrying.' : err.message)
+    } finally { setBusy(false) }
+  }
+  return <form className="sms-composer" onSubmit={submit}>
+    <header><h3>Bulk SMS</h3><p>Send a custom text to your opted-in church contacts.</p></header>
+    <div className="sms-compose-body">
+      <div className="sms-toolbar">
+        <label htmlFor="church-sms-body">Message</label>
+        <fieldset disabled={busy}><legend>Maximum pages per recipient</legend>
+          {[1,2].map(n=><label key={n}>
+            <input type="radio" name="sms-page-limit" checked={maxPages===n} onChange={()=>edit(()=>setMaxPages(n))}/>
+            <span>{n===1?'1 page max':'2 pages max'}</span>
+          </label>)}
+        </fieldset>
+      </div>
+      <textarea id="church-sms-body" aria-describedby="sms-meter" aria-invalid={overLimit} required rows={4} value={body} disabled={busy}
+        placeholder="Write your message…" onChange={e=>edit(()=>setBody(e.target.value))}/>
+      <div id="sms-meter" className={'sms-meter'+(overLimit?' sms-error':'')}>
+        <span>{overLimit?'Over the page limit':length.pages+' of '+maxPages+' pages used'} · {length.unicode?'Unicode':'Standard SMS'}</span>
+        <span>{length.units} / {length.limit} units</span>
+      </div>
+      {preview && <section className="sms-review" aria-label="SMS cost review" aria-live="polite">
+        <dl>
+          <div><dt>Recipients</dt><dd>{preview.count.toLocaleString()}</dd></div>
+          <div><dt>Pages each</dt><dd>{preview.pages}</dd></div>
+          <div><dt>Estimated live total</dt><dd>{money.format(preview.totalKobo/100)}</dd></div>
+        </dl>
+        <p>₦6.49 per page, plus 7.5% VAT.{preview.sandbox?' This simulation is free.':''}</p>
+      </section>}
+      <footer><button className="sms-primary" disabled={busy || !body.trim() || overLimit || preview?.count===0}>
+        {busy?'Working…':!preview?'Review recipients and cost':preview.sandbox?'Run free simulation':'Send SMS · '+money.format(preview.totalKobo/100)}
+      </button>{preview && <button type="button" className="sms-secondary" disabled={busy} onClick={()=>setPreview(null)}>Back to draft</button>}</footer>
+      {status && <p className="sms-status" role="status">{status}</p>}
+    </div>
+  </form>
+}

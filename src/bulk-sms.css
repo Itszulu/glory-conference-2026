@@ -1,0 +1,28 @@
+.sms-composer { margin: 0 0 24px; border: 1px solid #bfd4df; border-radius: 18px; overflow: hidden; background: white; color: #17384a; box-shadow: 0 5px 20px #14394d0d; }
+.sms-composer header { background: #103e57; color: white; padding: 20px 24px; }
+.sms-composer header h3 { margin: 0; font-size: 1.35rem; color: inherit; }
+.sms-composer header p { margin: 5px 0 0; color: #d6e8f0; }
+.sms-compose-body { padding: clamp(16px, 3vw, 24px); }
+.sms-toolbar, .sms-meter, .sms-composer footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.sms-toolbar > label { font-weight: 700; }
+.sms-toolbar fieldset { border: 0; padding: 3px; margin: 0; display: flex; background: #eaf1f5; border-radius: 9px; }
+.sms-toolbar legend, .sms-toolbar input { position: absolute; clip-path: inset(50%); width: 1px; height: 1px; overflow: hidden; }
+.sms-toolbar label span { display: block; padding: 8px 12px; border-radius: 7px; color: #365267; cursor: pointer; font-size: .85rem; }
+.sms-toolbar input:checked + span { background: #fff; color: #094c70; font-weight: 700; box-shadow: 0 1px 4px #12394c30; }
+.sms-toolbar input:focus-visible + span, .sms-composer :is(textarea,button):focus-visible { outline: 3px solid #1476a4; outline-offset: 2px; }
+.sms-composer textarea { display: block; box-sizing: border-box; width: 100%; margin: 12px 0 8px; padding: 14px; border: 1px solid #99b3c2; border-radius: 10px; background: white; color: #183847; font: inherit; line-height: 1.5; resize: vertical; }
+.sms-composer textarea[aria-invalid=true] { border-color: #a03428; }
+.sms-meter { color: #425f70; font-size: .84rem; font-variant-numeric: tabular-nums; }
+.sms-error { color: #982d22; }
+.sms-review { margin-top: 16px; border: 1px solid #c5dde5; border-radius: 10px; background: #f1f7fa; padding: 15px; }
+.sms-review dl { display: flex; flex-wrap: wrap; gap: 14px 32px; margin: 0; }
+.sms-review dt, .sms-review p { font-size: .82rem; color: #405e70; }
+.sms-review dd { margin: 4px 0 0; font-size: 1.25rem; font-weight: 700; }
+.sms-review p { margin: 12px 0 0; }
+.sms-composer footer { margin-top: 18px; justify-content: flex-start; background: transparent; padding: 0; }
+.sms-composer footer button { border-radius: 8px; min-height: 42px; padding: 8px 16px; cursor: pointer; font: inherit; font-weight: 650; }
+.sms-primary { background: #105979; color: white; border: 1px solid #105979; }
+.sms-secondary { color: #17475e; border: 1px solid #b6cbd5; background: white; }
+.sms-composer button:disabled { opacity: .52; cursor: default; }
+.sms-status { overflow-wrap: anywhere; }
+@media (max-width: 480px) { .sms-composer header { padding: 16px; } .sms-composer footer button { width: 100%; } }
