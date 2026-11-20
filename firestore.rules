@@ -49,6 +49,10 @@ service cloud.firestore {
         && request.auth.uid != uid;
     }
 
+    match /directorySetup/nsukkaInitialAssignment {
+      allow get, create, update: if isAdmin();
+    }
+
     match /churchMembers/{id} {
       allow read, create, update: if isAdmin();
     }

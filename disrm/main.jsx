@@ -1,3 +1,4 @@
+import { assignCurrentContacts } from './initialAssignment'
 import React, { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
@@ -9,6 +10,7 @@ import './workspace.css'
 const branches = ['Nsukka','Enugu']
 const groups = ['All contacts',...branches,'Unassigned']
 function groupOf(contact) { return branches.includes(contact.memberBranch) ? contact.memberBranch : 'Unassigned' }
+function sourceLabel(contact) { return contact.source==='registrations' ? 'Glory Conference' : 'Church directory' }
 function Brand() { return <strong className="brand"><i aria-hidden="true">D</i> DISRM</strong> }
 
 function Login(){
@@ -37,6 +39,25 @@ function Directory(){
   const [loadError,setLoadError] = useState('')
   const [busy,setBusy] = useState(false)
   const [view,setView] = useState('directory')
+  const [setupStatus,setSetupStatus] = useState('Assigning existing contacts to Nsukka…')
+  const [attempt,setAttempt] = useState(0)
+  const [rowSaving,setRowSaving] = useState('')
+  useEffect(()=>{
+    let active=true
+    setSetupStatus('Assigning existing contacts to Nsukka…')
+    assignCurrentContacts().then(()=>{if(active)setSetupStatus('')}).catch(()=>{
+      if(active)setSetupStatus('Branch setup paused. Retry to finish assigning existing contacts.')
+    })
+    return ()=>{active=false}
+  },[attempt])
+  async function changeBranch(contact,branch){
+    setRowSaving(contact.key)
+    try {
+      await updateDoc(doc(db,contact.source,contact.id),{memberBranch:branch,branchAssignmentVersion:1,updatedAt:serverTimestamp()})
+      setNotice((contact.fullName||'Contact')+' · '+(branch||'Unassigned')+' saved.')
+    } catch { setNotice('Could not save the branch. Please try again.') }
+    finally { setRowSaving('') }
+  }
   const [audience,setAudience] = useState(branches[0])
   useEffect(()=>{
     const unsub = ['registrations','churchMembers'].map(source=>onSnapshot(collection(db,source),snapshot=>{
@@ -60,10 +81,10 @@ function Directory(){
       if(adding){
         const name=form.get('name').trim(), phone=form.get('phone').trim()
         if(!name || !phone) throw Error()
-        await addDoc(collection(db,'churchMembers'),{fullName:name,phone,memberBranch:form.get('branch'),
+        await addDoc(collection(db,'churchMembers'),{fullName:name,phone,memberBranch:form.get('branch'),branchAssignmentVersion:1,
           churchSmsConsent:form.get('consent')==='on',createdAt:serverTimestamp(),createdBy:auth.currentUser.uid})
       }else{
-        await updateDoc(doc(db,person.source,person.id),{memberBranch:form.get('branch'),updatedAt:serverTimestamp()})
+        await updateDoc(doc(db,person.source,person.id),{memberBranch:form.get('branch'),branchAssignmentVersion:1,updatedAt:serverTimestamp()})
       }
       setNotice(adding?'Member added.':'Branch saved.');setAdding(false);setSelected('')
     }catch {setNotice('Could not save. Check the details and try again.')}
@@ -79,12 +100,14 @@ function Directory(){
     </>:<>
       <div className="heading"><div><h1>Member directory</h1><p>Manage church contacts and branch membership.</p></div>
         <button className="primary" onClick={()=>{setAdding(true);setSelected('');setNotice('')}}>+ Add member</button></div>
+      {setupStatus&&<div role="status">{setupStatus} {setupStatus.includes('paused')&&<button onClick={()=>setAttempt(n=>n+1)}>Retry assignment</button>}</div>}
       <div className="groups">{groups.map(g=><button key={g} aria-pressed={group===g} onClick={()=>{setGroup(g);setSelected('');setAdding(false)}}>
         <span>{branches.includes(g)?'DISRM '+g:g}</span><strong>{ready?(g===groups[0]?all.length:all.filter(c=>groupOf(c)===g).length):'…'}</strong></button>)}</div>
       {(person||adding)&&<section className="editor" key={adding?'new':person.key}><h2>{adding?'New member':person.fullName||'Contact details'}</h2>
-        {person&&<p>{person.phone || 'No phone recorded'} · {person.source==='registrations'?'Glory Conference record':'Church directory'}{person.church?' · '+person.church:''}</p>}
+        {person&&<p>{person.phone || 'No phone recorded'} · {sourceLabel(person)}{person.church?' · '+person.church:''}</p>}
         <form onSubmit={save}>{adding&&<><label>Full name<input name="name" required maxLength={120}/></label><label>Phone number<input name="phone" type="tel" required maxLength={30}/></label></>}
-        <label>Membership branch<select name="branch" defaultValue={adding?(branches.includes(group)?group:''):person.memberBranch||''}>
+        {adding&&<p>Source: <strong>Church directory</strong></p>}
+        <label>Membership branch<select name="branch" defaultValue={adding?(branches.includes(group)?group:'Nsukka'):person.memberBranch||''}>
           <option value="">Unassigned</option>{branches.map(b=><option key={b}>{b}</option>)}</select></label>
         {adding&&<label className="check"><input name="consent" type="checkbox"/>This person agreed to receive general church SMS.</label>}
         <div><button className="primary" disabled={busy}>Save {adding?'member':'branch'}</button> <button type="button" onClick={()=>{setSelected('');setAdding(false)}}>Close</button></div></form>
@@ -94,7 +117,8 @@ function Directory(){
         <input type="search" aria-label="Search directory" placeholder="Search name or phone" value={query} onChange={e=>setQuery(e.target.value)}/></div>
         {loadError?<p role="alert">{loadError}</p>:!ready?<p>Loading contacts…</p>:rows.length===0?<p>No contacts in this view.</p>:
         <div className="tablewrap"><table><thead><tr><th>Name</th><th>Phone</th><th>Branch</th><th>Source</th></tr></thead><tbody>{rows.map(c=><tr key={c.key}><td><button onClick={()=>{setAdding(false);setSelected(c.key);setNotice('');window.scrollTo({top:0,behavior:'smooth'})}}>{c.fullName||'Unnamed contact'}</button></td>
-        <td>{c.phone||'—'}</td><td>{groupOf(c)}</td><td>{c.source==='registrations'?'Glory Conference':'Church directory'}</td></tr>)}</tbody></table></div>}</section>
+        <td>{c.phone||'—'}</td><td><select className="branch-picker" aria-label={'Assign branch for '+(c.fullName||'contact')} value={branches.includes(c.memberBranch)?c.memberBranch:''} disabled={Boolean(rowSaving)} onChange={event=>changeBranch(c,event.target.value)}>
+          <option value="">Unassigned</option>{branches.map(b=><option key={b}>{b}</option>)}</select></td><td>{sourceLabel(c)}</td></tr>)}</tbody></table></div>}</section>
     </>}</main></>
 }
 function App(){
