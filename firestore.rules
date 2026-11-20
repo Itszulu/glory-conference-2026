@@ -50,7 +50,7 @@ service cloud.firestore {
     }
 
     match /registrations/{id} {
-      allow create: if (isRegistrationStaff() || !signedIn()) && request.resource.data.keys().hasOnly(['registrationId','conferenceYear','title','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','attendanceFrequency','affiliation','followUpConsent','consentRecordedAt','createdAt'])
+      allow create: if (isRegistrationStaff() || !signedIn()) && request.resource.data.keys().hasOnly(['registrationId','conferenceYear','title','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','attendanceFrequency','affiliation','followUpConsent','churchSmsConsent','consentRecordedAt','createdAt'])
                     && request.resource.data.keys().hasAll(['registrationId','fullName','phone','email','gender','ageRange','cityState','church','attendanceType','days','accommodation','firstTime','heardFrom','createdAt'])
                     && (!('title' in request.resource.data) || request.resource.data.title in ['', 'Pastor', 'Reverend', 'Prophet', 'Bishop', 'Apostle', 'Minister', 'Evangelist'])
                     && request.resource.data.conferenceYear == 2026
@@ -84,6 +84,7 @@ service cloud.firestore {
                         request.resource.data.attendanceFrequency in ['First time','Second time','Third time or more'])
                     && (!('affiliation' in request.resource.data) ||
                         request.resource.data.affiliation in ['Host ministry','DISRM','Visiting from another church','Not currently part of a church','Prefer not to say'])
+                    && (!('churchSmsConsent' in request.resource.data) || request.resource.data.churchSmsConsent is bool)
                     && (!('followUpConsent' in request.resource.data) ||
                         request.resource.data.followUpConsent is bool)
                     && (!('consentRecordedAt' in request.resource.data) ||

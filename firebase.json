@@ -56,5 +56,8 @@
   },
   "storage": {
     "rules": "storage.rules"
+  },
+  "functions": {
+    "source": "sms-functions"
   }
 }

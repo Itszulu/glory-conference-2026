@@ -31,7 +31,7 @@ export default function GloryConnectRegistration() {
   const [form, setForm] = useState({
     title:'', fullName:'', phone:'', email:'', cityState:'', church:'',
     attendanceFrequency:'', affiliation:'', days:['Nov 12','Nov 13','Nov 14'],
-    followUpConsent:false, heardFrom:'', ageRange:'', gender:''
+    churchSmsConsent:false, followUpConsent:false, heardFrom:'', ageRange:'', gender:''
   })
   const set = (name,value) => { setForm(f=>({...f,[name]:value})); setError('') }
   const checkFirstStep = () => {
@@ -63,7 +63,7 @@ export default function GloryConnectRegistration() {
         days:form.days,accommodation:'No',
         firstTime:form.attendanceFrequency==='First time'?'Yes':'No',
         attendanceFrequency:form.attendanceFrequency,affiliation:form.affiliation,
-        followUpConsent:form.followUpConsent,consentRecordedAt:serverTimestamp(),
+        churchSmsConsent:form.churchSmsConsent,followUpConsent:form.followUpConsent,consentRecordedAt:serverTimestamp(),
         heardFrom:form.heardFrom||'Other',createdAt:serverTimestamp()
       })
       setCompletedId(id)
@@ -154,6 +154,7 @@ export default function GloryConnectRegistration() {
           <label>HOW DID YOU HEAR ABOUT US? (OPTIONAL)<select name="heardFrom" value={form.heardFrom} onChange={e=>set('heardFrom',e.target.value)}><option value="">Select an option</option>{['Church','Friend / Family','WhatsApp','Instagram','Facebook','YouTube','Other'].map(x=><option key={x}>{x}</option>)}</select></label>
           <label className="full">DAYS ATTENDING *<div className="merch-options">{days.map(day=><button type="button" key={day} className={form.days.includes(day)?'selected':''} aria-pressed={form.days.includes(day)} onClick={()=>set('days',form.days.includes(day)?form.days.filter(d=>d!==day):[...form.days,day])}>{day}</button>)}</div></label>
           <label className="full gc-registration-consent"><input type="checkbox" name="followUpConsent" checked={form.followUpConsent} onChange={e=>set('followUpConsent',e.target.checked)}/><span>Yes, I'd like to receive Glory Conference updates and follow-up messages by WhatsApp or SMS. I can opt out later.</span></label>
+          <label className="full gc-registration-consent"><input type="checkbox" checked={form.churchSmsConsent} onChange={e=>set('churchSmsConsent',e.target.checked)}/><span>I would also like to receive general SMS messages from the church. I can ask the church office to stop these texts at any time.</span></label>
           <p className="gc-registration-privacy full">Your details are used for conference registration and attendance management. Optional follow-up messages require your permission.</p>
           {error&&<p className="registration-error" role="alert">{error}</p>}
           <button type="submit" className="form-action" disabled={busy}>{busy?'REGISTERING...':'COMPLETE REGISTRATION →'}</button>
