@@ -1,3 +1,4 @@
+import { Layers, Users, Send, LogOut, MapPin, CircleDashed, Search, Plus, ArrowUpRight, Wallet, LockKeyhole } from 'lucide-react'
 import { assignCurrentContacts } from './initialAssignment'
 import React, { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -11,7 +12,7 @@ const branches = ['Nsukka','Enugu']
 const groups = ['All contacts',...branches,'Unassigned']
 function groupOf(contact) { return branches.includes(contact.memberBranch) ? contact.memberBranch : 'Unassigned' }
 function sourceLabel(contact) { return contact.source==='registrations' ? 'Glory Conference' : 'Church directory' }
-function Brand() { return <strong className="brand"><i aria-hidden="true">D</i> DISRM</strong> }
+function Brand() { return <strong className="brand"><i aria-hidden="true"><Layers size={23}/></i> DISRM</strong> }
 
 function Login(){
   const [error,setError] = useState('')
@@ -23,7 +24,7 @@ function Login(){
     try { await signInWithEmailAndPassword(auth,data.get('email').trim(),data.get('password')) }
     catch { setError('Sign-in failed. Check your email and password.');setBusy(false) }
   }
-  return <main className="login"><Brand/><form onSubmit={login}><h1>Church follow-up</h1>
+  return <main className="login login-screen"><aside><Brand/><div className="login-art" aria-hidden="true"><i/><i/><i/></div><div className="login-location"><MapPin size={16}/> Nsukka &amp; Enugu</div></aside><form onSubmit={login}><LockKeyhole className="login-key" size={30}/><h1>Welcome back</h1><p>Sign in to the DISRM follow-up workspace.</p>
     <label>Email<input type="email" name="email" autoComplete="username" required/></label>
     <label>Password<input type="password" name="password" autoComplete="current-password" required/></label>
     <button disabled={busy}>Sign in</button><p role="status">{error}</p></form></main>
@@ -91,18 +92,19 @@ function Directory(){
     finally{setBusy(false)}
   }
   return <><header className="top"><div><Brand/><nav aria-label="Workspace">
-    <button aria-pressed={view==='directory'} onClick={()=>setView('directory')}>Directory</button>
-    <button aria-pressed={view==='invite'} onClick={()=>setView('invite')}>Invitations</button></nav>
-    <button className="exit" onClick={()=>signOut(auth)}>Sign out</button></div></header>
+    <button aria-pressed={view==='directory'} onClick={()=>setView('directory')}><Users size={18}/>Directory</button>
+    <button aria-pressed={view==='invite'} onClick={()=>setView('invite')}><Send size={18}/>Invitations</button></nav>
+    <button className="exit" onClick={()=>signOut(auth)}><LogOut size={17}/>Sign out</button></div></header>
     <main className="work">{view==='invite'?<>
-      <h1>Church invitations</h1><label className="audience">Invite members of<select value={audience} onChange={e=>setAudience(e.target.value)}>{branches.map(b=><option key={b}>{b}</option>)}</select></label>
+      <div className="heading"><div><h1>Church invitations</h1><p>Write a message for your branch and review the cost.</p></div><a className="wallet-link" href="https://www.bulksmsnigeria.com/login" target="_blank" rel="noopener noreferrer"><Wallet size={16}/> SMS wallet <ArrowUpRight size={15}/></a></div>
+      <div className="audience" role="group" aria-label="Invitation audience"><span>Send to</span>{branches.map(b=><button key={b} aria-pressed={audience===b} onClick={()=>setAudience(b)}><MapPin size={15}/>{b}</button>)}</div>
       <BulkSms key={audience} branch={audience}/>
     </>:<>
       <div className="heading"><div><h1>Member directory</h1><p>Manage church contacts and branch membership.</p></div>
-        <button className="primary" onClick={()=>{setAdding(true);setSelected('');setNotice('')}}>+ Add member</button></div>
+        <button className="primary" onClick={()=>{setAdding(true);setSelected('');setNotice('')}}><Plus size={17}/>Add member</button></div>
       {setupStatus&&<div role="status">{setupStatus} {setupStatus.includes('paused')&&<button onClick={()=>setAttempt(n=>n+1)}>Retry assignment</button>}</div>}
       <div className="groups">{groups.map(g=><button key={g} aria-pressed={group===g} onClick={()=>{setGroup(g);setSelected('');setAdding(false)}}>
-        <span>{branches.includes(g)?'DISRM '+g:g}</span><strong>{ready?(g===groups[0]?all.length:all.filter(c=>groupOf(c)===g).length):'…'}</strong></button>)}</div>
+        <span>{g==='All contacts'?<Users size={17}/>:g==='Unassigned'?<CircleDashed size={17}/>:<MapPin size={17}/>} {branches.includes(g)?'DISRM '+g:g}</span><strong>{ready?(g===groups[0]?all.length:all.filter(c=>groupOf(c)===g).length):'…'}</strong></button>)}</div>
       {(person||adding)&&<section className="editor" key={adding?'new':person.key}><h2>{adding?'New member':person.fullName||'Contact details'}</h2>
         {person&&<p>{person.phone || 'No phone recorded'} · {sourceLabel(person)}{person.church?' · '+person.church:''}</p>}
         <form onSubmit={save}>{adding&&<><label>Full name<input name="name" required maxLength={120}/></label><label>Phone number<input name="phone" type="tel" required maxLength={30}/></label></>}
@@ -114,11 +116,11 @@ function Directory(){
         {person&&<SmsPermission person={person}/>}</section>}
       {notice&&<p role="status">{notice}</p>}
       <section className="directory"><div className="searchbar"><h2>{branches.includes(group)?'DISRM '+group:group}</h2>
-        <input type="search" aria-label="Search directory" placeholder="Search name or phone" value={query} onChange={e=>setQuery(e.target.value)}/></div>
+        <label className="search-field"><Search size={17}/><input type="search" aria-label="Search directory" placeholder="Search name or phone" value={query} onChange={e=>setQuery(e.target.value)}/></label></div>
         {loadError?<p role="alert">{loadError}</p>:!ready?<p>Loading contacts…</p>:rows.length===0?<p>No contacts in this view.</p>:
-        <div className="tablewrap"><table><thead><tr><th>Name</th><th>Phone</th><th>Branch</th><th>Source</th></tr></thead><tbody>{rows.map(c=><tr key={c.key}><td><button onClick={()=>{setAdding(false);setSelected(c.key);setNotice('');window.scrollTo({top:0,behavior:'smooth'})}}>{c.fullName||'Unnamed contact'}</button></td>
+        <div className="tablewrap"><table><thead><tr><th>Name</th><th>Phone</th><th>Branch</th><th>Source</th></tr></thead><tbody>{rows.map(c=><tr key={c.key}><td><button onClick={()=>{setAdding(false);setSelected(c.key);setNotice('');window.scrollTo({top:0,behavior:'smooth'})}}><span className="avatar" aria-hidden="true">{(c.fullName||'?').trim().split(/\s+/).slice(0,2).map(word=>word[0]).join('').toUpperCase()}</span>{c.fullName||'Unnamed contact'}</button></td>
         <td>{c.phone||'—'}</td><td><select className="branch-picker" aria-label={'Assign branch for '+(c.fullName||'contact')} value={branches.includes(c.memberBranch)?c.memberBranch:''} disabled={Boolean(rowSaving)} onChange={event=>changeBranch(c,event.target.value)}>
-          <option value="">Unassigned</option>{branches.map(b=><option key={b}>{b}</option>)}</select></td><td>{sourceLabel(c)}</td></tr>)}</tbody></table></div>}</section>
+          <option value="">Unassigned</option>{branches.map(b=><option key={b}>{b}</option>)}</select></td><td><span className="source-pill">{sourceLabel(c)}</span></td></tr>)}</tbody></table></div>}</section>
     </>}</main></>
 }
 function App(){

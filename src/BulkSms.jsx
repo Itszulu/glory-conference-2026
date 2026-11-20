@@ -72,8 +72,8 @@ export function BulkSms({ branch }) {
       else setStatus(err.code === 'functions/internal' || err.code === 'functions/unavailable' ? 'Send status is unconfirmed. Check the provider dashboard before starting another send.' : err.message)
     } finally { setBusy(false) }
   }
-  return <form className="sms-composer" onSubmit={submit}>
-    <header><h3>Bulk SMS</h3><p>Invite opted-in DISRM {branch} members to church.</p></header>
+  return <div className="invitation-layout"><form className="sms-composer" onSubmit={submit}>
+    <header><h3>Compose invitation</h3><p>Audience · Opted-in {branch} members</p></header>
     <div className="sms-compose-body">
       <div className="sms-toolbar">
         <label htmlFor="church-sms-body">Message</label>
@@ -104,4 +104,9 @@ export function BulkSms({ branch }) {
       {status && <p className="sms-status" role="status">{status}</p>}
     </div>
   </form>
+    <aside className="message-preview"><h3>Message preview</h3><div className="preview-device">
+      <div className="device-speaker" aria-hidden="true"/><div className="preview-contact">DISRM {branch}</div>
+      <div className={'preview-bubble'+(!body.trim()?' is-empty':'')}>{body.trim()?body:'Your invitation will appear here as you type.'}</div>
+    </div></aside>
+  </div>
 }
