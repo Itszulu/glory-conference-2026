@@ -20,14 +20,14 @@ exports.gloryBulkSms = onCall({ secrets: [token], timeoutSeconds: 90 }, async re
   if (!uid || (await db.doc('admins/' + uid).get()).get('role') !== 'admin') {
     throw new HttpsError('permission-denied', 'Administrator access required.')
   }
-  const { action, body, id } = request.data || {}
+  const { action, body, id, maxPages = 1 } = request.data || {}
   if (!['preview', 'send'].includes(action) || typeof body !== 'string' || !body.trim() || body.length > 1530 || !/^[a-f0-9-]{36}$/.test(id || '')) {
     throw new HttpsError('invalid-argument', 'Check the message and try again.')
   }
-  const { measureSms } = await import('./measure.mjs')
-  const length = measureSms(body)
-  if (length.units > length.limit) {
-    throw new HttpsError('invalid-argument','Shorten the message to one SMS page.')
+  const { measureSms, estimatedKobo } = await import('./measure.mjs')
+  const length = measureSms(body, maxPages)
+  if (![1, 2].includes(maxPages) || length.pages > maxPages) {
+    throw new HttpsError('invalid-argument','This message exceeds the selected page limit.')
   }
   const rows = await db.collection('registrations').select('phone','churchSmsConsent','churchSmsStopped').get()
   const allowed = new Set(), stopped = new Set()
@@ -39,11 +39,12 @@ exports.gloryBulkSms = onCall({ secrets: [token], timeoutSeconds: 90 }, async re
   }
   const numbers = [...allowed].filter(number => !stopped.has(number)).sort()
   const sandbox = mode.value() !== 'live'
-  const digest = createHash('sha256').update(JSON.stringify([uid, body, numbers, sandbox])).digest('hex')
+  const totalKobo = estimatedKobo(numbers.length, length.pages)
+  const digest = createHash('sha256').update(JSON.stringify([uid, body, numbers, sandbox, maxPages, totalKobo])).digest('hex')
   const campaign = db.collection('smsCampaigns').doc(id)
   if (action === 'preview') {
     await campaign.create({ uid, digest, state: 'preview', createdAt: FieldValue.serverTimestamp() })
-    return { count: numbers.length, sandbox }
+    return { count: numbers.length, sandbox, pages:length.pages, totalKobo }
   }
   let previous = await db.runTransaction(async tx => {
     const record = (await tx.get(campaign)).data()
