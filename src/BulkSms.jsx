@@ -1,8 +1,9 @@
 import './bulk-sms.css'
-import { measureSms } from '../sms-functions/measure.mjs'
+import { recipientNumbers } from '../sms-functions/audience.mjs'
+import { estimatedKobo, measureSms } from '../sms-functions/measure.mjs'
 import { useState } from 'react'
 import { getFunctions, httpsCallable } from 'firebase/functions'
-import { doc, serverTimestamp, updateDoc } from 'firebase/firestore'
+import { collection, getDocsFromServer, query, where, doc, serverTimestamp, updateDoc } from 'firebase/firestore'
 import { db } from './firebase'
 
 export function SmsPermission({ person }) {
@@ -43,10 +44,21 @@ export function BulkSms({ branch }) {
     setBusy(true)
     setStatus('')
     try {
-      const id = preview?.id || crypto.randomUUID()
+      if (!preview) {
+        const [legacy,members,exclusions] = await Promise.all([
+          getDocsFromServer(collection(db,'registrations')),
+          getDocsFromServer(collection(db,'churchMembers')),
+          getDocsFromServer(query(collection(db,'followUps'),where('status','==','Do not contact')))
+        ])
+        const count = recipientNumbers(legacy,members,exclusions,branch).length
+        setPreview({ count, pages:length.pages, totalKobo:estimatedKobo(count,length.pages) })
+        if (!count) setStatus('No eligible numbers in this branch. Check branch assignment and general church SMS permission in the directory.')
+        return
+      }
+      const id = preview.id || crypto.randomUUID()
       const send = httpsCallable(getFunctions(db.app),'gloryBulkSms',{timeout:90000})
-      const {data} = await send({ id, body, maxPages, branch, action:preview ? 'send' : 'preview' })
-      if (preview) {
+      const {data} = await send({ id, body, maxPages, branch, action:preview.id ? 'send' : 'preview' })
+      if (preview.id) {
         setStatus((data.sandbox ? 'Simulation accepted' : 'Accepted for sending') + ' for ' + data.count + ' recipients. Reference: ' + data.reference)
         setPreview(null)
         setBody('')
@@ -55,7 +67,9 @@ export function BulkSms({ branch }) {
         setPreview({...data,id})
       }
     } catch (err) {
-      setStatus(err.code === 'functions/internal' || err.code === 'functions/unavailable' ? 'SMS service unavailable. If you already pressed Send, check the provider dashboard before retrying.' : err.message)
+      if (!preview) setStatus('Could not load the directory for this estimate. Check your connection and admin access, then try again.')
+      else if (!preview.id) setStatus('The SMS sending service could not be reached or authorised. Your estimate is ready. No SMS was submitted.')
+      else setStatus(err.code === 'functions/internal' || err.code === 'functions/unavailable' ? 'Send status is unconfirmed. Check the provider dashboard before starting another send.' : err.message)
     } finally { setBusy(false) }
   }
   return <form className="sms-composer" onSubmit={submit}>
@@ -85,7 +99,7 @@ export function BulkSms({ branch }) {
         <p>₦6.49 per page, plus 7.5% VAT.{preview.sandbox?' This simulation is free.':''}</p>
       </section>}
       <footer><button className="sms-primary" disabled={busy || !branch || !body.trim() || overLimit || preview?.count===0}>
-        {busy?'Working…':!preview?'Review recipients and cost':preview.sandbox?'Run free simulation':'Send SMS · '+money.format(preview.totalKobo/100)}
+        {busy?'Working…':!preview?'Review recipients and cost':!preview.id?'Check sending availability':preview.sandbox?'Run free simulation':'Send SMS · '+money.format(preview.totalKobo/100)}
       </button>{preview && <button type="button" className="sms-secondary" disabled={busy} onClick={()=>setPreview(null)}>Back to draft</button>}</footer>
       {status && <p className="sms-status" role="status">{status}</p>}
     </div>

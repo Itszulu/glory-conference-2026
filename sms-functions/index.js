@@ -10,11 +10,6 @@ const token = defineSecret('BULKSMS_NIGERIA_TOKEN')
 const sender = defineString('BULKSMS_NIGERIA_SENDER')
 const mode = defineString('BULKSMS_NIGERIA_MODE', { default: 'sandbox' })
 
-function mobile(value) {
-  const digits = String(value || '').replace(/[\s()+-]/g, '').replace(/^(?:00234|0)/, '234')
-  return /^234[789]\d{9}$/.test(digits) ? digits : ''
-}
-
 exports.gloryBulkSms = onCall({ secrets: [token], timeoutSeconds: 90 }, async request => {
   const uid = request.auth?.uid
   if (!uid || (await db.doc('admins/' + uid).get()).get('role') !== 'admin') {
@@ -35,15 +30,8 @@ exports.gloryBulkSms = onCall({ secrets: [token], timeoutSeconds: 90 }, async re
     db.collection('churchMembers').select(...fields).get(),
     db.collection('followUps').where('status','==','Do not contact').select('registrationId').get()
   ])
-  const blockedIds = new Set(exclusions.docs.map(row => row.id))
-  const allowed = new Set(), stopped = new Set()
-  for (const row of [...legacy.docs,...members.docs]) {
-    const number = mobile(row.get('phone'))
-    if (!number) continue
-    if (row.get('churchSmsStopped') === true || (row.ref.parent.id === 'registrations' && blockedIds.has(row.id))) stopped.add(number)
-    if (row.get('memberBranch') === branch && row.get('churchSmsConsent') === true) allowed.add(number)
-  }
-  const numbers = [...allowed].filter(number => !stopped.has(number)).sort()
+  const { recipientNumbers } = await import('./audience.mjs')
+  const numbers = recipientNumbers(legacy, members, exclusions, branch)
   const sandbox = mode.value() !== 'live'
   const totalKobo = estimatedKobo(numbers.length, length.pages)
   const digest = createHash('sha256').update(JSON.stringify([uid, branch, body, numbers, sandbox, maxPages, totalKobo])).digest('hex')
