@@ -1,0 +1,21 @@
+{
+  "hosting": {
+    "target": "disrm",
+    "public": "dist-disrm",
+    "ignore": [
+      "**/.*"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "functions": {
+    "source": "sms-functions"
+  }
+}

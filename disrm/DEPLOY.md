@@ -1,0 +1,5 @@
+# DISRM church directory
+
+The church workspace has a separate HTML entry, build and Firebase Hosting target. It uses the gloryconf Firebase project so administrators can see every existing registration without copying personal data. Church-only records live in churchMembers. Branch assignment requires a confirmed Nsukka or Enugu membership. The SMS function checks branch, general church SMS consent, opt-outs and conference do-not-contact records on the server.
+
+Build with npm ci and npm run build:disrm. In the Firebase project select or create a dedicated Hosting site, then bind its actual site ID with firebase target:apply hosting disrm SITE_ID --project gloryconf. Set the SMS secret and sender as described in PR #5. Deploy with firebase deploy --config firebase.disrm.json --only hosting:disrm,firestore:rules,functions:gloryBulkSms --project gloryconf. The shared rules and function also apply to the conference project. Test admin login and branch-specific previews in sandbox mode before enabling live SMS.

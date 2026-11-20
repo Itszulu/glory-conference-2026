@@ -9,8 +9,8 @@ export function SmsPermission({ person }) {
   const [status,setStatus] = useState('')
   async function record(consent) {
     try {
-      await updateDoc(doc(db,'registrations',person.id),{
-        churchSmsConsent:consent, churchSmsStopped:!consent, churchSmsUpdatedAt:serverTimestamp()
+      await updateDoc(doc(db,person.source || 'registrations',person.id),{
+        updatedAt:serverTimestamp(), churchSmsConsent:consent, churchSmsStopped:!consent, churchSmsUpdatedAt:serverTimestamp()
       })
       setStatus(consent ? 'SMS permission recorded.' : 'SMS stopped for this number.')
     } catch { setStatus('Could not update SMS permission.') }
@@ -23,7 +23,7 @@ export function SmsPermission({ person }) {
   </div>
 }
 
-export function BulkSms() {
+export function BulkSms({ branch }) {
   const [body,setBody] = useState('')
   const [preview,setPreview] = useState(null)
   const [busy,setBusy] = useState(false)
@@ -45,7 +45,7 @@ export function BulkSms() {
     try {
       const id = preview?.id || crypto.randomUUID()
       const send = httpsCallable(getFunctions(db.app),'gloryBulkSms',{timeout:90000})
-      const {data} = await send({ id, body, maxPages, action:preview ? 'send' : 'preview' })
+      const {data} = await send({ id, body, maxPages, branch, action:preview ? 'send' : 'preview' })
       if (preview) {
         setStatus((data.sandbox ? 'Simulation accepted' : 'Accepted for sending') + ' for ' + data.count + ' recipients. Reference: ' + data.reference)
         setPreview(null)
@@ -59,7 +59,7 @@ export function BulkSms() {
     } finally { setBusy(false) }
   }
   return <form className="sms-composer" onSubmit={submit}>
-    <header><h3>Bulk SMS</h3><p>Send a custom text to your opted-in church contacts.</p></header>
+    <header><h3>Bulk SMS</h3><p>Invite opted-in DISRM {branch} members to church.</p></header>
     <div className="sms-compose-body">
       <div className="sms-toolbar">
         <label htmlFor="church-sms-body">Message</label>
@@ -84,7 +84,7 @@ export function BulkSms() {
         </dl>
         <p>₦6.49 per page, plus 7.5% VAT.{preview.sandbox?' This simulation is free.':''}</p>
       </section>}
-      <footer><button className="sms-primary" disabled={busy || !body.trim() || overLimit || preview?.count===0}>
+      <footer><button className="sms-primary" disabled={busy || !branch || !body.trim() || overLimit || preview?.count===0}>
         {busy?'Working…':!preview?'Review recipients and cost':preview.sandbox?'Run free simulation':'Send SMS · '+money.format(preview.totalKobo/100)}
       </button>{preview && <button type="button" className="sms-secondary" disabled={busy} onClick={()=>setPreview(null)}>Back to draft</button>}</footer>
       {status && <p className="sms-status" role="status">{status}</p>}
